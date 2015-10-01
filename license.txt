@@ -1,0 +1,11 @@
+
+we are currently cleaning up these sources and have not yet decided about
+a suitable license. because of this please notice the following:
+
+NO WARRANTY IMPLIED OF ANY KIND
+
+YOU MAY NOT DISTRIBUTE ALTERED VERSIONS OF THE CODE, NEITHER AS SOURCECODE NOR
+IN BINARY (COMPILED) FORM.
+
+however, we accept patches in unified diff/patch format. if you have further
+questions contact me at tobias@icomp.de

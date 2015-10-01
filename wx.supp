@@ -1,0 +1,271 @@
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:wcscoll_l
+   fun:g_utf8_collate
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:qsort_r
+   fun:_ZN16wxFontEnumerator18EnumerateFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator12GetFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator15IsValidFacenameERK8wxString
+   fun:_ZN16wxNativeFontInfo10FromStringERK8wxString
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:wcscoll_l
+   fun:g_utf8_collate
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:qsort_r
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:wcscoll_l
+   fun:g_utf8_collate
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:qsort_r
+   fun:_ZN16wxFontEnumerator18EnumerateFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator12GetFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator15IsValidFacenameERK8wxString
+   fun:_ZN16wxNativeFontInfo10FromStringERK8wxString
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:wcscoll_l
+   fun:g_utf8_collate
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:qsort_r
+   fun:_ZN16wxFontEnumerator18EnumerateFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator12GetFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator15IsValidFacenameERK8wxString
+   fun:_ZN16wxNativeFontInfo10FromStringERK8wxString
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:wcscoll_l
+   fun:g_utf8_collate
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:qsort_r
+   fun:_ZN16wxFontEnumerator18EnumerateFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator12GetFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator15IsValidFacenameERK8wxString
+   fun:_ZN16wxNativeFontInfo10FromStringERK8wxString
+   fun:_ZN13wxFontRefDataC1ERKS_
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:wcscoll_l
+   fun:g_utf8_collate
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:qsort_r
+   fun:_ZN16wxFontEnumerator18EnumerateFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator12GetFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator15IsValidFacenameERK8wxString
+   fun:_ZN16wxNativeFontInfo10FromStringERK8wxString
+   fun:_ZN13wxFontRefDataC1ERKS_
+   fun:_ZNK6wxFont12CloneRefDataEPK15wxObjectRefData
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:wcscoll_l
+   fun:g_utf8_collate
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:qsort_r
+   fun:_ZN16wxFontEnumerator18EnumerateFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator12GetFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator15IsValidFacenameERK8wxString
+   fun:_ZN16wxNativeFontInfo10FromStringERK8wxString
+   fun:_ZN13wxFontRefDataC1ERKS_
+   fun:_ZNK6wxFont12CloneRefDataEPK15wxObjectRefData
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:wcscoll_l
+   fun:g_utf8_collate
+   fun:msort_with_tmp.part.0
+   fun:msort_with_tmp.part.0
+   fun:qsort_r
+   fun:_ZN16wxFontEnumerator18EnumerateFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator12GetFacenamesE14wxFontEncodingb
+   fun:_ZN16wxFontEnumerator15IsValidFacenameERK8wxString
+   fun:_ZN16wxNativeFontInfo10FromStringERK8wxString
+   fun:_ZN13wxFontRefDataC1ERKS_
+   fun:_ZNK6wxFont12CloneRefDataEPK15wxObjectRefData
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZN15wxHashTableBase8DoDeleteEPKwl
+   fun:_ZN11wxClassInfo10UnregisterEv
+   fun:__cxa_finalize
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZN15wxHashTableBase8DoDeleteEPKwl
+   fun:_ZN11wxClassInfo10UnregisterEv
+   fun:__cxa_finalize
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZN15wxHashTableBase8DoDeleteEPKwl
+   fun:_ZN11wxClassInfo10UnregisterEv
+   fun:__cxa_finalize
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZN15wxHashTableBase8DoDeleteEPKwl
+   fun:_ZN11wxClassInfo10UnregisterEv
+   fun:__cxa_finalize
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZN15wxHashTableBase8DoDeleteEPKwl
+   fun:_ZN11wxClassInfo10UnregisterEv
+   fun:__cxa_finalize
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZN15wxHashTableBase8DoDeleteEPKwl
+   fun:_ZN11wxClassInfo10UnregisterEv
+   fun:__cxa_finalize
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZN15wxHashTableBase8DoDeleteEPKwl
+   fun:_ZN11wxClassInfo10UnregisterEv
+   fun:__cxa_finalize
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZN15wxHashTableBase8DoDeleteEPKwl
+   fun:_ZN11wxClassInfo10UnregisterEv
+   fun:__cxa_finalize
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZN15wxHashTableBase8DoDeleteEPKwl
+   fun:_ZN11wxClassInfo10UnregisterEv
+   fun:__cxa_finalize
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZN15wxHashTableBase8DoDeleteEPKwl
+   fun:_ZN11wxClassInfo10UnregisterEv
+   fun:__cxa_finalize
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZN15wxHashTableBase8DoDeleteEPKwl
+   fun:_ZN11wxClassInfo10UnregisterEv
+   fun:__cxa_finalize
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   obj:/usr/lib64/libwx_gtk2u_core-2.8.so.0.8.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
