@@ -17,3 +17,9 @@ chacocmd:
 wxchaco:
 	$(MAKE) -C wxchaco all
 
+clean:
+	$(MAKE) -C chacolib clean
+	$(MAKE) -C updater clean
+	$(MAKE) -C chacocmd clean
+	$(MAKE) -C wxchaco clean
+
