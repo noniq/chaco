@@ -1,0 +1,5 @@
+
+
+wxwidgets:
+
+$ ./configure --disable-shared --enable-monolithic --enable-compat26 && make
