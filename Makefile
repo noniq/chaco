@@ -1,12 +1,15 @@
 
 include Makefile.config
 
-.PHONY: all chacolib chacocmd wxchaco updater
+.PHONY: all chacolib updater chacocmd wxchaco
 
 all: chacolib chacocmd wxchaco updater
 
 chacolib:
 	$(MAKE) -C chacolib all
+
+updater:
+	$(MAKE) -C updater all
 
 chacocmd:
 	$(MAKE) -C chacocmd all
@@ -14,5 +17,3 @@ chacocmd:
 wxchaco:
 	$(MAKE) -C wxchaco all
 
-updater:
-	$(MAKE) -C updater all

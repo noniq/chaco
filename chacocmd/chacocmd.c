@@ -243,8 +243,8 @@ int main(int argc, char *argv[])
     LOGVER("Firmware Version: %02x\n", mcversion);
     LOGVER("sd card detected: %s\n", sdinserted ? "no" : "yes");
 
-    buffer = malloc(CHAMELEON_RAM_SIZE);
-    buffer2 = malloc(CHAMELEON_RAM_SIZE);
+    buffer = (unsigned char*)malloc(CHAMELEON_RAM_SIZE);
+    buffer2 = (unsigned char*)malloc(CHAMELEON_RAM_SIZE);
  
 #ifdef LINUX
     /* make sure that if the binary is setuid root, the created files will be
@@ -299,7 +299,7 @@ int main(int argc, char *argv[])
             ret = chameleon_readmemory(buffer, len, addr);
             print_dump(buffer, len, addr);
         } else if (!strcmp("--flashrbf", argv[i])) {
-            unsigned char *rom_buffer = malloc(CHAMELEON_RAM_SIZE);
+            unsigned char *rom_buffer = (unsigned char*)malloc(CHAMELEON_RAM_SIZE);
 
             checksdcard(sdinserted);
 
