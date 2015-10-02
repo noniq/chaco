@@ -1,10 +1,7 @@
 
-CFLAGS+=-DLIBUSB
-CFLAGS+=-DPOSIX
+include ../Makefile.config
 
-#CFLAGS+=-O3 -Wall -W -Wextra
-
-BUILDDIR=../build-linux
+BUILDDIR=../build-$(TARGET)
 
 all: $(BUILDDIR)/chacolib.a
 

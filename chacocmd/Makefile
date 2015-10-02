@@ -1,20 +1,16 @@
 
-CFLAGS+=-DLIBUSB
-CLIBS+=-lusb-1.0
+include ../Makefile.config
 
-CFLAGS+=-DPOSIX
-CFLAGS+=-DLINUX
+CFLAGS+=-O3 -Wall -W -Wextra
 
-#CFLAGS+=-O3 -Wall -W -Wextra
-
-BUILDDIR=../build-linux
+BUILDDIR=../build-$(TARGET)
 
 CFLAGS+=-I../chacolib
 
-all: $(BUILDDIR)/chacocmd
+all: $(BUILDDIR)/chacocmd$(EXE)
 
-$(BUILDDIR)/chacocmd: chacocmd.c Makefile
-	$(CC) $(CFLAGS) -o $(BUILDDIR)/chacocmd chacocmd.c $(BUILDDIR)/chacolib.a $(CLIBS)
+$(BUILDDIR)/chacocmd$(EXE): chacocmd.c Makefile
+	$(CC) $(CFLAGS) -o $(BUILDDIR)/chacocmd$(EXE) chacocmd.c $(BUILDDIR)/chacolib.a $(CLIBS)
 
 clean:
-	$(RM) $(BUILDDIR)/chacocmd
+	$(RM) $(BUILDDIR)/chacocmd$(EXE)

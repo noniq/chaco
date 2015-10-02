@@ -1,16 +1,10 @@
 
-CFLAGS+=-DLIBUSB
-CLIBS+=-lusb-1.0
-
-CFLAGS+=-DPOSIX
-CFLAGS+=-DLINUX
+include ../Makefile.config
 
 CFLAGS+=`wx-config --cflags`
 CLIBS+=`wx-config --libs`
 
-#CFLAGS+=-O3 -Wall -W -Wextra
-
-BUILDDIR=../build-linux
+BUILDDIR=../build-$(TARGET)
 
 CFLAGS+=-I../chacolib
 
@@ -33,11 +27,11 @@ HEADER=\
 	TaskMgr.h \
 	Threading.h
 
-all: $(BUILDDIR)/Chaco
+all: $(BUILDDIR)/Chaco$(EXE)
 
-$(BUILDDIR)/Chaco: $(SOURCES) $(HEADER) Makefile
-#	$(CXX) $(CFLAGS) -o $(BUILDDIR)/Chaco $(SOURCES) $(BUILDDIR)/chacolib.a $(CLIBS)
-	$(CXX) $(CFLAGS) -o $(BUILDDIR)/Chaco $(SOURCES) ../chacolib/chacolib.c $(CLIBS)
+$(BUILDDIR)/Chaco$(EXE): $(SOURCES) $(HEADER) Makefile
+#	$(CXX) $(CFLAGS) -o $(BUILDDIR)/Chaco$(EXE) $(SOURCES) $(BUILDDIR)/chacolib.a $(CLIBS)
+	$(CXX) $(CFLAGS) -o $(BUILDDIR)/Chaco$(EXE) $(SOURCES) ../chacolib/chacolib.c $(CLIBS)
 
 clean:
-	$(RM) $(BUILDDIR)/Chaco
+	$(RM) $(BUILDDIR)/Chaco$(EXE)
