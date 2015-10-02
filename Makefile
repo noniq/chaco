@@ -3,7 +3,7 @@ include Makefile.config
 
 .PHONY: all chacolib updater chacocmd wxchaco
 
-all: chacolib chacocmd wxchaco updater
+all: chacolib chacocmd updater wxchaco
 
 chacolib:
 	$(MAKE) -C chacolib all
