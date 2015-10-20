@@ -167,7 +167,9 @@ static void progress(unsigned int curr, unsigned int max)
         oldPercent = 0;
         progresspercent = 0;
         progressvalue = 0;
-        progressfunc(0, 0);
+        if (progressfunc) {
+            progressfunc(0, 0);
+        }
     } else {
         if (max > 0x003fffff) {
             percent = ((progresslen * (curr >> 10)) / (max >> 10));
