@@ -167,6 +167,8 @@ int main(int argc, char *argv[])
         exit (-1);
     }
 
+    chameleon_setlogfunc(logfunc);
+
     if (chameleon_init() < 0) {
         LOGERR("initialization failed.\n");
         exit(-1);
@@ -175,18 +177,6 @@ int main(int argc, char *argv[])
         LOGERR("could not allocate memory.\n");
         exit(shutdown(-1));
     };
- 
-#ifdef LINUX
-    /* make sure that if the binary is setuid root, the created files will be
-       owned by the user running the binary (and not root) */
-    {
-        int fsuid = setfsuid(getuid());
-        int fsgid = setfsgid(getgid());
-        LOGVER("fsuid: %d fsgid: %d\n", fsuid, fsgid);
-    }
-#endif
-
-    chameleon_setlogfunc(logfunc);
 
     /* check the rest of the options */
     for (; i < argc; i++) {
