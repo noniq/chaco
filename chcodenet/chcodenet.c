@@ -86,6 +86,7 @@ void execute_sys(int addr)
     buf[0] = 0;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
+        exit(shutdown(-1));
     }
     buf[0] = 83;
     buf[1] = 217;
@@ -100,10 +101,12 @@ void execute_sys(int addr)
     buf[n+2] = 13;
     if (chameleon_writememory(buf, 8, 631) < 0) {
         LOGERR("error writing to chameleon memory.\n");
+        exit(shutdown(-1));
     }
     buf[0] = n+3;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
+        exit(shutdown(-1));
     }
 }
 
@@ -114,6 +117,7 @@ void execute_run(void)
     buf[0] = 0;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
+        exit(shutdown(-1));
     }
     buf[0] = 82;
     buf[1] = 85;
@@ -121,10 +125,12 @@ void execute_run(void)
     buf[3] = 13;
     if (chameleon_writememory(buf, 4, 631) < 0) {
         LOGERR("error writing to chameleon memory.\n");
+        exit(shutdown(-1));
     }
     buf[0] = 4;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
+        exit(shutdown(-1));
     }
 }
 
