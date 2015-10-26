@@ -1,7 +1,7 @@
-CC65_HOME=~/Desktop/cc65/github/cc65
-CA65=$(CC65_HOME)/bin/ca65
-CL65=$(CC65_HOME)/bin/cl65
-AR65=$(CC65_HOME)/bin/ar65
+#CC65PREFIX=~/Desktop/cc65/github/cc65/bin/
+CA65=$(CC65PREFIX)ca65
+CL65=$(CC65PREFIX)cl65
+AR65=$(CC65PREFIX)ar65
 
 libname := libef3usb
 

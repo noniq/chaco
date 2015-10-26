@@ -93,7 +93,7 @@ static const char* get_next_arg(void)
         return NULL;
 }
 
-int shutdown(int n) {
+int cleanup(int n) {
     chameleon_close();
     return n;
 }
@@ -184,7 +184,7 @@ int main(int argc, char** argv)
 
     if (chameleon_init() < 0) {
         fprintf(stderr, ("initialization failed.\n"));
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     }
     if (p_exec_filename)
         return !ef3xfer_transfer_prg(p_exec_filename);

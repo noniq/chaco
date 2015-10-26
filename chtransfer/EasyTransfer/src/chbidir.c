@@ -42,7 +42,7 @@
 #define LOGMSG(...)       logfunc (LOGLVL_MSG, __VA_ARGS__ )
 #define DBG(...)          logfunc (LOGLVL_DBG, __VA_ARGS__ )
 
-extern int shutdown(int n);
+extern int cleanup(int n);
 
 int verbose = 0;
 
@@ -274,7 +274,7 @@ int check_server_running(void)
     /* check BASIC direct- oder program-mode */
     if (chameleon_readmemory(&rbuf[0], 1, 0x9d) < 0) {
         LOGERR("error reading C64 memory.");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     }
 //    printf("%02x - ", rbuf[0]);
     if (rbuf[0] != 0x00) {

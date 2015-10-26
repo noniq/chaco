@@ -158,7 +158,7 @@ int save_frame(FILE *f)
     return 0;
 }
 
-int shutdown(int n) {
+int cleanup(int n) {
     chameleon_close();
     if (framebuffer) {
         free(framebuffer);
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
     }
     if((framebuffer = (unsigned char*)malloc(VRAM_SIZE)) == NULL) {
         LOGERR("could not allocate memory.\n");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     };
 
     /* check the rest of the options */
@@ -216,16 +216,16 @@ int main(int argc, char *argv[])
             name = argv[i];
             if ((f = fopen(name, "wb")) == NULL) {
                 LOGERR("error opening: '%s'\n", name);
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
             read_frame(0);
             save_frame(f);
             fclose(f);
         } else {
             usage();
-            exit(shutdown(-1));
+            exit(cleanup(-1));
         }
     }
 
-    return shutdown(0);
+    return cleanup(0);
 }

@@ -99,7 +99,7 @@ cxxflags  += -I$(objdir)
 
 ifeq ($(win32), yes)
     include make/win32-cross-mingw/cross-wx.mk
-    include make/win32-cross-mingw/cross-ftdi.mk
+#    include make/win32-cross-mingw/cross-ftdi.mk
 #pre_deps: libftdi libusb install-wxwidgets
 pre_deps: libusb install-wxwidgets
 else
@@ -215,12 +215,23 @@ $(objdir)/%.c: $(srcdir)/%.prg | $(objdir) pre_deps
 $(objdir)/%.res.o: $(srcdir)/%.rc | $(objdir) pre_deps
 	$(windres) -I $(objdir) $< $@
 
+ifeq ($(TARGET),win)
+# n/a
+$(objdir)/%.xpm: $(srcdir)/../res/%.xpm | $(objdir) pre_deps
+	echo cp $< $@
+	cp $< $@
+endif
+
+# generate xpm
+ifneq ($(TARGET),win)
 $(objdir)/%.xpm: $(srcdir)/../res/%.png | $(objdir) pre_deps
 	convert $(icon_resize) $< $@.tmp.xpm
 	cat $@.tmp.xpm | sed "\
 			s/static char/static const char/;\
 			s/[\._]tmp//;\
 			s/\.xpm/_xpm/" > $@
+
+endif
 
 $(outdir)/%: $(srcdir)/../%
 	mkdir -p $(dir $@)
@@ -233,8 +244,17 @@ $(srcdir)/usbtest/usbtest.prg: always
 
 $(objdir)/EasyTransfer.res.o: $(objdir)/easytransfer.ico
 
+# copy .ico
+ifeq ($(TARGET),win)
+$(objdir)/%.ico: $(srcdir)/../res/%.ico | $(objdir) pre_deps
+	cp $< $@
+endif
+
+# generate .ico
+ifneq ($(TARGET),win)
 $(objdir)/%.ico: $(srcdir)/../res/%.png | $(objdir) pre_deps
 	convert $< $@
+endif
 
 .PHONY: always
 always:

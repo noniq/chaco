@@ -11,6 +11,10 @@
 #ifdef LINUX
 #include <sys/fsuid.h>
 #endif
+#ifdef WIN32
+#include <Windows.h>
+#define sleep(x) Sleep(x*1000)
+#endif
 
 #include "chacolib.h"
 
@@ -72,7 +76,7 @@ int fileptr;
 unsigned char ft;
 int entoff;
 
-int shutdown(int n)
+int cleanup(int n)
 {
     chameleon_close();
     if(buf) {
@@ -100,7 +104,7 @@ void execute_run(void)
     buf[0] = 0;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     }
     buf[0] = 82;
     buf[1] = 85;
@@ -108,12 +112,12 @@ void execute_run(void)
     buf[3] = 13;
     if (chameleon_writememory(buf, 4, 631) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     }
     buf[0] = 4;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     }
 }
 // -----------------------------------------------------------------------------
@@ -562,12 +566,12 @@ int main(int argc, char *argv[])
           
           if (format == 40 && mode == 1) {
                 printf("40 tracks D64 is not supported in Kernal mode!\n");
-                exit(shutdown(-1));;
+                exit(cleanup(-1));;
           }
           
           if (format == 0) {
                 printf("Unsupported Image format!\n");
-                exit(shutdown(-1));;
+                exit(cleanup(-1));;
           } else {
                 if (format == 35 || format == 40) {
                         printf (" - .D64 format %d tracks.\n\n", format);
@@ -633,7 +637,7 @@ int main(int argc, char *argv[])
                                 written = ftdiread(bufread, 1);
                                 if (bufread[0] != 0xff) {
                                         printf("Error on the C64 side ... exiting...\n");
-                                        exit(shutdown(-1));;
+                                        exit(cleanup(-1));;
                                 }
                         }
                   }
@@ -685,7 +689,7 @@ int main(int argc, char *argv[])
                                 written = ftdiread(bufread, 1);
                                 if (bufread[0] != 0xff) {
                                         printf("Error on the C64 side ... exiting...\n");
-                                        exit(shutdown(-1));;
+                                        exit(cleanup(-1));;
                                 }
                         }
                   }
@@ -716,12 +720,12 @@ int main(int argc, char *argv[])
         }
         if (format == 0 || (format == 80 && mode == 0)) {
                 printf("%d Unsupported format or mode!\n", format);
-                exit(shutdown(-1));;
+                exit(cleanup(-1));;
         }
         
         if (mode == 1 && format == 40) {
                 printf("40 tracks D64 is not supported in Kernal mode!\n");
-                exit(shutdown(-1));;
+                exit(cleanup(-1));;
         }
         
         if (format == 35 || format == 40) {
@@ -781,7 +785,7 @@ int main(int argc, char *argv[])
                                 written = ftdiread(bufread, 1);
                                 if (bufread[0] != 0xff) {
                                         printf("Error on the C64 side ... exiting...\n");
-                                        exit(shutdown(-1));;
+                                        exit(cleanup(-1));;
                                 }
                         }
                   }
@@ -839,7 +843,7 @@ int main(int argc, char *argv[])
                                 written = ftdiread(bufread, 1);
                                 if (bufread[0] != 0xff) {
                                         printf("Error on the C64 side ... exiting...\n");
-                                        exit(shutdown(-1));;
+                                        exit(cleanup(-1));;
                                 }
                         }
                   }
@@ -875,16 +879,16 @@ int main(int argc, char *argv[])
                 written = ftdi_write_data(&ftdic, buf, 1);
                 if (written != 1) {
                     printf("ERROR - could not write all test bytes to the device!\n");
-                    exit(shutdown(-1));
+                    exit(cleanup(-1));
                 }
                 written = ftdi_read_data(&ftdic, buf2, 1);
                 if (written != 1) {
                     printf("ERROR - could not read back all test bytes to the device!\n");
-                    exit(shutdown(-1));
+                    exit(cleanup(-1));
                 }
                 if (buf2[0] != buf[0]) {
                     printf("ERROR - Read byte ($%02X) does not match written byte ($%02X) !\n", buf2[0], i);
-                    exit(shutdown(-1));
+                    exit(cleanup(-1));
                 }
             }
         }
@@ -917,7 +921,7 @@ int main(int argc, char *argv[])
             printf("sending '%s' ($%04x bytes to $%04x.)...\n", fname, read, addr);
             if (chameleon_writememory(&buf[2], read, addr) < 0) {
                 LOGERR("error writing to chameleon memory.\n");
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
             execute_run();
     } else if (command == 8) {
@@ -940,7 +944,7 @@ int main(int argc, char *argv[])
             }
             if((fp = fopen(fname, "rb")) == NULL) {
                 LOGERR("error could not open '%s'.\n", fname);
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
             read = fread (buf, 1, 0x1000000, fp);
             fclose(fp);
@@ -948,7 +952,7 @@ int main(int argc, char *argv[])
             printf("sending '%s' ($%04x bytes to $%04x.)...\n", fname, read, addr);
             if (chameleon_writememory(&buf[2], read, addr) < 0) {
                 LOGERR("error writing to chameleon memory.\n");
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
             execute_run();
     } else if (command == 1) {
@@ -986,7 +990,7 @@ int main(int argc, char *argv[])
           if (prgmode != 0) {
                 if (mode != 0) {
                         printf("DIR only supported on disk images!\n");
-                        exit(shutdown(-1));;
+                        exit(cleanup(-1));;
                 }
                 ft = 0x02;      // PRG filetype
                 
@@ -1050,7 +1054,7 @@ int main(int argc, char *argv[])
                 printf(" PRG %s %3d", c64filename, fileptr/256);
         
                 if (sendfile()) {
-                        exit(shutdown(0));;
+                        exit(cleanup(0));;
                 }
           } else {
                   int tt;
@@ -1071,7 +1075,7 @@ int main(int argc, char *argv[])
                   while (nexttr != 0) {
                           int diroff = off(nexttr,nextse);
                           if (diroff == -1) {
-                                exit(shutdown(0));;
+                                exit(cleanup(0));;
                           }
                           nexttr = buf[diroff+0];
                           nextse = buf[diroff+1];
@@ -1168,7 +1172,7 @@ int main(int argc, char *argv[])
                                                 } else {
                                                         if (mode == 0) {
                                                                 if (sendfile()) {
-                                                                        exit(shutdown(0));;
+                                                                        exit(cleanup(0));;
                                                                 }
                                                                 
                                                                 //FILE * fp1 = fopen (c64filename, "wb");
@@ -1198,5 +1202,5 @@ int main(int argc, char *argv[])
                    written = ftdiwrite(bufstart, 1);
           }
     }
-    return shutdown(0);
+    return cleanup(0);
 }

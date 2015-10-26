@@ -1,8 +1,8 @@
-CC65_HOME=~/Desktop/cc65/github/cc65
-CA65=$(CC65_HOME)/bin/ca65
-CC65=$(CC65_HOME)/bin/cc65
-AR65=$(CC65_HOME)/bin/ar65
-LD65=$(CC65_HOME)/bin/ld65
+#CC65PREFIX=~/Desktop/cc65/github/cc65/bin/
+CA65=$(CC65PREFIX)ca65
+CC65=$(CC65PREFIX)cc65
+AR65=$(CC65PREFIX)ar65
+LD65=$(CC65PREFIX)ld65
 
 inc :=
 inc += src/drivetype.s

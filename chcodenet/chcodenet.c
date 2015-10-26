@@ -86,7 +86,7 @@ void execute_sys(int addr)
     buf[0] = 0;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     }
     buf[0] = 83;
     buf[1] = 217;
@@ -101,12 +101,12 @@ void execute_sys(int addr)
     buf[n+2] = 13;
     if (chameleon_writememory(buf, 8, 631) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     }
     buf[0] = n+3;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     }
 }
 
@@ -117,7 +117,7 @@ void execute_run(void)
     buf[0] = 0;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     }
     buf[0] = 82;
     buf[1] = 85;
@@ -125,16 +125,16 @@ void execute_run(void)
     buf[3] = 13;
     if (chameleon_writememory(buf, 4, 631) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     }
     buf[0] = 4;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     }
 }
 
-int shutdown(int n) {
+int cleanup(int n) {
     chameleon_close();
     if (buffer) {
         free(buffer);
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
     }
     if((buffer = (unsigned char*)malloc(C64_RAM_SIZE)) == NULL) {
         LOGERR("could not allocate memory.\n");
-        exit(shutdown(-1));
+        exit(cleanup(-1));
     };
 
     /* check the rest of the options */
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
             name = argv[i];
             if ((f = fopen(name, "rb")) == NULL) {
                 LOGERR("error opening: '%s'\n", name);
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
             addr = fgetc(f);
             addr += ((int)fgetc(f) << 8);
@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
             printf("sending '%s' ($%04x bytes to $%04x.)...\n", name, len, addr);
             if (chameleon_writememory(buffer, len, addr) < 0) {
                 LOGERR("error writing to chameleon memory.\n");
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
             execute_run();
         } else if (!strcmp("-r", argv[i])) {
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
             name = argv[i];
             if ((f = fopen(name, "rb")) == NULL) {
                 LOGERR("error opening: '%s'\n", name);
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
             addr = fgetc(f);
             addr += ((int)fgetc(f) << 8);
@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
             printf("sending '%s' ($%04x bytes to $%04x.)...\n", name, len, addr);
             if (chameleon_writememory(buffer, len, addr) < 0) {
                 LOGERR("error writing to chameleon memory.\n");
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
         } else if (!strcmp("-wa", argv[i])) {
             /* write .prg file to specified address */
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
             name = argv[i];
             if ((f = fopen(name, "rb")) == NULL) {
                 LOGERR("error opening: '%s'\n", name);
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
             i++;
             addr = strtoul(argv[i], NULL, 0);
@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
             printf("sending '%s' ($%04x bytes to $%04x.)...\n", name, len, addr);
             if (chameleon_writememory(buffer, len, addr) < 0) {
                 LOGERR("error writing to chameleon memory.\n");
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
         } else if (!strcmp("-wb", argv[i])) {
             /* write binary file to specified address */
@@ -256,7 +256,7 @@ int main(int argc, char *argv[])
             name = argv[i];
             if ((f = fopen(name, "rb")) == NULL) {
                 LOGERR("error opening: '%s'\n", name);
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
             i++;
             addr = strtoul(argv[i], NULL, 0);
@@ -266,7 +266,7 @@ int main(int argc, char *argv[])
             printf("sending '%s' ($%04x bytes to $%04x.)...\n", name, len, addr);
             if (chameleon_writememory(buffer, len, addr) < 0) {
                 LOGERR("error writing to chameleon memory.\n");
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
         } else if (!strcmp("-f", argv[i])) {
             /* fill a block of memory */
@@ -283,7 +283,7 @@ int main(int argc, char *argv[])
             printf("filling $%04x to $%04x ($%04x bytes)...\n", addr, end, len);
             if (chameleon_writememory(buffer, len, addr) < 0) {
                 LOGERR("error writing to chameleon memory.\n");
-                exit(shutdown(-1));
+                exit(cleanup(-1));
             }
         } else if (!strcmp("-n", argv[i])) {
             /* ignored */
@@ -299,9 +299,9 @@ int main(int argc, char *argv[])
             i++;
         } else {
             usage();
-            exit(shutdown(-1));
+            exit(cleanup(-1));
         }
     }
 
-    return shutdown(0);
+    return cleanup(0);
 }
