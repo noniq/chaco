@@ -1,7 +1,7 @@
 
 Unless a seperate license.txt is present in the individual subdirectory, all
-source code and documentation contained in this repository is being made
-available under the following conditions:
+source code and documentation contained in this repository is made available
+under the following conditions:
 
 --------------------------------------------------------------------------------
 

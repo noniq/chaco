@@ -3,3 +3,9 @@
 wxwidgets:
 
 $ ./configure --disable-shared --enable-monolithic --enable-compat26 && make
+
+--------------------------------------------------------------------------------
+
+if the cc65 tools are not in your path, use something like this to compile:
+
+$ CC65PREFIX=~/cc65/bin/ make all
