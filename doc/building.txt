@@ -1,4 +1,23 @@
 
+on windows i use a ming32 environment.
+
+--------------------------------------------------------------------------------
+
+needed tools:
+    cc65 (use a recent one from github)
+    64tass (use a recent one from sourceforge)
+    python (3.x)
+    ImageMagick (convert)
+    make
+    gcc
+    sed, grep, cat etc
+
+needed libraries:
+    libusb-1.0
+    libhid (instead of libusb, untested)
+    wxwidgets (for building gui tools, "Chaco" and "ChTransfer")
+
+--------------------------------------------------------------------------------
 
 wxwidgets:
 
