@@ -50,32 +50,28 @@ clibs          = $(CLIBS)
 cxxlibs        = $(CXXLIBS)
 ldflags        = $(LDFLAGS)
 
-ifeq ($(win32), yes)
-    app_name      := ChTransfer$(EXE)
-    ef3xfer_name  := chxfer$(EXE)
-    host          := i686-w64-mingw32
-    cxx           := $(host)-c++
-    cc            := $(host)-gcc
-    windres       := $(host)-windres
+ifeq ($(TARGET), win)
     ldflags       += -static-libstdc++ -static-libgcc
-#    outbase       := $(BUILDDIR)
-    outbase       := obj
-    icon_resize   := -resize 32x32
-else
-    app_name      := ChTransfer$(EXE)
-    ef3xfer_name  := chxfer$(EXE)
-    cxx           := c++
-    cc            := gcc
-#    outbase       := $(BUILDDIR)
-    outbase       := obj
-    cxxflags      += $(shell wx-config --cxxflags)
-    cxxlibs       += $(shell wx-config --libs) -lpthread
-#    cxxlibs       += $(shell wx-config --libs) -lftdi -lpthread
-#    clibs         += -lftd
-	clibs         += $(BUILDDIR)/chacolib.a $(CLIBS)
-	cxxlibs         += $(BUILDDIR)/chacolib.a $(CLIBS)
-    icon_resize   :=
 endif
+
+#    host          := i686-w64-mingw32
+#    cxx           := $(host)-c++
+#    cc            := $(host)-gcc
+#    windres       := $(host)-windres
+#    ldflags       += -static-libstdc++ -static-libgcc
+##    outbase       := $(BUILDDIR)
+#    outbase       := obj
+#    icon_resize   := -resize 32x32
+
+cxx           := c++
+cc            := gcc
+#outbase       := $(BUILDDIR)
+outbase       := obj
+cxxflags      += $(shell wx-config --cxxflags)
+cxxlibs       += $(shell wx-config --libs) -lpthread
+clibs         += $(BUILDDIR)/chacolib.a $(CLIBS)
+cxxlibs         += $(BUILDDIR)/chacolib.a $(CLIBS)
+icon_resize   :=
 
 ifneq "$(release)" "yes"
 	version        := $(shell date +%y%m%d-%H%M)
