@@ -1,5 +1,5 @@
 /* XPM */
-static char *easytransfer_xpm_tmp[] = {
+static const char *easytransfer_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "48 48 212 2 ",
 "   c #050300",
