@@ -1,0 +1,610 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>netmon</title>
+</head>
+<body style="color: rgb(0, 0, 0);" alink="#ee0000" link="#0000ee"
+ vlink="#551a8b">
+<h1
+ style="font-family: helvetica,arial,sans-serif; background-color: rgb(255, 204, 102); text-align:center;"><font
+ size="+1"><span style="font-weight: bold;">NETMON</span></font></h1>
+<font style="font-family: helvetica,arial,sans-serif;" size="+1">
+<p>
+This couple of tools allows you to connect your PC to C64 via RR-Net.
+Communication is done via UDP/IP - Protocol and is based heavily on <a
+ href="http://www.paradroid.net/udpslave/">updslave</a> by Mager Valp.
+Thanks a lot!<br>
+<br>
+</font>
+<div style="margin-left: 40px;"><font
+ style="font-family: helvetica,arial,sans-serif;" size="+1"><span
+ style="font-weight: bold;">NETMON</span> gives you a powerful
+monitoring tool for cross developping or remote accessing your c64
+equipped with&nbsp; a RR-Net. NETMON is available as Windows Executable or for Linux/Unix (Source and Binary)</font><br>
+<font style="font-family: helvetica,arial,sans-serif;" size="+1"><span
+ style="font-weight: bold;">NETSERV</span> is the server that runs on
+C64-side.</font><br>
+</div>
+<font style="font-family: helvetica,arial,sans-serif;" size="+1"><br>
+On C64 just load <span style="font-weight: bold;">NETSERV</span> and
+start the server with<br>
+</font><br>
+
+<pre style="background-color: rgb(255, 255, 204);"><font style="font-family: helvetica,arial,sans-serif;" size="+1">
+SYS 49152[,IP-ADDRESS]
+</font></pre>
+
+<font style="font-family: helvetica,arial,sans-serif;" size="+1">
+
+NETSERV will report OK and wait for incoming ethernet packets if rr-net is present
+and initialized, else prompt a "device not present error". <br>
+The server can be quitted by hitting RUN/STOP on C64.<br>
+Netserv will start with IP Adress 192.168.0.64 by default but you may change this by typing an IP Address after the SYS Command seperated by COMMAS(!):
+
+<pre style="background-color: rgb(255, 255, 204);"><font style="font-family: helvetica,arial,sans-serif;" size="+1">
+SYS 49152,192,168,1,99
+</font></pre><font style="font-family: helvetica,arial,sans-serif;" size="+1">
+
+<br>
+When NETSERV is running, leave your C64 and start <span style="font-weight: bold;">NETMON</span> on the PC. 
+You will be in some kind of shell now resembling strongly to a standard machine languag monitor, just that any commands will be sent over to the C64, 
+executed there and a response will be send back which will be processed and displayed in the NETMON-Shell.
+<p>
+To make use of NETMON from within scripts, it is possible to avoid the shell and give a single command as parameter. See the Reference for details about this feature.</p>
+
+<small><span style="font-weight: bold;">NETMON allows full access to
+all
+C64-RAM (including REU!!) and devices
+on the serial bus (disk drives).</span></small><br
+ style="font-weight: bold;">
+<p>
+<a href = pics/netmon.png><img src = "pics/netmon.png" height = 400></img></a>
+</p>
+<br>
+</font>
+
+<h3
+ style="font-family: helvetica,arial,sans-serif; background-color: rgb(255, 204, 102); text-align: center;"><font
+ size="+1">DOWNLOAD NETMON<br>
+</font></h3>
+
+
+<font style="font-family: helvetica,arial,sans-serif;" size="+1">
+<p>current release is v0.3	</p>
+<a href="files/netmon-v0.3.zip">netmon-v0.3.zip</a><br>
+<br style="font-family: helvetica,arial,sans-serif;">
+<font style="font-family: helvetica,arial,sans-serif;" size="+1">
+<p>The ZIP contains everything you'll need including all sources and the Windows Executable.
+</font>
+
+<h3 style="background-color: rgb(255, 204, 102); text-align: center;"><font
+ style="font-family: helvetica,arial,sans-serif;" size="+1"><span
+ style="font-weight: bold;"><span style="font-weight: bold;">QUICK
+REFERENCE</span></span><span
+ style="font-weight: bold; font-style: italic;"><br>
+</span></font></h3>
+<font style="font-family: helvetica,arial,sans-serif;" size="+1">
+</font><font style="font-family: helvetica,arial,sans-serif;" size="+1">
+To start the netmon shell, simply type <pre>netmon</pre> at a command line prompt.<br>
+The default C64 IP is 192.168.0.64.
+<p>
+<pre>
+netmon [options] [direct command]
+-ip addr		set ip address
+-v			print version
+-h --help		this help
+</pre>
+</p>
+<p>
+Netmon will start in the SHELL-MODE by default. However it is possible to invoke Netmon just for one single command passed as parameter and bypass the shell-mode. Netmon will interpret any string from the command line that is not an option as a single command line.
+<p>
+All numeric input and output is in HEX only, except with the '#'-command (device numbers are decimals)!!<br>
+All parameters are seperated by spaces. To allow spaces within one (string) parameter, set it into quotation marks.<br>
+Also use quotation marks to specify string parameters<br>
+<p>
+<b>Attention:</b> Most likely your local shell will interpret the quotation marks if given at the command line promt, so try masking them if giving commands as parameter so that Netmon will recognize them correctly - in Linux/UNIX bash you would need to preceed each quotation mark by a backslash to do so. Don't ask me how to do that under Windows, coz I don't know....
+</p>
+</span></font><font
+ style="font-family: helvetica,arial,sans-serif;" size="+1"><span
+ style="font-style: italic;">
+</span>
+</font>
+
+<h3
+ style="font-family: helvetica,arial,sans-serif; background-color: rgb(204, 153, 51); text-align: center;"><font
+ size="+1">MEMORY COMMANDS<br>
+</font></h3>
+
+<br>
+<font style="font-family: helvetica,arial,sans-serif;" size="+1"><span
+ style="font-weight: bold;"></span></font>
+<table style="width: 100%; font-family: helvetica,arial,sans-serif;"
+ border="0" cellpadding="0" cellspacing="0" frame="border">
+  <tbody>
+    <tr
+ style="font-family: helvetica,arial,sans-serif; font-weight: bold;">
+      <td style="background-color: rgb(255, 255, 255);">m</td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 204);">
+      <pre><font style="font-family: times new roman,times,serif;"
+ size="+1">m [addr [addr]]</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">will display
+the memory content of the specified memory area as
+well-known hex ASCII &amp; PetASCII dump<br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-weight: bold;">i</span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">i [addr [addr]]</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">display the
+specified memory area as PetASCII dump<br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-weight: bold;">d</span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">d [addr [addr]]</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">print a
+disassembly of the specified memory area to stdout.</td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-style: italic; font-weight: bold;">if no address range is
+given for m,i or d it will start at 0x0000 and
+continue where it stopped last time<br>
+      <br>
+      </span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-weight: bold;">ram</span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">ram [value]</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">set the type of
+memory access. If no value is given it will default to
+#$34. A value &gt;$80 will set REU access. REU memory is then accessed
+just by specifying 24-bit-addresses (e.g. $034567 will acces address
+$4567
+in bank 3).<br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-weight: bold;">rom</span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">shortcut for
+ram $37<br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-weight: bold;">reu</span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">shortcut for
+ram $ff<br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-weight: bold;">put</span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">put filename [addr]</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">sends the
+contents of filename to c64 memory at addr. if addr is not
+given, the first two bytes of the file are used as "load address", else
+the whole file, including the first two bytes is sent to the given
+memory location.<br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-weight: bold;">get</span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">get addr addr filename</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">get specified
+memroy area and save to filename.<br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-weight: bold;">poke</span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">poke addr "string" | val[val[val...]]]</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">write string or
+val-byte(s) to addr. (try poke 0400 "hello world!")</td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-weight: bold;">f</span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">f from to value</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">fill c64 memory
+with value in given range specified by from and to.<br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-weight: bold;">h</span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">h from to "string" | [val[val[val...]]]</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">searches for
+occurances of "string" or val,val,val ... in memory area specified by
+from and to.<br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);"><span
+ style="font-weight: bold;">c</span></td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">c from to with</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: rgb(255, 255, 255);">compares the
+memory segment starting at from up to to with the memory
+segment starting at with. prints any mismatches to stdout.</td>
+    </tr>
+  </tbody>
+</table>
+<font style="font-family: helvetica,arial,sans-serif;" size="+1"></font>
+<h3 style="font-family: helvetica,arial,sans-serif;"><br>
+</h3>
+<h3
+ style="font-family: helvetica,arial,sans-serif; background-color: rgb(204, 153, 51); text-align: center;"><font
+ size="+1">EXECUTION COMMANDS<br>
+</font></h3>
+<font style="font-family: helvetica,arial,sans-serif;" size="+1"><span
+ style="font-weight: bold;"></span></font><font
+ style="font-family: helvetica,arial,sans-serif;" size="+1"><br>
+</font>
+<table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><font style="font-family: helvetica,arial,sans-serif;"
+ size="+1"><span style="font-weight: bold;">g</span></font></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">g addr</font></pre>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>jump (goto) to the given address<br>
+      <br>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><span style="font-weight: bold;">call </span></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td style="background-color: rgb(255, 255, 204);">
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">call addr [areg[xreg[yreg[sreg]]]]<br></font></pre>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>call a subroutine - performs a JSR to addr with the registers
+set to areg,xreg,yreg and sreg
+(status-register) before calling. registers not specified are set to
+zero.<br>
+If the called routine returns and NETSERV is still alive, it will report the register values upon re-entry.
+      <br>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><span style="font-weight: bold;">basic</span></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>exit server to BASIC.<br>
+      <br>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><span style="font-weight: bold;">run</span></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>perform BASIC "RUN".<br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<font style="font-family: helvetica,arial,sans-serif;" size="+1"></font>
+<h3
+ style="font-family: helvetica,arial,sans-serif; background-color: rgb(204, 153, 51); text-align: center;"><font
+ size="+1">DISK ACCESS<br>
+</font></h3>
+<font style="font-family: helvetica,arial,sans-serif;" size="+1"><span
+ style="font-weight: bold;"></span></font><br>
+<table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><font style="font-family: helvetica,arial,sans-serif;"
+ size="+1"><span style="font-weight: bold;">$</span></font></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">$[pattern]</font></pre>
+      </td>
+    </tr>
+
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>show directory of current device. Use any pattern that your drive supports, e.g. $*=SEQ<br>
+      <br>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><span style="font-weight: bold;">#</span></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">#[value]</font></pre>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><font style="font-family: helvetica,arial,sans-serif;"
+ size="+1">set/ tell current
+device</font><font style="font-family: helvetica,arial,sans-serif;"
+ size="+1">. if no value is specified, it will display the current
+device, else the
+device is set to value.<br>
+      <br>
+      </font></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><span style="font-weight: bold;">@</span></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">@[string]</font></pre>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>will send any chars following the '@' to command channel and
+read it
+afterwards. Be aware that there is NO SPACE between @ and string and
+that in this exceptional case, no '#' is needed to specify a string
+parameter!<br>
+      <br>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><span style="font-weight: bold;">read</span></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">read localfile [remotefile]</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td><font style="font-family: helvetica,arial,sans-serif;"
+ size="+1">read a
+file from disk to local filesystem</font><font
+ style="font-family: helvetica,arial,sans-serif;" size="+1"> - reads
+localfile from disk and saves it to remotefile in the local
+filesystem. if remotefile is not specified it will default to the same
+name as localfile.<br>
+      <br>
+      </font></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><span style="font-weight: bold;">write</span></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">write localfile [remotefile]</font></pre>
+      </td>
+    </tr>
+    <tr>
+      <td><font style="font-family: helvetica,arial,sans-serif;"
+ size="+1">write a file
+from the local filesystem to disk</font><font
+ style="font-family: helvetica,arial,sans-serif;" size="+1"> -<span
+ style="font-weight: bold;"> </span>reads localfile from local
+filesystem disk and saves it to remotefile on disk. if remotefile is
+not specified it will default to the same
+name as localfile.<br>
+      <br>
+      </font></td>
+    </tr>
+  </tbody>
+</table>
+<h3
+ style="font-family: helvetica,arial,sans-serif; background-color: rgb(204, 153, 51); text-align: center;"><font
+ size="+1">MISC COMMANDS<br>
+</font></h3>
+<font style="font-family: helvetica,arial,sans-serif;" size="+1"><span
+ style="font-weight: bold;"></span></font><br>
+<table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><font style="font-family: helvetica,arial,sans-serif;"
+ size="+1"><span style="font-weight: bold;">status</span></font></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>displays some info
+about server status.</td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><span style="font-weight: bold;"></span><br>
+      </td>
+    </tr>
+    <tr
+ style="font-weight: bold; font-family: helvetica,arial,sans-serif;">
+      <td>quit, x</td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>exit netmon.</td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><span style="font-weight: bold;"></span><br>
+      </td>
+    </tr>
+    <tr
+ style="font-weight: bold; font-family: helvetica,arial,sans-serif;">
+      <td style="background-color: rgb(255, 255, 255);">help, ?</td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">help | ? [command]</font></pre>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>display help; you may specify a specific command to get help
+only for this command.</td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><br>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td><span style="font-weight: bold;">cmd</span></td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>
+      <pre style="background-color: rgb(255, 255, 204);"><font
+ style="font-family: times new roman,times,serif;" size="+1">cmd string [parameter [parameter... ]]</font></pre>
+      </td>
+    </tr>
+    <tr style="font-family: helvetica,arial,sans-serif;">
+      <td>send all following parameters to the local system's shell,
+e.g. try cmd
+ls -l to send the ls command with parameter -l to your linux shell.</td>
+    </tr>
+  </tbody>
+</table>
+<h3
+ style="font-family: helvetica,arial,sans-serif; background-color: rgb(255, 204, 102); text-align: center;"><font
+ size="+1">HISTORY</font></h3>
+<span style="font-family: helvetica,arial,sans-serif;">
+05.03.2007: some more changes and bugfixes. version is v0.3 now. Some changes in parameter handling! Netserv now allows custom IP-Addresses. Start Address for Netserv changed to 49152!<br>
+02.03.2007: Did some more changes here and there, added "direct-command"-feature.<br>
+01.03.2007: added another Win32 port. Some minor changes. Rewrote Netserv in CA65. Version is 0.2 now.<br>
+19.19.2006: removed Win32 port since it seemed not to work and added the Win32 port of Ian Coog.<br>
+18.10.2006: added Win32 port of Netmon<br>
+17.10.2006: initial release v0.1<br>
+</span>
+<br>
+<h3
+ style="font-family: helvetica,arial,sans-serif; background-color: rgb(255, 204, 102); text-align: center;">CONTACT</h3>
+feel free to email me some feedback of whatever kind: <a
+ href="mailto:hannenz@freenet.de">hannenz@freenet.de</a><br
+ style="font-family: helvetica,arial,sans-serif;">
+<h3
+ style="font-family: helvetica,arial,sans-serif; background-color: rgb(255, 204, 102); text-align: center;">LICENSE</h3>
+<p style="font-family: helvetica,arial,sans-serif;"> Copyright &copy;
+2006, Per Olofsson<br>
+All rights reserved. </p>
+<p style="font-family: helvetica,arial,sans-serif;">
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+</p>
+<ul style="font-family: helvetica,arial,sans-serif;">
+  <li> Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer. </li>
+  <li> Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution. </li>
+</ul>
+<p style="font-family: helvetica,arial,sans-serif;" class="legalese">
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</p>
+<br style="font-family: helvetica,arial,sans-serif;">
+<font style="font-family: helvetica,arial,sans-serif;" size="+1"><br>
+<span style="font-weight: bold;"></span></font>
+</body>
+</html>

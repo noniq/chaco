@@ -1,0 +1,42 @@
+This document only deals on compiling/ assembling the sources in this package. for a more general description on NETMON please visit
+
+http://people.freenet.de/hannenz/netmon.html
+
+There are precompiled binaries for all tools in the package so if you don't intend to re-build one of them (for whatever reason) this document is not for you.
+
+
+ASSEMBLING NETSERV
+
+There is a preassembled binary of NETSERV included in this package. It is assembled to $c800-$cfff.
+If you want to assemble Netserv yourself you'll need the ca65 assembler, which comes with the cc65-suite. visit http://www.cc65.org for more info. ca65 is available for Windows and Linux.
+
+To assemble invoke ca65 with something like this (you might want to use cl65 to assemble & link in one run):
+
+cl65 -o netserv -t c64 netserv.s -t none --start-addres 0xc7fe
+
+adjust to your desired start address minus 2 (!!) / so the example will assemble to $c800.
+
+or simply type
+
+make netserv
+
+
+5. COMPILING NETMON
+
+NETMON is written in plain C, so any C-Compiler should work, i used GCC under Linux and mingw32 for cross-compiling for Windows (under Linux)
+Compiling under Linux for Linux works out of the box, type:
+
+make netmon
+
+that's it.
+
+Libraries:
+
+To compile fpr Linux you will need teh libreadline library. consult your favorite internet search engine.
+
+To compile for Windows you'll have to include the winsock library. Look up your compiler's documentation on where to find this lib and how it is called exactly since this differs from one compiler to the other. I compiled under Linux with mingw32 and used this command line:
+
+i586-mingw32msvc-gcc -o netmon.exe netmon.c /usr/i586-mingw32msvc/lib/libwsock32.a
+
+If you compile on Windows please don't ask me anything, you'll have to find out yourself...
+
