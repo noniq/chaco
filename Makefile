@@ -1,9 +1,9 @@
 
 include Makefile.config
 
-.PHONY: all chacolib updater chacocmd chcodenet chshot chusb chtransfer wxchaco
+.PHONY: all chacolib updater chacocmd chcodenet chshot chusb chmon chtransfer wxchaco
 
-all: chacolib chacocmd updater chcodenet chshot chusb chtransfer wxchaco
+all: chacolib chacocmd updater chcodenet chshot chusb chmon chtransfer wxchaco
 
 chacolib:
 	$(MAKE) -C chacolib all
@@ -23,6 +23,9 @@ chshot:
 chusb:
 	$(MAKE) -C chusb all
 
+chmon:
+	$(MAKE) -C chmon all
+
 chtransfer:
 	$(MAKE) -C chtransfer all
 
@@ -36,6 +39,7 @@ clean:
 	$(MAKE) -C chcodenet clean
 	$(MAKE) -C chshot clean
 	$(MAKE) -C chusb clean
+	$(MAKE) -C chmon clean
 	$(MAKE) -C chtransfer clean
 	$(MAKE) -C wxchaco clean
 
