@@ -496,8 +496,8 @@ void read_file(void){
 		memcpy(&sendbuffer[2],remotefile,fnlen);
 		send(fd,sendbuffer,fnlen+2,0);
 		do{
-//			len = recv(fd,filebuffer,sizeof(filebuffer),0);
-                        len = recv(fd, filebuffer, len,0);
+			len = recv(fd,filebuffer,sizeof(filebuffer),0);
+//            len = recv(fd, filebuffer, len,0);
 			if (len)
 				fwrite (filebuffer,1,len,f);
 		}while(len == 128);

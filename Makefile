@@ -1,4 +1,6 @@
 
+.SILENT:
+
 include Makefile.config
 
 .PHONY: all chacolib updater chacocmd chcodenet chshot chusb chmon chtransfer wxchaco

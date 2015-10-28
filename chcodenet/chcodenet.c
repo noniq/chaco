@@ -25,6 +25,8 @@
 #define LOGMSG(...)       logfunc (LOGLVL_MSG, __VA_ARGS__ )
 #define DBG(...)          logfunc (LOGLVL_DBG, __VA_ARGS__ )
 
+int cleanup(int n);
+
 int verbose = 0;
 #define C64_RAM_SIZE    0x10000
 unsigned char *buffer = NULL;
