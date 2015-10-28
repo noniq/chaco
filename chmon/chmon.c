@@ -22,6 +22,7 @@
 #include <string.h>
 #include <errno.h>
 #include <time.h>
+#include <ctype.h>
 
 #ifdef _WIN32
 //#include <winsock.h>
@@ -1231,7 +1232,10 @@ unsigned char buffer[C64_RAM_SIZE];
 int main (int argc, char ** argv) {
 	unsigned int n,direct_flag = 0,len,addr;
         int i;
+#ifdef LINUX
+    /* for readline */
 	char *cline = NULL;
+#endif
         char *name;
 
 	/* set default values */
@@ -1297,7 +1301,7 @@ int main (int argc, char ** argv) {
 #ifndef LINUX
 			printf("\n%s",prompt);
 			fgets(string,sizeof(string),stdin);
-			for (i=0;i< strlen(string);++i){
+			for (i=0;i< (int)strlen(string);++i){
 				if (string[i] == '\n'){
 					string[i] = '\0';
 					break;

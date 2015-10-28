@@ -79,6 +79,11 @@ obsolete (remove from firmware):
 #define SIZEOF_USBHIDDATAFRAME (NUM_DATA_BYTES + 2)
 
 /* grr.. this doesnt work correctly with neither mingw32 nor linux native */
+#if 0
+#define APACKED  __attribute__((__packed__))
+#else
+#define APACKED
+#endif
 //#pragma GCC diagnostic push
 //#pragma GCC diagnostic ignored "-Wattributes"
 typedef struct
@@ -86,7 +91,7 @@ typedef struct
     unsigned char Destination;
     unsigned char Control;
     unsigned char Data[NUM_DATA_BYTES];
-} USBHIDDataFrame  __attribute__((__packed__));
+} USBHIDDataFrame APACKED;
 //#pragma GCC diagnostic warning "-Wattributes"
 //#pragma GCC diagnostic pop
 
