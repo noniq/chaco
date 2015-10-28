@@ -34,15 +34,13 @@ top_dir := $(here)
 # don't delete intermediate files
 #.SECONDARY:
 
-.SILENT:
+#.SILENT:
 
 .PHONY: world
 world: all
 
 CFLAGS+=-I../../chacolib
 CXXFLAGS+=-I../../chacolib
-
-prj_name      := chtransfer
 
 cxxflags       = $(CXXFLAGS)
 cflags         = $(CFLAGS)
@@ -62,6 +60,9 @@ endif
 ##    outbase       := $(BUILDDIR)
 #    outbase       := obj
 #    icon_resize   := -resize 32x32
+
+app_name      := ChTransfer$(EXE)
+ef3xfer_name  := chxfer$(EXE)
 
 cxx           := c++
 cc            := gcc
@@ -180,15 +181,15 @@ headers := $(wildcard $(srcdir)/*.h) $(xpm)
 
 .PHONY: all
 
-all: $(outdir)/$(app_name) $(outdir)/$(ef3xfer_name) \
-	$(outres) $(outdoc) $(dll) $(src_archives)
+all: $(outdir)/$(ef3xfer_name) $(outdir)/$(app_name)
+#$(outres) $(outdoc) $(dll) $(src_archives)
 
 $(outdir)/$(app_name): $(obj) | $(outdir) pre_deps
 	$(cxx) $(ldflags) $(obj) -o $@ $(cxxlibs)
 
 # quick and dirty: command line tool
-.PHONY: ef3xfer
-ef3xfer: $(outdir)/$(ef3xfer_name)
+.PHONY: chxfer
+chxfer: $(outdir)/$(ef3xfer_name)
 $(outdir)/$(ef3xfer_name): $(ef3xfer_obj) | $(outdir) pre_deps
 	$(cc) $(ldflags) $(cflags) -o $@ $(ef3xfer_obj) $(clibs)
 
@@ -211,7 +212,7 @@ $(objdir)/%.c: $(srcdir)/%.prg | $(objdir) pre_deps
 $(objdir)/%.res.o: $(srcdir)/%.rc | $(objdir) pre_deps
 	$(windres) -I $(objdir) $< $@
 
-ifeq ($(TARGET),win)
+ifneq ($(TARGET),linux)
 # n/a
 $(objdir)/%.xpm: $(srcdir)/../res/%.xpm | $(objdir) pre_deps
 	echo cp $< $@
@@ -219,7 +220,7 @@ $(objdir)/%.xpm: $(srcdir)/../res/%.xpm | $(objdir) pre_deps
 endif
 
 # generate xpm
-ifneq ($(TARGET),win)
+ifeq ($(TARGET),linux)
 $(objdir)/%.xpm: $(srcdir)/../res/%.png | $(objdir) pre_deps
 	convert $(icon_resize) $< $@.tmp.xpm
 	cat $@.tmp.xpm | sed "\
@@ -241,13 +242,13 @@ $(srcdir)/usbtest/usbtest.prg: always
 $(objdir)/EasyTransfer.res.o: $(objdir)/easytransfer.ico
 
 # copy .ico
-ifeq ($(TARGET),win)
+ifneq ($(TARGET),linux)
 $(objdir)/%.ico: $(srcdir)/../res/%.ico | $(objdir) pre_deps
 	cp $< $@
 endif
 
 # generate .ico
-ifneq ($(TARGET),win)
+ifeq ($(TARGET),linux)
 $(objdir)/%.ico: $(srcdir)/../res/%.png | $(objdir) pre_deps
 	convert $< $@
 endif
