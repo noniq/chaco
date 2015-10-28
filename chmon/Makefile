@@ -6,7 +6,9 @@ BUILDDIR=../build-$(TARGET)
 
 CFLAGS+=-I../chacolib
 
+ifeq ($(TARGET),linux)
 CLIBS+=/usr/lib/libreadline.so
+endif
 
 all:	$(BUILDDIR)/chmon.prg $(BUILDDIR)/chmon$(EXE)
 

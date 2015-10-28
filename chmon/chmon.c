@@ -30,8 +30,10 @@
 #else
 #include <sys/types.h>
 #include <unistd.h>
+#ifdef LINUX
 #include <readline/readline.h>
 #include <readline/history.h>
+#endif
 extern int h_errno;
 
 #endif
@@ -1292,7 +1294,7 @@ int main (int argc, char ** argv) {
 	do{
 
 		if (!direct_flag){
-#ifdef _WIN32
+#ifndef LINUX
 			printf("\n%s",prompt);
 			fgets(string,sizeof(string),stdin);
 			for (i=0;i< strlen(string);++i){
