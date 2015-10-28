@@ -34,7 +34,7 @@ top_dir := $(here)
 # don't delete intermediate files
 #.SECONDARY:
 
-#.SILENT:
+.SILENT:
 
 .PHONY: world
 world: all
