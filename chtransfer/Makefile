@@ -1,7 +1,7 @@
 
 all: EasyTransfer
 
-.SILENT:
+#.SILENT:
 
 .PHONY: EasyTransfer
 
