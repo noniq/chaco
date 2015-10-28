@@ -1,11 +1,18 @@
 
-.SILENT:
+#.SILENT:
 
 include Makefile.config
 
-.PHONY: all chacolib updater chacocmd chcodenet chshot chusb chmon chtransfer wxchaco
+CMDTOOLS=chacolib updater chacocmd chcodenet chshot chusb chmon chxfer
+WXTOOLS=ChTransfer Chaco
+ALLTOOLS=$(CMDTOOLS)
+ifneq ($(TARGET),osx)
+ALLTOOLS+=$(WXTOOLS)
+endif
 
-all: chacolib chacocmd updater chcodenet chshot chusb chmon chtransfer wxchaco
+.PHONY: all zip $(ALLTOOLS)
+
+all: $(ALLTOOLS) zip
 
 chacolib:
 	$(MAKE) -C chacolib all
@@ -28,11 +35,37 @@ chusb:
 chmon:
 	$(MAKE) -C chmon all
 
-chtransfer:
+chxfer:
+	$(MAKE) -C chtransfer chxfer
+
+ifneq ($(TARGET),osx)
+ChTransfer:
 	$(MAKE) -C chtransfer all
 
-wxchaco:
+Chaco:
 	$(MAKE) -C wxchaco all
+endif
+
+zip: $(ALLTOOLS)
+	zip -q chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip \
+		license.txt \
+		readme.txt
+	cd ./build-$(TARGET); zip -q ../chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip \
+		chacocmd$(EXE) \
+		updater$(EXE) \
+		chcodenet$(EXE) \
+		chshot$(EXE) \
+		chusb$(EXE) \
+		chusb.prg \
+		chmon$(EXE) \
+		chmon.prg
+
+ifneq ($(TARGET),osx)
+	cd ./build-$(TARGET); zip -q ../chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip \
+		ChTransfer$(EXE) \
+		Chaco$(EXE)
+endif
+	cp chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip chameleon-tools-$(TARGET).zip
 
 clean:
 	$(MAKE) -C chacolib clean
