@@ -85,7 +85,8 @@ zip: $(ALLTOOLS)
 		-x chtransfer/libs/eload/obj \
 		-x chtransfer/libs/libef3usb/libef3usb.lib \
 		-x chtransfer/libs/libef3usb/obj/* \
-		-x chtransfer/libs/libef3usb/obj
+		-x chtransfer/libs/libef3usb/obj \
+		-x .DS_Store
 
 
 	zip -q chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip \
