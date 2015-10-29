@@ -690,7 +690,7 @@ prhex:
 ;.rodata
 ;---------------------------------------
 .rodata
-mssg:		.byte $93,"chserv v0.3",13,0
+mssg:		.byte $93,"chmon v0.3",13,0
 dollar:		.byte '$'
 cmdtab:	
 		.addr initialize-1

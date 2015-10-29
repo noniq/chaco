@@ -203,9 +203,9 @@ const char helptext[COMMANDS][400] = {
         "?\n"
         " show some help: you may get help for a specific command by typing ? command\n",
         "quit\n"
-        " quit the netmon shell\n",
+        " quit the chmon shell\n",
         "x\n"
-        " quit the netmon shell\n",
+        " quit the chmon shell\n",
         "status\n"
         " get server status\n",
         "init\n"
@@ -218,8 +218,10 @@ const char helptext[COMMANDS][400] = {
 
 const char usage[]      =
         "chmon\n\n"
-        "-s --send [name]     send server program (chmon.prg)\n"
-        "-c --command [cmd]   direct command, type netmon -c help for a full list of available commands or netmon -c help name for usage of the given command\n"
+        "-s --send            send server program (chmon.prg)\n"
+        "-c --command [cmd]   direct command, type chmon -c help for a full list of\n"
+        "                     available commands or chmon -c help name for usage of the\n"
+        "                     given command\n"
         "-v --version         print version number\n"
         "-h --help            this help message\n";
 
@@ -1236,18 +1238,10 @@ int main (int argc, char ** argv) {
     /* for readline */
 	char *cline = NULL;
 #endif
-        char *name;
+        char *name = NULL, *fname;
 
 	/* set default values */
 	old_cmd = 0;
-
-    chameleon_setlogfunc(logfunc);
-
-    if (chameleon_init() < 0) {
-        LOGERR("initialization failed.\n");
-        exit(-1);
-    }
-
 
 	/* parse command line for options (-ip, -p)*/
 	for (i=1;i<argc;++i){
@@ -1269,30 +1263,45 @@ int main (int argc, char ** argv) {
 			direct_flag = 1;
 			break;
                 } else if (!strcmp (argv[i] ,"--send") || !strcmp("-s", argv[i])) {
-                    FILE *f;
-                    /* write .prg file to memory and SYS to its start addr */
-                    i++;
-                    name = argv[i];
-                    if ((f = fopen(name, "rb")) == NULL) {
-                        LOGERR("error opening: '%s'\n", name);
-                        exit(cleanup(-1));
-                    }
-                    addr = fgetc(f);
-                    addr += ((int)fgetc(f) << 8);
-
-                    len = fread(buffer, 1, C64_RAM_SIZE - addr, f);
-                    fclose(f);
-                    printf("sending '%s' ($%04x bytes to $%04x.)...\n", name, len, addr);
-                    if (chameleon_writememory(buffer, len, addr) < 0) {
-                        LOGERR("error writing to chameleon memory.\n");
-                        exit(cleanup(-1));
-                    }
-                    execute_sys(addr);
+                    name = "chmon.prg";
                 } else {
 			printf("invalid option: %s\ntry %s -h\n",argv[i],argv[0]);
 			exit(1);
 		}
 	}
+
+        chameleon_setlogfunc(logfunc);
+
+        if (chameleon_init() < 0) {
+            LOGERR("initialization failed.\n");
+            exit(-1);
+        }
+
+	if (name) {
+            FILE *f;
+            /* write .prg file to memory and SYS to its start addr */
+            if ((f = fopen(name, "rb")) == NULL) {
+                fname = malloc(5 + strlen(argv[0]));
+                sprintf(fname, "%s.prg", argv[0]);
+                f = fopen(fname, "rb");
+                free(fname);
+                if (f == NULL) {
+                    LOGERR("error opening: '%s'\n", name);
+                    exit(cleanup(-1));
+                }
+            }
+            addr = fgetc(f);
+            addr += ((int)fgetc(f) << 8);
+
+            len = fread(buffer, 1, C64_RAM_SIZE - addr, f);
+            fclose(f);
+            printf("sending '%s' ($%04x bytes to $%04x.)...\n", name, len, addr);
+            if (chameleon_writememory(buffer, len, addr) < 0) {
+                LOGERR("error writing to chameleon memory.\n");
+                exit(cleanup(-1));
+            }
+            execute_sys(addr);
+        }
 
 	//command interpreter loop
 	do{

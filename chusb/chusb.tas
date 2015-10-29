@@ -1628,7 +1628,7 @@ menustart       = 0
 clrscr          .byte $05,147,0
 title           .text $05, "turbo chameleon 64",0
 titlend
-title2          .text $99, "usb utilities v1.8",0
+title2          .text $99, "usb utilities 1.8c",0
 title2end
 title3          .text $9e, "server running. run chusb.exe on pc",0
 title3end

@@ -39,7 +39,10 @@ drive_code_1541_read_start      = *
 ; X/A = T/S
 drv_readsector:
         ldy #$80                ; read sector job code
-        jsr set_job_ts_backup
+        ;jsr set_job_ts_backup
+        stx job_track_backup
+        sta job_sector_backup
+        sty job_code_backup
 
         ldy #retries            ; retry counter
 @retry:
