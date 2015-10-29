@@ -50,6 +50,8 @@ zip: $(ALLTOOLS)
 	rm -f chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip
 	rm -f chameleon-tools-$(TARGET).zip
 
+ifeq ($(TARGET),linux)
+
 	rm -f chameleon-tools-source-`date +"%Y%m%d"`.zip
 	rm -f chameleon-tools-source.zip
 
@@ -88,6 +90,9 @@ zip: $(ALLTOOLS)
 		-x chtransfer/libs/libef3usb/obj \
 		-x .DS_Store
 
+	cp chameleon-tools-source-`date +"%Y%m%d"`.zip chameleon-tools-source.zip
+endif
+
 
 	zip -q chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip \
 		license.txt \
@@ -121,7 +126,7 @@ ifneq ($(TARGET),osx)
 		doc/readme-chtransfer.txt
 endif
 	cp chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip chameleon-tools-$(TARGET).zip
-	cp chameleon-tools-source-`date +"%Y%m%d"`.zip chameleon-tools-source.zip
+
 
 clean:
 	$(MAKE) -C chacolib clean
