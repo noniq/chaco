@@ -122,7 +122,7 @@ void ChFrm::CreateGUIControls()
     WxStaticText4->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxNORMAL, false));
 
     WxSpinCtrl1   = new wxSpinCtrl(this, ID_WXSPINCTRL1,     wxT("0"),      wxPoint(15, 55), wxSize(45, 25),wxSP_ARROW_KEYS | wxSP_WRAP, 0, 15, 0);
-    WxStaticText2 = new wxStaticText(this, ID_WXSTATICTEXT2, wxT("Selected slot"), wxPoint(70, 55+2), wxDefaultSize, 0, wxT("WxStaticText2"));
+    WxStaticText2 = new wxStaticText(this, ID_WXSTATICTEXT2, wxT("Selected slot (A)"), wxPoint(70, 55+2), wxDefaultSize, 0, wxT("WxStaticText2"));
 
     WxButton2 = new wxButton(this, ID_WXBUTTON2, wxT("Flash .rbf/ROM"), wxPoint(15, 85),  wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton2"));
     writeSlot = new wxButton(this, ID_WRITESLOT, wxT("Write Slot"),     wxPoint(15, 125), wxSize(105, 35), 0, wxDefaultValidator, wxT("writeSlot"));
@@ -434,12 +434,15 @@ void ChFrm::WxButton1Click(wxCommandEvent& event)
 void ChFrm::WxSpinCtrl1Click(wxSpinEvent& event)
 {
     int corenum = WxSpinCtrl1->GetValue();
+    char label[0x20];
     DBG("set flash slot: %d\n", corenum);
     if (corenum == 0) {
         WxCheckBox1->SetValue(1);
     } else {
         WxCheckBox1->SetValue(flash_additional_roms);
     }
+    sprintf(label, "Selected slot (%c)", corenum + 'A');
+    WxStaticText2->SetLabel(label);
 }
 
 void ChFrm::WxCheckBox1Click(wxCommandEvent& event)
