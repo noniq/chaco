@@ -103,7 +103,7 @@ ChFrm::~ChFrm()
 void ChFrm::CreateGUIControls()
 {
     char name[0x40];
-    sprintf(name, "Chaco (beta %s)", __DATE__);
+    sprintf(name, "Chaco (built %s)", __DATE__);
     SetTitle(wxString::FromAscii(name));
     SetIcon(wxNullIcon);
 #ifdef LINUX
