@@ -161,7 +161,7 @@ void ChFrm::CreateGUIControls()
     WxEdit5 = new wxTextCtrl(this, ID_WXEDIT5, wxT(""), wxPoint(COL_DEBUG+5, 154), wxSize(121, 19), wxTE_READONLY, wxDefaultValidator, wxT("WxEdit5"));
 
     WxSpinCtrl2 = new wxSpinCtrl(this, ID_WXSPINCTRL2, wxT("0"), wxPoint(COL_DEBUG+5, 185), wxSize(45, 25), wxSP_ARROW_KEYS, 0, 15, 0);
-    WxStaticText3 = new wxStaticText(this, ID_WXSTATICTEXT3, wxT("Select JTAG slot"), wxPoint(COL_DEBUG+55, 185+2), wxDefaultSize, 0, wxT("WxStaticText3"));
+    WxStaticText3 = new wxStaticText(this, ID_WXSTATICTEXT3, wxT("Select JTAG slot (A)"), wxPoint(COL_DEBUG+55, 185+2), wxDefaultSize, 0, wxT("WxStaticText3"));
 
     ////GUI Items Creation End
 
@@ -468,6 +468,7 @@ void ChFrm::WxEdit1Updated(wxCommandEvent& event)
  */
 void ChFrm::setjtagslotClick(wxSpinEvent& event)
 {
+    char label[0x20];
     //int slot = WxSpinCtrl2->GetValue();
     int slot = event.GetPosition();
     if(slot < 0 || slot >= 16)return;
@@ -475,6 +476,8 @@ void ChFrm::setjtagslotClick(wxSpinEvent& event)
     if(setJTAGSlot(slot) == -1) {
         /* */
     }
+    sprintf(label, "Select JTAG slot (%c)", slot + 'A');
+    WxStaticText3->SetLabel(label);
 }
 
 /*
