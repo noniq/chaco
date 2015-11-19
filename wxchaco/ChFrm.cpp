@@ -488,6 +488,18 @@ void ChFrm::WxButton2Click(wxCommandEvent& event)
     int rc;
     wxFileDialog *OpenRomFileDialog = NULL;
     wxFileDialog *OpenCoreFileDialog = NULL;
+    bool flashRom = WxCheckBox1->GetValue();
+    int corenum = WxSpinCtrl1->GetValue();
+
+    if ((corenum == 0) && (flashRom == 0)) {
+        if (wxCANCEL == wxMessageBox( wxT("You are about to write to the first core slot, which is reserved for"
+            " the Turbo Chameleon 64 core. This core requires an additional ROM file, omitting this "
+            " file will result in an invalid core and the Chameleon will be unable to start, requiring "
+            " another core update.\n\nOnly proceed if you know what you are doing!"
+        ), wxT("WARNING"), wxICON_INFORMATION | wxCANCEL | wxOK)) {
+            return;
+        }
+    }
 
     setGauge(0);
     core_flash_info_t * cfi = new core_flash_info_t(); // FIXME: memory leak!
@@ -502,7 +514,6 @@ void ChFrm::WxButton2Click(wxCommandEvent& event)
     cfi->coreName = new std::string(); // FIXME: memory leak!
     (*cfi->coreName) =  toStdString(OpenCoreFileDialog->GetPath());
 
-    bool flashRom = WxCheckBox1->GetValue();
     if(flashRom)
     {
         OpenRomFileDialog =  new wxFileDialog(this, wxT("Choose ROM file"), wxT(""), wxT(""), wxT("Binary files (*.bin)|*.bin|all files (*.*)|*.*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
