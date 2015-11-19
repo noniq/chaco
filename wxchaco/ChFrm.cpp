@@ -45,6 +45,8 @@
 ////Header Include Start
 ////Header Include End
 
+int flash_additional_roms = 0;
+
 //----------------------------------------------------------------------------
 // ChFrm
 //----------------------------------------------------------------------------
@@ -77,6 +79,8 @@ BEGIN_EVENT_TABLE(ChFrm,wxFrame)
 //	EVT_BUTTON(ID_WXBUTTON5,ChFrm::WxButton5Click)
 	EVT_BUTTON(ID_WXBUTTON2,ChFrm::WxButton2Click)
 	EVT_BUTTON(ID_WXBUTTON1,ChFrm::WxButton1Click)
+
+        EVT_CHECKBOX(ID_WXCHECKBOX1,ChFrm::WxCheckBox1Click)
 END_EVENT_TABLE()
 ////Event Table End
 
@@ -180,6 +184,7 @@ void ChFrm::CreateGUIControls()
     WxTimer1->SetOwner(this, ID_WXTIMER1);
     WxTimer1->Start(GUI_TIMER_BASE, wxTIMER_CONTINUOUS);
 
+    WxCheckBox1->SetValue(1);
 }
 
 void ChFrm::setButtonStates(bool state)
@@ -430,6 +435,21 @@ void ChFrm::WxSpinCtrl1Click(wxSpinEvent& event)
 {
     int corenum = WxSpinCtrl1->GetValue();
     DBG("set flash slot: %d\n", corenum);
+    if (corenum == 0) {
+        WxCheckBox1->SetValue(1);
+    } else {
+        WxCheckBox1->SetValue(flash_additional_roms);
+    }
+}
+
+void ChFrm::WxCheckBox1Click(wxCommandEvent& event)
+{
+    int flashrom = WxCheckBox1->GetValue();
+    int corenum = WxSpinCtrl1->GetValue();
+    DBG("flash additional ROM: %d\n", flashrom);
+    if (corenum != 0) {
+        flash_additional_roms = flashrom;
+    }
 }
 
 /*

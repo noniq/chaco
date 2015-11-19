@@ -80,7 +80,8 @@ class ChFrm : public wxFrame , public dbgOut
 		void readImgButtonClick(wxCommandEvent& event);
 		void writeSlotClick(wxCommandEvent& event);
 		void readSlotClick(wxCommandEvent& event);
-		
+                void WxCheckBox1Click(wxCommandEvent& event);
+
 		void setButtonStates(bool state);
                 void StartBootloaderClick(wxCommandEvent& event);
 	private:
