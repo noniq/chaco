@@ -1,10 +1,10 @@
 
-.SILENT:
+#.SILENT:
 
 include Makefile.config
 
 CMDTOOLS=chacolib updater chacocmd chcodenet chshot chusb chmon chxfer
-WXTOOLS=ChTransfer Chaco
+WXTOOLS=ChTransfer Chaco wxupdater
 ALLTOOLS=$(CMDTOOLS)
 ifneq ($(TARGET),osx)
 ALLTOOLS+=$(WXTOOLS)
@@ -44,6 +44,9 @@ ChTransfer:
 
 Chaco:
 	$(MAKE) -C wxchaco all
+
+wxupdater:
+	$(MAKE) -C wxupdater all
 endif
 
 zip: $(ALLTOOLS)
@@ -60,6 +63,7 @@ ifeq ($(TARGET),linux)
 		chacocmd \
 		updater \
 		wxchaco \
+		wxupdater \
 		chcodenet \
 		chmon \
 		chshot \
@@ -121,6 +125,7 @@ endif
 ifneq ($(TARGET),osx)
 	cd ./build-$(TARGET); zip -q ../chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip \
 		ChTransfer$(EXE) \
+		wxupdater$(EXE) \
 		Chaco$(EXE)
 	cd ./build-$(TARGET); zip -mq ../chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip \
 		doc/readme-chtransfer.txt
@@ -138,4 +143,5 @@ clean:
 	$(MAKE) -C chmon clean
 	$(MAKE) -C chtransfer clean
 	$(MAKE) -C wxchaco clean
+	$(MAKE) -C wxupdater clean
 
