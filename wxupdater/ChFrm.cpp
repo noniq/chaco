@@ -1,12 +1,5 @@
-///-----------------------------------------------------------------
-///
-/// @file      ChFrm.cpp
-/// @author    stefan
-/// Created:   26.07.2010 09:12:50
-/// @section   DESCRIPTION
-///            ChFrm class implementation
-///
-///------------------------------------------------------------------
+
+#define __COREVERSION__ "version not defined"
 
 #include "chacolib.h"
 #include "Chaco.h"
@@ -75,26 +68,20 @@ ChFrm::~ChFrm()
 void ChFrm::CreateGUIControls()
 {
     char name[0x40];
-    sprintf(name, "Chamelon Updater (built %s)", __DATE__);
+    sprintf(name, "Chamelon Updater - %s (built %s)", __COREVERSION__, __DATE__);
     SetTitle(wxString::FromAscii(name));
     SetIcon(wxNullIcon);
 #ifdef LINUX
-    SetSize(8,8,WINDOW_W,501);
+    SetSize(8,8,WINDOW_W,501 - 200);
 #else
-    SetSize(8,8,WINDOW_W + 5,501 + 25);
+    SetSize(8,8,WINDOW_W + 5,501 + 25 - 200);
 #endif
     Center();
 
-    WxButton2 = new wxButton(this, ID_WXBUTTON2, wxT("Flash .rbf/ROM"), wxPoint(15, 85),  wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton2"));
-    WxButton1 = new wxButton(this, ID_WXBUTTON1, wxT("Abort"),     wxPoint(15, 205), wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton1"));
+    WxButton2 = new wxButton(this, ID_WXBUTTON2, wxT("Update"), wxPoint(WINDOW_W - 220, 260),  wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton2"));
+    WxButton1 = new wxButton(this, ID_WXBUTTON1, wxT("Abort"),  wxPoint(WINDOW_W - 110, 260), wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton1"));
 
-    WxEdit3 = new wxTextCtrl(this, ID_WXEDIT3, wxT(""), wxPoint(COL_DEBUG+5, 102), wxSize(121, 19), wxTE_READONLY, wxDefaultValidator, wxT("WxEdit3"));
-    WxEdit4 = new wxTextCtrl(this, ID_WXEDIT4, wxT(""), wxPoint(COL_DEBUG+5, 128), wxSize(121, 19), wxTE_READONLY, wxDefaultValidator, wxT("WxEdit4"));
-    WxEdit5 = new wxTextCtrl(this, ID_WXEDIT5, wxT(""), wxPoint(COL_DEBUG+5, 154), wxSize(121, 19), wxTE_READONLY, wxDefaultValidator, wxT("WxEdit5"));
-
-    ////GUI Items Creation End
-
-    LogWindow = new wxTextCtrl(this,wxID_ANY,wxT(""), wxPoint(5, 245),wxSize(WINDOW_W - 11,230),wxTE_RICH2 | wxTE_MULTILINE | wxTE_READONLY );
+    LogWindow = new wxTextCtrl(this,wxID_ANY,wxT(""), wxPoint(5, 5),wxSize(WINDOW_W - 11,230),wxTE_RICH2 | wxTE_MULTILINE | wxTE_READONLY );
     wxFont *font = new wxFont(wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
     font->SetPointSize(11);
 #ifdef LINUX
@@ -103,7 +90,7 @@ void ChFrm::CreateGUIControls()
 #endif
     LogWindow->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE, *font));
 
-    WxGauge1 = new wxGauge(this, ID_WXGAUGE1, 100, wxPoint(5, 480), wxSize(WINDOW_W - 11, 18), wxGA_HORIZONTAL | wxGA_SMOOTH, wxDefaultValidator, wxT("WxGauge1"));
+    WxGauge1 = new wxGauge(this, ID_WXGAUGE1, 100, wxPoint(5, 240), wxSize(WINDOW_W - 11, 18), wxGA_HORIZONTAL | wxGA_SMOOTH, wxDefaultValidator, wxT("WxGauge1"));
     WxGauge1->SetRange(1000);
     WxGauge1->SetValue(0);
 
@@ -289,9 +276,6 @@ void ChFrm::GUIUpdate(wxTimerEvent& event)
     }
 
     if (found) {
-        WxEdit3->SetValue(isBricked() ? wxT("Core is invalid") : wxT("Core is valid"));
-        WxEdit4->SetValue(isUsbCap() ? wxT("Usb capable") : wxT("Not Usb capable"));
-        WxEdit5->SetValue(isSpiActive() ? wxT("Spi active") : wxT("Spi inactive"));
         if (busy) {
             setButtonStates(false);
         } else {
@@ -299,9 +283,6 @@ void ChFrm::GUIUpdate(wxTimerEvent& event)
             setButtonStates(true);
         }
     } else {
-        WxEdit3->SetValue(wxT("No"));
-        WxEdit4->SetValue(wxT("Chameleon"));
-        WxEdit5->SetValue(wxT("present"));
         setButtonStates(false);
     }
 }

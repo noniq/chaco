@@ -1,5 +1,5 @@
 
-#.SILENT:
+.SILENT:
 
 include Makefile.config
 

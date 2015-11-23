@@ -79,9 +79,6 @@ class ChFrm : public wxFrame , public dbgOut
 		wxStaticText *WxStaticText6;
 		wxStaticText *WxStaticText5;
 		wxStaticText *WxStaticText3;
-		wxTextCtrl *WxEdit5;
-		wxTextCtrl *WxEdit4;
-		wxTextCtrl *WxEdit3;
 		wxStaticText *WxStaticText1;
 		wxGauge *WxGauge1;
 		wxButton *WxButton5;
@@ -109,9 +106,6 @@ class ChFrm : public wxFrame , public dbgOut
                         ID_WXSTATICTEXT6 = 1037,
 			ID_WXSTATICTEXT5 = 1036,
 			ID_WXSTATICTEXT3 = 1029,
-			ID_WXEDIT5 = 1027,
-			ID_WXEDIT4 = 1025,
-			ID_WXEDIT3 = 1024,
 			ID_WXEDIT2 = 1021,
 			ID_WXSTATICTEXT1 = 1014,
 			ID_WXGAUGE1 = 1010,
