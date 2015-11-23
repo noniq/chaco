@@ -81,6 +81,8 @@ void ChFrm::CreateGUIControls()
     WxButton2 = new wxButton(this, ID_WXBUTTON2, wxT("Update"), wxPoint(WINDOW_W - 220, 260),  wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton2"));
     WxButton1 = new wxButton(this, ID_WXBUTTON1, wxT("Abort"),  wxPoint(WINDOW_W - 110, 260), wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton1"));
 
+    WxStaticText2 = new wxStaticText(this, ID_WXSTATICTEXT2, wxT("-"), wxPoint(5, 260), wxDefaultSize, 0, wxT("WxStaticText2"));
+
     LogWindow = new wxTextCtrl(this,wxID_ANY,wxT(""), wxPoint(5, 5),wxSize(WINDOW_W - 11,230),wxTE_RICH2 | wxTE_MULTILINE | wxTE_READONLY );
     wxFont *font = new wxFont(wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
     font->SetPointSize(11);
@@ -104,7 +106,7 @@ void ChFrm::CreateGUIControls()
 
 void ChFrm::setButtonStates(bool state)
 {
-    WxButton1->Enable(state);
+//    WxButton1->Enable(state);
     WxButton2->Enable(state);
 }
 
@@ -205,10 +207,27 @@ std::string toStdString(wxString string)
  * WxTimer
  */
 
+int once_warnsdcard = 0;
+
+static int checksdcard(void)
+{
+    int version, mmcCardPresent;
+    if (CheckVersion(&version, &mmcCardPresent) < 0) {
+        LOGERR("CheckVersion failed\n");
+        return -1;
+    }
+    if ((!mmcCardPresent) && (!once_warnsdcard)) {
+        LOGERR("please remove the sd card before flashing.\n");
+        once_warnsdcard = 1;
+    }
+    return mmcCardPresent;
+}
+
 void ChFrm::GUIUpdate(wxTimerEvent& event)
 {
     static int found = 0, busy = 0;
     static int count;
+    static char label[0x100];
 
     timerrunning = true;
 
@@ -278,12 +297,27 @@ void ChFrm::GUIUpdate(wxTimerEvent& event)
     if (found) {
         if (busy) {
             setButtonStates(false);
+            sprintf(label, "Please wait...");
+            WxStaticText2->SetLabel(label);
+            once_warnsdcard = 0;
         } else {
             setGauge(0);
-            setButtonStates(true);
+            if (checksdcard()) {
+                setButtonStates(true);
+                sprintf(label, "Click 'Update' to update the Chameleon to core '%s'.", __COREVERSION__);
+                WxStaticText2->SetLabel(label);
+                once_warnsdcard = 0;
+            } else {
+                setButtonStates(false);
+                sprintf(label, "Please remove the SD card from the Chameleon before proceeding.");
+                WxStaticText2->SetLabel(label);
+            }
         }
     } else {
         setButtonStates(false);
+        sprintf(label, "Please connect the Chameleon to the PC using the second mini USB cable.");
+        WxStaticText2->SetLabel(label);
+        once_warnsdcard = 0;
     }
 }
 

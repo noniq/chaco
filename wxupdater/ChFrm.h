@@ -70,21 +70,12 @@ class ChFrm : public wxFrame , public dbgOut
 
 		void setButtonStates(bool state);
 	private:
-                wxStaticText *WxStaticText7;
-		//Do not add custom control declarations between
-		//GUI Control Declaration Start and GUI Control Declaration End.
-		//wxDev-C++ will remove them. Add custom code after the block.
-		////GUI Control Declaration Start
 		wxTimer *WxTimer1;
-		wxStaticText *WxStaticText6;
-		wxStaticText *WxStaticText5;
-		wxStaticText *WxStaticText3;
-		wxStaticText *WxStaticText1;
 		wxGauge *WxGauge1;
 		wxButton *WxButton5;
 		wxButton *WxButton2;
 		wxButton *WxButton1;
-		////GUI Control Declaration End
+                wxStaticText *WxStaticText2;
 		
 		wxTextCtrl * LogWindow;
 		wxString * coreFilename;
@@ -102,12 +93,8 @@ class ChFrm : public wxFrame , public dbgOut
 		{
 			////GUI Enum Control ID Start
 			ID_WXTIMER1 = 1011,
-                        ID_WXSTATICTEXT7 = 1038,
-                        ID_WXSTATICTEXT6 = 1037,
-			ID_WXSTATICTEXT5 = 1036,
-			ID_WXSTATICTEXT3 = 1029,
 			ID_WXEDIT2 = 1021,
-			ID_WXSTATICTEXT1 = 1014,
+			ID_WXSTATICTEXT2 = 1014,
 			ID_WXGAUGE1 = 1010,
 			ID_WXBUTTON5 = 1008,
 			ID_WXBUTTON2 = 1003,
