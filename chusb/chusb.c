@@ -189,7 +189,7 @@ static int sectorsPerTrack71[] = {
 char* filetypes[] = {
     "DEL\0","SEQ\0","PRG\0","USR\0","REL\0","CBM\0" };
 
-unsigned char c64filename[22];
+unsigned char c64filename[23];
 
 int linearSector(int track, int sector)
 {
