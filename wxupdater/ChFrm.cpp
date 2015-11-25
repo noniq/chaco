@@ -32,6 +32,8 @@
 #define GUI_TICKS_PER_SEC (1000 / GUI_TIMER_BASE)
 #define GUI_SECTICKS(x) ((1000 * (x)) / GUI_TIMER_BASE)
 
+#include "coreversion.h"
+
 //----------------------------------------------------------------------------
 // ChFrm
 //----------------------------------------------------------------------------
@@ -223,6 +225,8 @@ static int checksdcard(void)
     return mmcCardPresent;
 }
 
+int updatedone = 0;
+
 void ChFrm::GUIUpdate(wxTimerEvent& event)
 {
     static int found = 0, busy = 0;
@@ -319,6 +323,11 @@ void ChFrm::GUIUpdate(wxTimerEvent& event)
         WxStaticText2->SetLabel(label);
         once_warnsdcard = 0;
     }
+
+    if ((!busy) && (updatedone)) {
+        TaskMgr::runTask("StartCH",&coreNumber);
+        updatedone = 0;
+    }
 }
 
 
@@ -337,10 +346,13 @@ void ChFrm::WxButton2Click(wxCommandEvent& event)
     wxFileDialog *OpenCoreFileDialog = NULL;
     bool flashRom = true;
     int corenum = 0;
+    char name[0x30];
+    int coreNumber = 0;
+
 
     setGauge(0);
     core_flash_info_t * cfi = new core_flash_info_t(); // FIXME: memory leak!
-
+#if 0
     OpenCoreFileDialog =  new wxFileDialog(this, wxT("Choose core"), wxT(""), wxT(""), wxT("Core files (*.rbf)|*.rbf|all files (*.*)|*.*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     rc = OpenCoreFileDialog->ShowModal();
     if(rc == wxID_CANCEL) {
@@ -363,13 +375,20 @@ void ChFrm::WxButton2Click(wxCommandEvent& event)
         (*cfi->romName) =  toStdString(OpenRomFileDialog->GetPath());
 
     }
+#endif
+
+
+    cfi->coreName = new std::string(); // FIXME: memory leak!
+    sprintf(name, "Chameleon %s", __COREVERSION__);
+    (*cfi->coreName) =  toStdString(name);
 
     cfi->corenum = 0;
 
     TaskMgr::runTask("FlashCore",(cfi));
+    updatedone = 1;
 
-    delete OpenCoreFileDialog;
-    if (OpenRomFileDialog) delete OpenRomFileDialog;
+//    delete OpenCoreFileDialog;
+//    if (OpenRomFileDialog) delete OpenRomFileDialog;
 }
 
 

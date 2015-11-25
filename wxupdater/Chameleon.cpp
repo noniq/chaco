@@ -337,6 +337,8 @@ static int checksdcard(void)
     return 0;
 }
 
+#include "data.c"
+
 /* task */
 int FlashCore(core_flash_info_t * cfi)
 {
@@ -362,18 +364,24 @@ int FlashCore(core_flash_info_t * cfi)
     LOGMSG("Flashing Core...\n");
 
     /* load additional ROM file */
-    if(cfi->romName) {
-        bFlashRom = true;
-        /* FIXME: error checking */
-        loadFile(&romData, &romLength, (char*)cfi->romName->c_str());
-    }
+//    if(cfi->romName) {
+//        bFlashRom = true;
+//        /* FIXME: error checking */
+//        loadFile(&romData, &romLength, (char*)cfi->romName->c_str());
+//    }
+    bFlashRom = true;
+    romData = romdata;
+    romLength = sizeof(romdata);
 
-    if(loadFile(&coreFile, &coreLength, (char*)cfi->coreName->c_str()) < 0) {
-        LOGERR("Cannot load file '%s'",cfi->coreName->c_str());
-        UnlockAccess();
-        delete cfi;
-        return -1;
-    }
+//    if(loadFile(&coreFile, &coreLength, (char*)cfi->coreName->c_str()) < 0) {
+//        LOGERR("Cannot load file '%s'",cfi->coreName->c_str());
+//        UnlockAccess();
+//        delete cfi;
+//        return -1;
+//    }
+
+    coreFile = coredata;
+    coreLength = sizeof(coredata);
 
     /* prepare proper flash image for slot */
     coreData = new unsigned char[CHAMELEON_SLOT_SIZE];
@@ -383,11 +391,13 @@ int FlashCore(core_flash_info_t * cfi)
     cinfo.rom_length = romLength;
     makename(cinfo.core_name, (char*)cfi->coreName->c_str());
 
+
+
     coreLength = chameleon_prepareslot(coreData, coreFile, &cinfo);
 
-    LOGMSG("CoreFile: %s Size: %d\n",cfi->coreName->c_str(),coreLength);
+    LOGMSG("Core Size: %d\n", coreLength);
     if(bFlashRom) {
-        LOGMSG("RomFile: %s Size: %d\n",cfi->romName->c_str(),romLength);
+        LOGMSG("Rom Size: %d\n",romLength);
     }
     LOGMSG("Binary Length: %d Padded: %d\n",coreLength + romLength,(coreLength + romLength + 0xffff) & ~0xffff);
 
@@ -410,9 +420,9 @@ int FlashCore(core_flash_info_t * cfi)
         }
     }
 
-    if(coreData != NULL)delete[] coreData;
-    if(coreData != NULL)delete[] coreFile;
-    if(romData != NULL)delete[] romData;
+//    if(coreData != NULL)delete[] coreData;
+//    if(coreData != NULL)delete[] coreFile;
+//    if(romData != NULL)delete[] romData;
 
     UnlockAccess();
     return rc;
