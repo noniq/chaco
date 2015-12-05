@@ -7,7 +7,8 @@ BUILDDIR=../build-$(TARGET)
 CFLAGS+=-I../chacolib
 
 ifeq ($(TARGET),linux)
-CLIBS+=/usr/lib/libreadline.so
+#CLIBS+=/usr/lib/libreadline.so
+CLIBS+=-lreadline
 endif
 
 all:	$(BUILDDIR)/chmon.prg $(BUILDDIR)/chmon$(EXE)
