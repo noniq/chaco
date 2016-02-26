@@ -80,6 +80,33 @@ void usage (void)
     );
 }
 
+void setup_pointers(int addr, int len)
+{
+    unsigned char buf[10];
+    buf[0] = (addr + len) & 0xff;
+    buf[1] = ((addr + len)>>8) & 0xff;
+    // Pointer: Start of BASIC Variables
+    if (chameleon_writememory(buf, 2, 0x2d) < 0) {
+        LOGERR("error writing to chameleon memory.\n");
+        exit(cleanup(-1));
+    }
+    // Pointer: Start of BASIC Arrays
+    if (chameleon_writememory(buf, 2, 0x2f) < 0) {
+        LOGERR("error writing to chameleon memory.\n");
+        exit(cleanup(-1));
+    }
+    // Pointer: End of BASIC Arrays + 1
+    if (chameleon_writememory(buf, 2, 0x31) < 0) {
+        LOGERR("error writing to chameleon memory.\n");
+        exit(cleanup(-1));
+    }
+    // Tape End Address/End of Program
+    if (chameleon_writememory(buf, 2, 0xae) < 0) {
+        LOGERR("error writing to chameleon memory.\n");
+        exit(cleanup(-1));
+    }
+}
+
 void execute_sys(int addr)
 {
     unsigned char buf[10];
@@ -206,6 +233,7 @@ int main(int argc, char *argv[])
                 LOGERR("error writing to chameleon memory.\n");
                 exit(cleanup(-1));
             }
+            setup_pointers(addr, len);
             execute_run();
         } else if (!strcmp("-r", argv[i])) {
             /* execute prg via RUN */
