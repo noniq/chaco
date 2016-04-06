@@ -3,7 +3,7 @@
 
 include Makefile.config
 
-CMDTOOLS=chacolib updater chacocmd chcodenet chshot chusb chmon chxfer
+CMDTOOLS=chacolib updater chacocmd chcodenet chshot chusb chmon chxfer chmount
 WXTOOLS=ChTransfer Chaco wxupdater
 ALLTOOLS=$(CMDTOOLS)
 ifneq ($(TARGET),osx)
@@ -34,6 +34,9 @@ chusb:
 
 chmon:
 	$(MAKE) -C chmon all
+
+chmount:
+	$(MAKE) -C chmount all
 
 chxfer:
 	$(MAKE) -C chtransfer chxfer
@@ -108,6 +111,7 @@ endif
 		chshot$(EXE) \
 		chusb$(EXE) \
 		chusb.prg \
+		chmount$(EXE) \
 		chmon$(EXE) \
 		chmon.prg
 	mkdir -p ./build-$(TARGET)/doc
@@ -141,6 +145,7 @@ clean:
 	$(MAKE) -C chshot clean
 	$(MAKE) -C chusb clean
 	$(MAKE) -C chmon clean
+	$(MAKE) -C chmount clean
 	$(MAKE) -C chtransfer clean
 	$(MAKE) -C wxchaco clean
 	$(MAKE) -C wxupdater clean
