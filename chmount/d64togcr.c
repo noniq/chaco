@@ -1,3 +1,6 @@
+
+#include "gcr.h"
+
 /*
 
 Zone    Track   Sectors     gap2
@@ -96,23 +99,11 @@ static const unsigned int trkoffs[1+40] =
 #define D64MAXSECTORS   (42 * 21)
 #define D64MAXSIZE (0x100 * D64MAXSECTORS)
 
-unsigned char d64buffer[D64MAXSIZE];
-unsigned char d64errors[D64MAXSECTORS];
-
-#define GCRMAXTRACKLEN 0x2000
-
-#define GCRMAXHALFTRACKS   (84+2)
+static unsigned char d64buffer[D64MAXSIZE];
+//static unsigned char d64errors[D64MAXSECTORS];
 
 #define GCRSYNCLEN 6
 #define GAP1LEN 8
-
-/*
- * GCR buffer contain all physical half tracks, including 0.0 / 0.5 which might
- * not be accessable.
- */
-unsigned char gcrbuffer[GCRMAXHALFTRACKS][GCRMAXTRACKLEN];
-unsigned char gcrspdbuffer[GCRMAXHALFTRACKS][4];
-unsigned int gcrlenbuffer[GCRMAXHALFTRACKS];
 
 /******************************************************************************/
 
@@ -288,7 +279,7 @@ static void encodeheader(int trk, int sec, int diskid0, int diskid1)
 }
 
 /* encode one track to GCR */
-void encodetrack(unsigned char *in, int trk, int diskid0, int diskid1)
+static void encodetrack(unsigned char *in, int trk, int diskid0, int diskid1)
 {
 int thissec;
 int zone, nsec;
@@ -342,7 +333,7 @@ unsigned int rest;
 
 }
 
-void encoded64image(int tracks, int diskid0, int diskid1)
+static void encoded64image(int tracks, int diskid0, int diskid1)
 {
     int t;
     unsigned char *buf = &d64buffer[0];

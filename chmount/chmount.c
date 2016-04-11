@@ -93,7 +93,16 @@ void usage (void)
 }
 
 /******************************************************************************/
+
+#include "gcr.h"
+
+unsigned char gcrbuffer[GCRMAXHALFTRACKS][GCRMAXTRACKLEN];
+unsigned char gcrspdbuffer[GCRMAXHALFTRACKS][4];
+unsigned int gcrlenbuffer[GCRMAXHALFTRACKS];
+
 #include "d64togcr.c"
+//int loadd64(char *name);
+int loadg64(char *name);
 
 int main(int argc, char *argv[])
 {
@@ -135,6 +144,11 @@ int main(int argc, char *argv[])
             tracks = loadd64(inname);
             printf("%d tracks loaded from %s, using disk id %02x %02x\n", tracks, inname, d64buffer[0x165a2], d64buffer[0x165a3]);
             encoded64image(tracks, d64buffer[0x165a2], d64buffer[0x165a3]);
+        } else if (!strcmp(argv[i], "-g64")) {
+            i++;
+            inname = argv[i];
+            tracks = loadg64(inname);
+            printf("%d tracks loadeded from %s\n", tracks, inname);
         } else {
             usage();
             exit (-1);
