@@ -86,7 +86,9 @@ void usage (void)
     "--verbose          enable verbose messages\n"
     "--debug            enable debug messages\n"
     "\n"
-    "-d64 Filename      send/mount d64\n"
+    "-d64 Filename      send/mount d64 (drive 1, slot 1)\n"
+    "-g64 Filename      send/mount g64 (drive 1, slot 1)\n"
+    "-crt Filename      send/mount crt (slot 4)\n"
     , CHMOUNT_VERSION
     , __DATE__
     );
@@ -101,17 +103,20 @@ unsigned char gcrspdbuffer[GCRMAXHALFTRACKS][4];
 unsigned int gcrlenbuffer[GCRMAXHALFTRACKS];
 
 #include "d64togcr.c"
-//int loadd64(char *name);
-int loadg64(char *name);
+extern int loadg64(char *name);
+//extern int loadd64(char *name);
+
+extern unsigned char romimage[1024*1024];
+extern int loadcrt(char *name);
 
 int main(int argc, char *argv[])
 {
     char *inname;
-    int tracks;
-//    unsigned char *buffer;
+    int tracks = -1;
     unsigned int addr;
-//    int t;
     int i;
+    int mode = -1;
+
 
     if (argc < 3) {
         usage();
@@ -144,41 +149,58 @@ int main(int argc, char *argv[])
             tracks = loadd64(inname);
             printf("%d tracks loaded from %s, using disk id %02x %02x\n", tracks, inname, d64buffer[0x165a2], d64buffer[0x165a3]);
             encoded64image(tracks, d64buffer[0x165a2], d64buffer[0x165a3]);
+            mode = 1;
         } else if (!strcmp(argv[i], "-g64")) {
             i++;
             inname = argv[i];
             tracks = loadg64(inname);
             printf("%d tracks loadeded from %s\n", tracks, inname);
+            mode = 1;
+        } else if (!strcmp(argv[i], "-crt")) {
+            i++;
+            inname = argv[i];
+            tracks = loadcrt(inname);
+            if (tracks > 0) {
+                printf("%d bytes loadeded from %s\n", tracks, inname);
+                mode = 2;
+            }
         } else {
             usage();
             exit (-1);
         }
     }
+    if (tracks > 0) {
+        chameleon_setprogressfunc(1000, (void (*)(unsigned int, unsigned int))progress);
+        chameleon_setlogfunc(logfunc);
 
-    chameleon_setprogressfunc(1000, (void (*)(unsigned int, unsigned int))progress);
-    chameleon_setlogfunc(logfunc);
-
-    if (chameleon_init() < 0) {
-        LOGERR("initialization failed.\n");
-        exit(-1);
-    }
-
-    addr = RAMBASE_DISK0IMG0;
-    progressmsg = "Writing";
-#if 0
-    printf("sending ($%04x bytes to $%04x.)...\n", 0x2000*84, addr);
-    for (t = 2; t <= (42 * 2); t++) {
-        buffer = &gcrbuffer[t][0];
-        if (chameleon_writememory(buffer, 0x2000, addr) < 0) {
-            LOGERR("error writing to chameleon memory.\n");
-            exit(cleanup(-1));
+        if (chameleon_init() < 0) {
+            LOGERR("initialization failed.\n");
+            exit(-1);
         }
-        addr += 0x2000;
-    }
+        progressmsg = "Writing";
+
+        if (mode == 1) {
+            addr = RAMBASE_DISK0IMG0;
+            if (chameleon_writememory(&gcrbuffer[2][0], 0x2000*84, addr) < 0) {
+                LOGERR("error writing to chameleon memory.\n");
+                exit(cleanup(-1));
+            }
+        } else if (mode == 2) {
+            addr = RAMBASE_USERCRT1;
+#if 0
+            {
+            FILE *f;
+            f = fopen("bla","wb");
+            fwrite(&romimage[0], tracks,1,f);
+            fclose(f);
+            exit(1);
+            }
 #endif
-    if (chameleon_writememory(&gcrbuffer[2][0], 0x2000*84, addr) < 0) {
-        LOGERR("error writing to chameleon memory.\n");
-        exit(cleanup(-1));
+            if (chameleon_writememory(&romimage[0], tracks, addr) < 0) {
+                LOGERR("error writing to chameleon memory.\n");
+                exit(cleanup(-1));
+            }
+        }
     }
 
     return 0;
