@@ -26,6 +26,7 @@
 #define DBG(...)          logfunc (LOGLVL_DBG, __VA_ARGS__ )
 
 int verbose = 0;
+int videomode = 0;  // 0 means PAL, 1 means NTSC
 #define RAMBASE_VRAM        0x00600000L
 #define VRAM_SIZE           0x00100000L
 #define FRAME_BUFFER_LEN    0x00050000L
@@ -37,6 +38,14 @@ int verbose = 0;
 #define C64_PAL_YOFFS         65
 #define C64_PAL_PIXPERLINE    512
 #define C64_PAL_BYTESPERLINE  256
+
+#define C64_NTSC_LINELEN       (512 - 92)
+#define C64_NTSC_LINELENBYTES  (C64_NTSC_LINELEN / 2)
+#define C64_NTSC_XOFFS         17                /* xoffset in bytes */
+#define C64_NTSC_LINES         263
+#define C64_NTSC_YOFFS         65
+#define C64_NTSC_PIXPERLINE    512
+#define C64_NTSC_BYTESPERLINE  256
 
 #define FRAME_START     (RAMBASE_VRAM+(C64_PAL_YOFFS*C64_PAL_BYTESPERLINE))
 #define FRAME_SIZE      (C64_PAL_BYTESPERLINE*C64_PAL_LINES)
@@ -77,6 +86,7 @@ void usage (void)
     "-h --help          this help\n"
     "--verbose          enable verbose messages\n"
     "--debug            enable debug messages\n"
+    "--ntsc             assume NTSC mode\n"
     "\n"
     "-o Filename        save screenshot\n"
     , CHCODENET_VERSION
@@ -111,22 +121,41 @@ unsigned char bmphdr[54] = {
 };
 
 unsigned int palette_pepto_pal[16 * 4] = {
-0x00, 0x00, 0x00, 0x00,
-0xFF, 0xFF, 0xFF, 0x00,
-0x2B, 0x37, 0x68, 0x00,
-0xB2, 0xA4, 0x70, 0x00,
-0x86, 0x3D, 0x6F, 0x00,
-0x43, 0x8D, 0x58, 0x00,
-0x79, 0x28, 0x35, 0x00,
-0x6F, 0xC7, 0xB8, 0x00,
-0x25, 0x4F, 0x6F, 0x00,
-0x00, 0x39, 0x43, 0x00,
-0x59, 0x67, 0x9A, 0x00,
-0x44, 0x44, 0x44, 0x00,
-0x6C, 0x6C, 0x6C, 0x00,
-0x84, 0xD2, 0x9A, 0x00,
-0xB5, 0x5E, 0x6C, 0x00,
-0x95, 0x95, 0x95, 0x00
+    0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0x00,
+    0x2B, 0x37, 0x68, 0x00,
+    0xB2, 0xA4, 0x70, 0x00,
+    0x86, 0x3D, 0x6F, 0x00,
+    0x43, 0x8D, 0x58, 0x00,
+    0x79, 0x28, 0x35, 0x00,
+    0x6F, 0xC7, 0xB8, 0x00,
+    0x25, 0x4F, 0x6F, 0x00,
+    0x00, 0x39, 0x43, 0x00,
+    0x59, 0x67, 0x9A, 0x00,
+    0x44, 0x44, 0x44, 0x00,
+    0x6C, 0x6C, 0x6C, 0x00,
+    0x84, 0xD2, 0x9A, 0x00,
+    0xB5, 0x5E, 0x6C, 0x00,
+    0x95, 0x95, 0x95, 0x00
+};
+
+unsigned char palette_pepto_ntsc_sony[4 * 16] = {
+    0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0x00,
+    0x2B, 0x35, 0x7C, 0x00,
+    0xB1, 0xA6, 0x5A, 0x00,
+    0x85, 0x41, 0x69, 0x00,
+    0x43, 0x86, 0x5D, 0x00,
+    0x78, 0x2E, 0x21, 0x00,
+    0x6F, 0xBE, 0xCF, 0x00,
+    0x26, 0x4A, 0x89, 0x00,
+    0x00, 0x33, 0x5B, 0x00,
+    0x59, 0x64, 0xAF, 0x00,
+    0x43, 0x43, 0x43, 0x00,
+    0x6B, 0x6B, 0x6B, 0x00,
+    0x84, 0xCB, 0xA0, 0x00,
+    0xB3, 0x65, 0x56, 0x00,
+    0x95, 0x95, 0x95, 0x00
 };
 
 int save_frame(FILE *f)
@@ -137,22 +166,44 @@ int save_frame(FILE *f)
     memcpy(hdr, bmphdr, 54);
     hdr[10]=54;                          /* offset to data */
     hdr[11]=4;
-    hdr[22]=C64_PAL_LINES & 0xff;        /* height */
-    hdr[23]=C64_PAL_LINES >> 8;
-    hdr[18]=C64_PAL_LINELEN & 0xff;      /* width */
-    hdr[19]=C64_PAL_LINELEN >> 8;
-    fwrite(hdr, 1, 54, f);
-    for (i = 0; i < 16*4; i++) {
-        fputc(palette_pepto_pal[i],f);
-    }
-    for (i = 0; i < 240; i++) {
-        fputc(i * 4,f);fputc(i* 4,f);fputc(i* 4,f);fputc(0,f);
-    }
-    for (y = (C64_PAL_LINES-1); y >= 0; y--) {
-        p = framebuffer + C64_PAL_XOFFS + (C64_PAL_BYTESPERLINE * y);
-        for (x = 0; x < C64_PAL_LINELENBYTES; x++) {
-            fputc(p[x] & 0x0f, f);
-            fputc(p[x] >> 4, f);
+
+    if (videomode == 0) {
+        hdr[22]=C64_PAL_LINES & 0xff;        /* height */
+        hdr[23]=C64_PAL_LINES >> 8;
+        hdr[18]=C64_PAL_LINELEN & 0xff;      /* width */
+        hdr[19]=C64_PAL_LINELEN >> 8;
+        fwrite(hdr, 1, 54, f);
+        for (i = 0; i < 16*4; i++) {
+            fputc(palette_pepto_pal[i],f);
+        }
+        for (i = 0; i < 240; i++) {
+            fputc(i * 4,f);fputc(i* 4,f);fputc(i* 4,f);fputc(0,f);
+        }
+        for (y = (C64_PAL_LINES-1); y >= 0; y--) {
+            p = framebuffer + C64_PAL_XOFFS + (C64_PAL_BYTESPERLINE * y);
+            for (x = 0; x < C64_PAL_LINELENBYTES; x++) {
+                fputc(p[x] & 0x0f, f);
+                fputc(p[x] >> 4, f);
+            }
+        }
+    } else if (videomode == 1) {
+        hdr[22]=C64_NTSC_LINES & 0xff;        /* height */
+        hdr[23]=C64_NTSC_LINES >> 8;
+        hdr[18]=C64_NTSC_LINELEN & 0xff;      /* width */
+        hdr[19]=C64_NTSC_LINELEN >> 8;
+        fwrite(hdr, 1, 54, f);
+        for (i = 0; i < 16*4; i++) {
+            fputc(palette_pepto_ntsc_sony[i],f);
+        }
+        for (i = 0; i < 240; i++) {
+            fputc(i * 4,f);fputc(i* 4,f);fputc(i* 4,f);fputc(0,f);
+        }
+        for (y = (C64_NTSC_LINES-1); y >= 0; y--) {
+            p = framebuffer + C64_NTSC_XOFFS + (C64_NTSC_BYTESPERLINE * y);
+            for (x = 0; x < C64_NTSC_LINELENBYTES; x++) {
+                fputc(p[x] & 0x0f, f);
+                fputc(p[x] >> 4, f);
+            }
         }
     }
     return 0;
@@ -184,6 +235,8 @@ int main(int argc, char *argv[])
             verbose = 1;
         } else if (!strcmp("--debug", argv[i])) {
             verbose = 2;
+        } else if (!strcmp("--ntsc", argv[i])) {
+            videomode = 1;
         } else if (!strcmp("-h", argv[i]) || !strcmp("--help", argv[i]))  {
             usage();
             exit (-1);

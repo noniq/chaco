@@ -16,6 +16,7 @@ static int res;
 
 static unsigned char *offset;
 static unsigned char *curroffset;
+static unsigned char *endoffset;
 
 static u8 unsupported;
 
@@ -186,8 +187,14 @@ static unsigned char readchip(void)
             res = fread(curroffset, 1, 0x2000, f);
             curroffset += 0x2000;
             bytesleft -= 0x2000;
+            if (curroffset > endoffset) {
+                endoffset = curroffset;
+            }
         } else {
             res = fread(curroffset, 1, bytesleft, f);
+            if ((curroffset + bytesleft) > endoffset) {
+                endoffset = (curroffset + bytesleft);
+            }
             bytesleft = 0;
         }
         ++counter;
@@ -263,7 +270,7 @@ int loadcrt(char *name)
                         memset(imagebase, 0xff, 0x4000L * 64);
                     }
                     /* load cartridge image */
-                    offset = imagebase;
+                    offset = endoffset = imagebase;
                     counter = 0;
                     while (1) {
                         res = readchip();
@@ -271,7 +278,7 @@ int loadcrt(char *name)
                         if (res == 0) {
                             break;
                         }
-                        loaded += chiplength;
+//                        loaded += chiplength;
                     }
                     /* patch cartridge image */
                     if (crttype == 32) {
@@ -285,7 +292,7 @@ int loadcrt(char *name)
                             memcpy(romimage, eapidata, 0x0300);
                         }
                     }
-                    res = loaded;
+                    res = endoffset - imagebase;
                     fclose (f);
             }
         }
