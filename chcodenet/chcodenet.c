@@ -25,11 +25,17 @@
 #define LOGMSG(...)       logfunc (LOGLVL_MSG, __VA_ARGS__ )
 #define DBG(...)          logfunc (LOGLVL_DBG, __VA_ARGS__ )
 
+#define TARGET_C64 1
+#define TARGET_VIC20 2
+#define TARGET_VIC20_8K 3
+
 int cleanup(int n);
 
 int verbose = 0;
 #define C64_RAM_SIZE    0x10000
 unsigned char *buffer = NULL;
+
+int target = TARGET_VIC20;
 
 int logfunc (int lvl, const char * format, ...)
 {
@@ -73,6 +79,9 @@ void usage (void)
     "-f Start End Fill  Fills a block of C64 memory.\n"
     "-e Addr            Jumps to an address in memory.\n"
     "-r                 Executes a program via \"RUN\"."
+    "\n"
+    "--vic20            set target to chameleon-vic20 (unexpanded)\n"
+    "--vic20-8k         set target to chameleon-vic20 (+8K)\n"
     "\n"
     "-n, -p, -T, -R     ignored for compatibility\n"
     , CHCODENET_VERSION
@@ -327,6 +336,15 @@ int main(int argc, char *argv[])
         } else if (!strcmp("-R", argv[i])) {
             /* ignored */
             i++;
+        } else if (!strcmp("--vic20", argv[i])) {
+            target = TARGET_VIC20;
+        } else if (!strcmp("--vic20-8k", argv[i])) {
+            target = TARGET_VIC20_8K;
+        } else if (!strcmp("--reset", argv[i])) {
+            if (chameleon_writememory(buffer, 1, 0x80000000) < 0) {
+                LOGERR("error writing to chameleon memory.\n");
+                exit(cleanup(-1));
+            }
         } else {
             usage();
             exit(cleanup(-1));
