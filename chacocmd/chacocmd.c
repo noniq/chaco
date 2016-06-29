@@ -27,7 +27,7 @@ int verbose = 0;
 
 #define D(x)   (isgraph(buf[i+x]) ? buf[i+x] : '.')
 #define M(x)   (buf[i+x])
-void print_dump(unsigned char *buf, int len, int addr) 
+void print_dump(unsigned char *buf, int len, int addr)
 {
     int i;
     for (i = 0;i < len; i+= 0x10) {
@@ -51,6 +51,7 @@ void usage (void)
 
     "--verbose                                  enable verbose messages\n"
     "--debug                                    enable debug messages\n"
+    "--noprogress                               disable the progress indicator\n"
 
     "--info                                     show flash info\n"
     "--status                                   show core status\n"
@@ -200,7 +201,7 @@ int main(int argc, char *argv[])
     unsigned char *buffer2;
     int spiactive, usbcap, bricked, cfgdone, nstatus;
     int mcversion, sdinserted;
-    int ret, addr, len, i, slotnum = 0, romlen;
+    int ret, addr, len, i, slotnum = 0, romlen, progressbar = 1;
     COREINFO cinfo;
 
     FILE *f;
@@ -219,6 +220,8 @@ int main(int argc, char *argv[])
             verbose = 1;
         } else if (!strcmp("--debug", argv[i])) {
             verbose = 2;
+        } else if (!strcmp("--noprogress", argv[i])) {
+            progressbar = 0;
         } else if (!strcmp("-h", argv[i]) || !strcmp("--help", argv[i]))  {
             usage();
             exit (-1);
@@ -245,7 +248,7 @@ int main(int argc, char *argv[])
 
     buffer = (unsigned char*)malloc(CHAMELEON_RAM_SIZE);
     buffer2 = (unsigned char*)malloc(CHAMELEON_RAM_SIZE);
- 
+
 #ifdef LINUX
     /* make sure that if the binary is setuid root, the created files will be
        owned by the user running the binary (and not root) */
@@ -256,7 +259,9 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    chameleon_setprogressfunc(1000, (void (*)(unsigned int, unsigned int))progress);
+    if (progressbar) {
+        chameleon_setprogressfunc(1000, (void (*)(unsigned int, unsigned int))progress);
+    }
     chameleon_setlogfunc(logfunc);
 
     /* check the rest of the options */
