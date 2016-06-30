@@ -226,7 +226,7 @@ int main(int argc, char *argv[])
 
     if (argc < 2) {
         usage();
-        exit (-1);
+        exit (EXIT_FAILURE);
     }
 
     /* first check the options that should work before any other stuff is used */
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
             videomode = 1;
         } else if (!strcmp("-h", argv[i]) || !strcmp("--help", argv[i]))  {
             usage();
-            exit (-1);
+            exit (EXIT_FAILURE);
         } else {
             break;
         }
@@ -247,18 +247,18 @@ int main(int argc, char *argv[])
 
     if (i == argc) {
         usage();
-        exit (-1);
+        exit (EXIT_FAILURE);
     }
 
     chameleon_setlogfunc(logfunc);
 
     if (chameleon_init() < 0) {
         LOGERR("initialization failed.\n");
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
     if((framebuffer = (unsigned char*)malloc(VRAM_SIZE)) == NULL) {
         LOGERR("could not allocate memory.\n");
-        exit(cleanup(-1));
+        exit(cleanup(EXIT_FAILURE));
     };
 
     /* check the rest of the options */
@@ -269,16 +269,16 @@ int main(int argc, char *argv[])
             name = argv[i];
             if ((f = fopen(name, "wb")) == NULL) {
                 LOGERR("error opening: '%s'\n", name);
-                exit(cleanup(-1));
+                exit(cleanup(EXIT_FAILURE));
             }
             read_frame(0);
             save_frame(f);
             fclose(f);
         } else {
             usage();
-            exit(cleanup(-1));
+            exit(cleanup(EXIT_FAILURE));
         }
     }
 
-    return cleanup(0);
+    return cleanup(EXIT_SUCCESS);
 }

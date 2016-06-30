@@ -79,7 +79,7 @@ EasyTransferApp::EasyTransferApp()
 
     if (chameleon_init() < 0) {
         fprintf(stderr, ("initialization failed.\n"));
-        /* exit(cleanup(-1)); */
+        /* exit(cleanup(EXIT_FAILURE)); */
     }
 
 }

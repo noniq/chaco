@@ -184,7 +184,7 @@ int main(int argc, char** argv)
 
     if (chameleon_init() < 0) {
         fprintf(stderr, ("initialization failed.\n"));
-        exit(cleanup(-1));
+        exit(cleanup(EXIT_FAILURE));
     }
     if (p_exec_filename)
         return !ef3xfer_transfer_prg(p_exec_filename);
@@ -193,5 +193,5 @@ int main(int argc, char** argv)
     else if (do_usb_test)
         return ef3xfer_usb_test();
 
-    return 0;
+    return EXIT_SUCCESS;
 }

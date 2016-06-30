@@ -107,7 +107,7 @@ int usb_write_block(unsigned char *buf, int len)
     LOGUSB(("usb_write_block %d bytes\n", len));
     if (len > 256) {
         printf("internal error: usb_write_block len>256)\n");
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
 
     // signal C64 that we want to write
@@ -193,7 +193,7 @@ int usb_read_block(unsigned char *buf, int len)
     LOGUSB(("usb_read_block %d bytes\n", len));
     if (len > 256) {
         printf("internal error: usb_read_block len>256)\n");
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
 
     LOGUSB((" usb_read_block %d bytes: wait for c64 ready ", len));fflush(stdout);
@@ -220,7 +220,7 @@ int check_server_running(void)
     /* check BASIC direct- oder program-mode */
     if (chameleon_readmemory(&rbuf[0], 1, 0x9d) < 0) {
         LOGERR("error reading C64 memory.");
-        exit(cleanup(-1));
+        exit(cleanup(EXIT_FAILURE));
     }
 //    printf("%02x - ", rbuf[0]);
     if (rbuf[0] != 0x00) {

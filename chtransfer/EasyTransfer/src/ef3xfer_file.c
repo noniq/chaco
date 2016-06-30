@@ -42,7 +42,7 @@ void execute_run(void)
     buf[0] = 0;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         ef3xfer_log_printf("error writing to chameleon memory.\n");
-        exit(cleanup(-1));
+        exit(cleanup(EXIT_FAILURE));
     }
     buf[0] = 82;
     buf[1] = 85;
@@ -50,12 +50,12 @@ void execute_run(void)
     buf[3] = 13;
     if (chameleon_writememory(buf, 4, 631) < 0) {
         ef3xfer_log_printf("error writing to chameleon memory.\n");
-        exit(cleanup(-1));
+        exit(cleanup(EXIT_FAILURE));
     }
     buf[0] = 4;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         ef3xfer_log_printf("error writing to chameleon memory.\n");
-        exit(cleanup(-1));
+        exit(cleanup(EXIT_FAILURE));
     }
 }
 
@@ -71,7 +71,7 @@ int ef3xfer_transfer_prg(const char* p_filename)
     /* write .prg file to memory + RUN */
     if ((f = fopen(p_filename, "rb")) == NULL) {
         ef3xfer_log_printf("error opening: '%s'\n", p_filename);
-        exit(cleanup(-1));
+        exit(cleanup(EXIT_FAILURE));
     }
     addr = fgetc(f);
     addr += ((int)fgetc(f) << 8);

@@ -104,7 +104,7 @@ void execute_run(void)
     buf[0] = 0;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(cleanup(-1));
+        exit(cleanup(EXIT_FAILURE));
     }
     buf[0] = 82;
     buf[1] = 85;
@@ -112,12 +112,12 @@ void execute_run(void)
     buf[3] = 13;
     if (chameleon_writememory(buf, 4, 631) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(cleanup(-1));
+        exit(cleanup(EXIT_FAILURE));
     }
     buf[0] = 4;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
-        exit(cleanup(-1));
+        exit(cleanup(EXIT_FAILURE));
     }
 }
 // -----------------------------------------------------------------------------
@@ -200,22 +200,22 @@ int linearSector(int track, int sector)
                 spt = sectorsPerTrack71;
         }
 
-	if ((track<1) || (track>nrTracks)) {
-		fprintf(stderr, " - Illegal track %d\n", track);
-//		exit(-1);
+    if ((track<1) || (track>nrTracks)) {
+        fprintf(stderr, " - Illegal track %d\n", track);
+//      exit(EXIT_FAILURE);
                 return -1;
-        
-	}
+
+    }
 
         if (!d81) {
-        	if ((sector<0) || (sector>=spt[track-1])) {
-        		fprintf(stderr, " - Illegal sector %d for track %d (max is %d)\n", sector, track, sectorsPerTrack[track-1]);
-//        		exit(-1);
+            if ((sector<0) || (sector>=spt[track-1])) {
+                fprintf(stderr, " - Illegal sector %d for track %d (max is %d)\n", sector, track, sectorsPerTrack[track-1]);
+//              exit(EXIT_FAILURE);
                         return -1;
-        	}
+            }
         } else if (sector>39) {
-		fprintf(stderr, " - Illegal sector %d (max is %d)\n", sector, 39);
-//		exit(-1);
+        fprintf(stderr, " - Illegal sector %d (max is %d)\n", sector, 39);
+//      exit(EXIT_FAILURE);
                 return -1;
         }
 
@@ -223,13 +223,13 @@ int linearSector(int track, int sector)
                 return (track-1)*40 + sector;
         }
 
-	int linearSector=0;
-	for (i=0;i<track-1;i++) {
-		linearSector+=spt[i];
+    int linearSector=0;
+    for (i=0;i<track-1;i++) {
+        linearSector+=spt[i];
         }
-	linearSector+=sector;
+    linearSector+=sector;
 
-	return linearSector;
+    return linearSector;
 }
 
 int off(int track, int sector)
@@ -244,9 +244,9 @@ int off(int track, int sector)
 int sendfile()
 {
         int i;
-        
+
         printf(" - Len: %6d bytes. Sending file. Bytes left:", fileptr);
-        
+
         bufstart[0] = ft;        // filetype
         written = ftdiwrite(bufstart, 1);
 
@@ -255,11 +255,11 @@ int sendfile()
 
         // filelen in 3 bytes
         bufstart[0] = (unsigned char) (fileptr&0xff);        // len lo
-        bufstart[1] = (unsigned char) ((fileptr>>8)&0xff);   // len hi                                                
+        bufstart[1] = (unsigned char) ((fileptr>>8)&0xff);   // len hi
         bufstart[2] = (unsigned char) ((fileptr>>16)&0xff);  // len hi hi
-        written = ftdiwrite(bufstart, 3);  
-        
-        // calc checksum                                                  
+        written = ftdiwrite(bufstart, 3);
+
+        // calc checksum
         checksum = 0;
         for (i=0; i < fileptr; i++) {
               checksum = checksum + filebuf[i];
@@ -274,7 +274,7 @@ int sendfile()
         }
         printf("%c%c%c%c%c%c%c%c%c%c%cDone.                    \n",8,8,8,8,8,8,8,8,8,8,8);
         //written = ftdiwrite(filebuf, fileptr);
-        
+
         // get ack
         written = ftdiread(bufread, 1);
         if (bufread[0] != 0xff) {
@@ -316,7 +316,7 @@ void sendindicator(int format, int track, int sector)
     bufstart[0] = (unsigned char) (add&0xff);
     bufstart[1] = (unsigned char) ((add>>8)&0xff);
     written = ftdiwrite(bufstart,3);        // send over the coordinates and character
-}                                
+}
 
 //------------------------------------------------------------------------------
 
@@ -333,7 +333,7 @@ void printusage()
    printf(" s[end]     [file.prg]                     - send file.prg to C64\n");
    printf("                                             if no file then send chusb.prg\n");
    printf(" 0[test]                                   - test the usb connection\n");
-   exit(1);
+   exit(EXIT_SUCCESS);
 }
 
 //------------------------------------------------------------------------------
@@ -351,7 +351,7 @@ int main(int argc, char *argv[])
     int verify = 0;
 
     char p00start[8] = "C64File\0";
-  
+
     printf("Chameleon USB Client v1.8\n");
     if (argc < 2) {
         printusage();
@@ -361,7 +361,7 @@ int main(int argc, char *argv[])
 
     if (chameleon_init() < 0) {
         LOGERR("initialization failed.\n");
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
 
 //    printf("\n");
@@ -416,7 +416,7 @@ int main(int argc, char *argv[])
                   }
                   fname = argv[2];
                   mode = 1;
-                  break;        
+                  break;
         case 'f': command = 6;
                   printf(" - TURBO FORMAT\n");
                   if (argc == 3) {
@@ -425,7 +425,7 @@ int main(int argc, char *argv[])
                         }
                         mode40 = 1;
                   }
-                  break;        
+                  break;
         case '0': command = 5;
                   printf(" - TEST USB CONNECTION\n");
                   break;
@@ -447,7 +447,7 @@ int main(int argc, char *argv[])
         case 's': command = 9;
                   printf(" - SEND PRG TO C64\n");
                   if (argc == 3) {
-						fname = argv[2];
+                        fname = argv[2];
                   }
                   break;
         default: printusage();
@@ -468,7 +468,7 @@ int main(int argc, char *argv[])
         read = fread (buf, 1, 0x1000000, fp);
         fclose(fp);
     }
-  
+
     if (command == 7) {
         //----------------------------------------------------------------------
         // COPY FILES FROM C64
@@ -479,7 +479,7 @@ int main(int argc, char *argv[])
         printf("- Waiting for files from C64...\n");
 
         written = ftdiread(bufstart,1);                         // get status
-        
+
         while (bufstart[0] == 0) {
                 for (i=0; i < 19; i++) {
                         c64filename[i]=0;
@@ -489,7 +489,7 @@ int main(int argc, char *argv[])
                 written = ftdiread(c64filename, fnlen);           // get filename
 
                 printf("Transfering '%-17s'  Bytes: ", c64filename);
-                
+
                 int ok = 0;
                 int len=0;
                 while (!ok) {
@@ -509,7 +509,7 @@ int main(int argc, char *argv[])
                                 bufstart[i]=0x5f;
                         }
                 }
-                
+
                 bufstart[fnlen]='.';
                 bufstart[fnlen+1]='P';
                 bufstart[fnlen+4]=0;
@@ -521,7 +521,7 @@ int main(int argc, char *argv[])
                         // P00
                         bufstart[fnlen+2]='0';
                         bufstart[fnlen+3]='0';
-                }                
+                }
 //                printf("writing file '%s'.\n", (char*)bufstart);
 #if 1
                 if (!(fp = fopen((char*)bufstart, "wb"))) {
@@ -532,7 +532,7 @@ int main(int argc, char *argv[])
                                 fwrite(c64filename, 1, 18, fp);
                         }
                         fwrite (buf, 1, len, fp);
-                        fclose(fp);                
+                        fclose(fp);
                 }
 #endif
                 written = ftdiread(bufstart,1);                         // get status
@@ -555,7 +555,7 @@ int main(int argc, char *argv[])
         // WRITE IMAGE
 
           int format = 0;
-          
+
           if (read == 174848 || read == 175531) {
                 format = 35;
           } else if (read == 196608 || read == 197376) {
@@ -563,35 +563,35 @@ int main(int argc, char *argv[])
           } else if (read == 819200 || read == 822400) {
                 format = 80;
           }
-          
+
           if (format == 40 && mode == 1) {
                 printf("40 tracks D64 is not supported in Kernal mode!\n");
-                exit(cleanup(-1));;
+                exit(cleanup(EXIT_FAILURE));;
           }
-          
+
           if (format == 0) {
                 printf("Unsupported Image format!\n");
-                exit(cleanup(-1));;
+                exit(cleanup(EXIT_FAILURE));;
           } else {
                 if (format == 35 || format == 40) {
                         printf (" - .D64 format %d tracks.\n\n", format);
                 } else {
-                        printf (" - .D81 format %d tracks.\n\n", format);        
+                        printf (" - .D81 format %d tracks.\n\n", format);
                         mode = 1;
                 }
           }
-          
+
         int track;
         int sector;
         int pos = 0;
-        
+
         if (mode == 1) {
                 //--------------------------------------------------------------
                 // KERNAL WRITE
         printf("Transferring image to C64. (kernal) ");
 
                   startcommand(0x02);
-                  
+
                   bufstart[0] = 0x00;                   // kernal write
                   written = ftdiwrite(bufstart,1);
 
@@ -601,7 +601,7 @@ int main(int argc, char *argv[])
                           bufstart[0] = 0;              // verify retries #
                   }
                   written = ftdiwrite(bufstart,1);
-                  
+
                   for (track=1; track < format+1; track++) {
                         int numsec;
                         if (format != 80) {
@@ -611,47 +611,47 @@ int main(int argc, char *argv[])
                         }
                         for (sector=0; sector < numsec; sector++) {
                                 printf("T:%2d S:%2d%c%c%c%c%c%c%c%c%c",track,sector,8,8,8,8,8,8,8,8,8);
-                                
+
                                 bufstart[0] = 0xff;                     // indicate that we are transferring a sector
                                 written = ftdiwrite(bufstart, 1);
-                                
+
                                 sprintf((char*)bufstart,"%2d %2d",track,sector);
                                 written = ftdiwrite(bufstart, 5);       // send over the string containing track & sector
-                                
-                                // calc checksum                                                  
+
+                                // calc checksum
                                 checksum = 0;
                                 for (i=0; i < 256; i++) {
                                         checksum = checksum + buf[pos+i];
                                 }
                                 bufstart[0] = checksum;
-                                written = ftdiwrite(bufstart, 1);                 
+                                written = ftdiwrite(bufstart, 1);
 
                                 // send the sector over
                                 //written = ftdiwrite(buf+pos, 256);
                                 written = usb_write_block(buf+pos, 256);
                                 pos += 256;
 
-                                sendindicator(format, track, sector);                                
-                                
+                                sendindicator(format, track, sector);
+
                                 // get ack
                                 written = ftdiread(bufread, 1);
                                 if (bufread[0] != 0xff) {
                                         printf("Error on the C64 side ... exiting...\n");
-                                        exit(cleanup(-1));;
+                                        exit(cleanup(EXIT_FAILURE));;
                                 }
                         }
                   }
                   bufstart[0] = 0;        // end of transfer
                   written = ftdiwrite(bufstart, 1);
                   printf("\nDone\n");
-                  
+
         } else {
                 //--------------------------------------------------------------
                 // TURBO WRITE
         printf("Transferring image to C64. (turbo) ");
 
                   startcommand(0x02);
-                  
+
                   bufstart[0] = 0xff;                   // turbo write
                   written = ftdiwrite(bufstart,1);
 
@@ -671,37 +671,37 @@ int main(int argc, char *argv[])
                         }
                         for (sector=numsec-1; sector >=0 ; sector--) {
                                 printf("T:%2d S:%2d%c%c%c%c%c%c%c%c%c",track,sector,8,8,8,8,8,8,8,8,8);
-                                
+
                                 bufstart[0] = 0xff;                     // indicate that we are transferring a sector
                                 written = ftdiwrite(bufstart, 1);
-                                
+
                                 // send the sector over
                                 //written = ftdiwrite(buf + off(track,sector), 256);
                                 written = usb_write_block(buf + off(track,sector), 256);
-                
+
                                 bufstart[0] = (unsigned char) track;
-                                bufstart[1] = (unsigned char) sector;                
+                                bufstart[1] = (unsigned char) sector;
                                 written = ftdiwrite(bufstart, 2);       // send over the string containing track & sector
-                                
-                                sendindicator(format, track, sector);                                
-                                
+
+                                sendindicator(format, track, sector);
+
                                 // get ack
                                 written = ftdiread(bufread, 1);
                                 if (bufread[0] != 0xff) {
                                         printf("Error on the C64 side ... exiting...\n");
-                                        exit(cleanup(-1));;
+                                        exit(cleanup(EXIT_FAILURE));;
                                 }
                         }
                   }
                   bufstart[0] = 0;        // end of transfer
                   written = ftdiwrite(bufstart, 1);
                   printf("\nDone\n");
-                     
+
         }
     } else if (command == 3) {
         //----------------------------------------------------------------------
         // READ IMAGE
-        
+
         int fnamelen = strlen(fname);
         int format = 0;
         if (fnamelen < 4 || fname[fnamelen-4]!='.') {
@@ -720,35 +720,35 @@ int main(int argc, char *argv[])
         }
         if (format == 0 || (format == 80 && mode == 0)) {
                 printf("%d Unsupported format or mode!\n", format);
-                exit(cleanup(-1));;
+                exit(cleanup(EXIT_FAILURE));;
         }
-        
+
         if (mode == 1 && format == 40) {
                 printf("40 tracks D64 is not supported in Kernal mode!\n");
-                exit(cleanup(-1));;
+                exit(cleanup(EXIT_FAILURE));;
         }
-        
+
         if (format == 35 || format == 40) {
                 printf (" - .D64 format %d tracks.\n\n", format);
         } else {
-                printf (" - .D81 format %d tracks.\n\n", format);        
+                printf (" - .D81 format %d tracks.\n\n", format);
         }
-        
+
         int track;
         int sector;
         int pos = 0;
-        
+
         if (mode == 1) {
                 //--------------------------------------------------------------
                 // KERNAL READ
-                  
+
             printf("Transferring image from C64 (kernal) ");
 
                   startcommand(0x03);
-                  
+
                   bufstart[0] = 0x00;                   // kernal read
                   written = ftdiwrite(bufstart,1);
-                  
+
                   for (track=1; track < format+1; track++) {
                         int numsec;
                         if (format != 80) {
@@ -758,50 +758,50 @@ int main(int argc, char *argv[])
                         }
                         for (sector=0; sector < numsec; sector++) {
                                 printf("T:%2d S:%2d%c%c%c%c%c%c%c%c%c",track,sector,8,8,8,8,8,8,8,8,8);
-                                
+
                                 bufstart[0] = 0xff;                     // indicate that we are transferring a sector
                                 written = ftdiwrite(bufstart, 1);
-                                
+
                                 sprintf((char*)bufstart,"%2d %2d",track,sector);
                                 written = ftdiwrite(bufstart, 5);       // send over the string containing track & sector
-                                
+
                                 // send the sector over
                                 //written = ftdiread(buf+pos, 256);
                                 written = usb_read_block(buf+pos, 256);
 
-                                // calc checksum                                                  
+                                // calc checksum
                                 checksum = 0;
                                 for (i=0; i < 256; i++) {
                                         checksum = checksum + buf[pos+i];
                                 }
                                 bufstart[0] = checksum;
                                 written = ftdiwrite(bufstart, 1);     // send our checksum over
-                                
+
                                 pos += 256;
-                                
+
                                 sendindicator(format, track, sector);
-                                
+
                                 // get ack
                                 written = ftdiread(bufread, 1);
                                 if (bufread[0] != 0xff) {
                                         printf("Error on the C64 side ... exiting...\n");
-                                        exit(cleanup(-1));;
+                                        exit(cleanup(EXIT_FAILURE));;
                                 }
                         }
                   }
                   bufstart[0] = 0;        // end of transfer
                   written = ftdiwrite(bufstart, 1);
                   printf("\nDone... Writing image with %d bytes length.\n", pos);
-                
-                
+
+
                    if (!(fp = fopen(fname, "wb"))) {
                     fprintf(stderr, "can't open %s\n", fname);
                     return 0;
                   }
-                
+
                   written = fwrite (buf, 1, pos, fp);
                   fclose(fp);
-                   
+
         } else {
                 //--------------------------------------------------------------
                 // TURBO READ
@@ -809,7 +809,7 @@ int main(int argc, char *argv[])
             printf("Transferring image from C64 (turbo) ");
 
                   startcommand(0x03);
-                  
+
                   bufstart[0] = 0xff;                   // turbo read
                   written = ftdiwrite(bufstart,1);
                   int size = 0;
@@ -823,44 +823,44 @@ int main(int argc, char *argv[])
                         }
                         for (sector=numsec-1; sector >=0; sector--) {
                                 printf("T:%2d S:%2d%c%c%c%c%c%c%c%c%c",track,sector,8,8,8,8,8,8,8,8,8);
-                                
+
                                 bufstart[0] = 0xff;                     // indicate that we are transferring a sector
                                 written = ftdiwrite(bufstart, 1);
-                
+
                                 bufstart[0] = (unsigned char) track;
-                                bufstart[1] = (unsigned char) sector;                
+                                bufstart[1] = (unsigned char) sector;
                                 written = ftdiwrite(bufstart, 2);       // send over the string containing track & sector
-                                
+
                                 // send the sector over
                                 //written = ftdiread(buf + off(track,sector), 256);
                                 written = usb_read_block(buf + off(track,sector), 256);
 
                                 size = size+256;
-                                
+
                                 sendindicator(format, track, sector);
-                                
+
                                 // get ack
                                 written = ftdiread(bufread, 1);
                                 if (bufread[0] != 0xff) {
                                         printf("Error on the C64 side ... exiting...\n");
-                                        exit(cleanup(-1));;
+                                        exit(cleanup(EXIT_FAILURE));;
                                 }
                         }
                   }
                   bufstart[0] = 0;        // end of transfer
                   written = ftdiwrite(bufstart, 1);
-                  printf("\nDone... Writing image with %d bytes length.\n", size);  
+                  printf("\nDone... Writing image with %d bytes length.\n", size);
 
                    if (!(fp = fopen(fname, "wb"))) {
                     fprintf(stderr, "can't open %s\n", fname);
                     return 0;
                   }
-                
+
                   written = fwrite (buf, 1, size, fp);
                   fclose(fp);
-                   
+
         }
-                   
+
     } else if (command == 5) {
         //----------------------------------------------------------------------
         // USB Loopback Test
@@ -879,16 +879,16 @@ int main(int argc, char *argv[])
                 written = ftdi_write_data(&ftdic, buf, 1);
                 if (written != 1) {
                     printf("ERROR - could not write all test bytes to the device!\n");
-                    exit(cleanup(-1));
+                    exit(cleanup(EXIT_FAILURE));
                 }
                 written = ftdi_read_data(&ftdic, buf2, 1);
                 if (written != 1) {
                     printf("ERROR - could not read back all test bytes to the device!\n");
-                    exit(cleanup(-1));
+                    exit(cleanup(EXIT_FAILURE));
                 }
                 if (buf2[0] != buf[0]) {
                     printf("ERROR - Read byte ($%02X) does not match written byte ($%02X) !\n", buf2[0], i);
-                    exit(cleanup(-1));
+                    exit(cleanup(EXIT_FAILURE));
                 }
             }
         }
@@ -921,7 +921,7 @@ int main(int argc, char *argv[])
             printf("sending '%s' ($%04x bytes to $%04x.)...\n", fname, read, addr);
             if (chameleon_writememory(&buf[2], read, addr) < 0) {
                 LOGERR("error writing to chameleon memory.\n");
-                exit(cleanup(-1));
+                exit(cleanup(EXIT_FAILURE));
             }
             execute_run();
     } else if (command == 8) {
@@ -944,7 +944,7 @@ int main(int argc, char *argv[])
             }
             if((fp = fopen(fname, "rb")) == NULL) {
                 LOGERR("error could not open '%s'.\n", fname);
-                exit(cleanup(-1));
+                exit(cleanup(EXIT_FAILURE));
             }
             read = fread (buf, 1, 0x1000000, fp);
             fclose(fp);
@@ -952,7 +952,7 @@ int main(int argc, char *argv[])
             printf("sending '%s' ($%04x bytes to $%04x.)...\n", fname, read, addr);
             if (chameleon_writememory(&buf[2], read, addr) < 0) {
                 LOGERR("error writing to chameleon memory.\n");
-                exit(cleanup(-1));
+                exit(cleanup(EXIT_FAILURE));
             }
             execute_run();
     } else if (command == 1) {
@@ -961,9 +961,9 @@ int main(int argc, char *argv[])
 
           unsigned char nexttr = 18;
           unsigned char nextse = 1;
-          
+
           int prgmode = 0;
-          
+
           int fnamelen = strlen(fname);
           if (fnamelen < 5 || fname[fnamelen-4]!='.') {
                 prgmode = 1;
@@ -982,20 +982,20 @@ int main(int argc, char *argv[])
                       fname[fnamelen-2]=='0') {
                 prgmode = 2;
           }
-          
+
           if (mode == 0) {
                   startcommand(0x01);
           }
-          
+
           if (prgmode != 0) {
                 if (mode != 0) {
                         printf("DIR only supported on disk images!\n");
-                        exit(cleanup(-1));;
+                        exit(cleanup(EXIT_FAILURE));;
                 }
                 ft = 0x02;      // PRG filetype
-                
+
                 //buf+entoff+0x05 = filename
-                
+
                 if (prgmode == 2) {
                         // P00
                         entoff = 0x08 - 0x05; //filename
@@ -1023,7 +1023,7 @@ int main(int argc, char *argv[])
                                 }
                                 start = start-1;
                         }
-                        
+
                         for (i=start+0; i < start+16; i++) {
                                 if ((i >= (int)strlen(fname)) || stop) {
                                         buf[entoff+0x05+(i-start)]=0xA0;            // pad
@@ -1050,11 +1050,11 @@ int main(int argc, char *argv[])
                         }
                 }
                 c64filename[i] = 0;
-                
+
                 printf(" PRG %s %3d", c64filename, fileptr/256);
-        
+
                 if (sendfile()) {
-                        exit(cleanup(0));;
+                        exit(cleanup(EXIT_SUCCESS));;
                 }
           } else {
                   int tt;
@@ -1071,16 +1071,16 @@ int main(int argc, char *argv[])
                   c64filename[16] = '"';
                   c64filename[17] = ',';
                   printf("    \"%s\n",c64filename);
-                  
+
                   while (nexttr != 0) {
                           int diroff = off(nexttr,nextse);
                           if (diroff == -1) {
-                                exit(cleanup(0));;
+                                exit(cleanup(EXIT_SUCCESS));;
                           }
                           nexttr = buf[diroff+0];
                           nextse = buf[diroff+1];
                 //          printf("lin: $%x next tr %d se %d\n", diroff, nexttr, nextse);
-                          
+
                           int pos = 0;
                           while (pos < 8) {
                                 entoff = diroff + pos*0x20;
@@ -1104,7 +1104,7 @@ int main(int argc, char *argv[])
                                 unsigned char filetr = buf[entoff+0x03];
                                 unsigned char filese = buf[entoff+0x04];
                                 int sizese = buf[entoff+0x1e] + buf[entoff+0x1f]*256;
-                                
+
                                 for (i=0; i < 16; i++) {
                                         c64filename[i] = buf[entoff+0x05+i];
                 //                        printf("%d\n", c64filename[i]);
@@ -1113,7 +1113,7 @@ int main(int argc, char *argv[])
                                         }
                                 }
                                 c64filename[i] = 0;
-                                
+
                                 if (!(ft == 00 && !locked && !splat)) {
                                         printf("%c%s %s %3d", lc, filetypes[ft], c64filename, sizese);
                                         int valid = 1;
@@ -1136,27 +1136,27 @@ int main(int argc, char *argv[])
                                                                         break;
                                                                 }
                                                         }
-                                                        
+
                                                         if (!corrupted) {
                                                                 usedtr[usednum] = filetr;
                                                                 usedse[usednum] = filese;
                                                                 usednum++;
-                                                        
+
                                                                 int cs = off(filetr, filese);
                                                                 if (cs == -1) {
                                                                         corrupted = 2;
                                                                         ok = 0;
                                                                 }
-                                                                
+
                                                                 // next file pointer
                                                                 filetr = buf[cs+0x00];
                                                                 filese = buf[cs+0x01];
-                                                                
+
                                                                 int secsize = 254;
-                                                                
+
                                                                 if (filetr == 0x00)     // last sector
                                                                 {
-                                                                        secsize = filese-1;        
+                                                                        secsize = filese-1;
                                                                         ok = 0;         // exit
                                                                 }
                                                                 for (i=0; i < secsize; i++) {
@@ -1172,13 +1172,13 @@ int main(int argc, char *argv[])
                                                 } else {
                                                         if (mode == 0) {
                                                                 if (sendfile()) {
-                                                                        exit(cleanup(0));;
+                                                                        exit(cleanup(EXIT_SUCCESS));;
                                                                 }
-                                                                
+
                                                                 //FILE * fp1 = fopen (c64filename, "wb");
                                                                 //fwrite(filebuf, 1, fileptr, fp1);
                                                                 //fclose(fp1);
-                
+
                                                         } else {
                                                                 printf("\n");
                                                         }
@@ -1191,16 +1191,16 @@ int main(int argc, char *argv[])
                                                 }
                                         }
                                 }
-                                
+
                                 pos++;
                           }
-                
+
                   }
-          }  
+          }
           if (mode == 0) {
                    bufstart[0] = 0;        // end of transfer
                    written = ftdiwrite(bufstart, 1);
           }
     }
-    return cleanup(0);
+    return cleanup(EXIT_SUCCESS);
 }

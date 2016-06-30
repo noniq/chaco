@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 
     if (argc < 3) {
         usage();
-        exit (-1);
+        exit (EXIT_FAILURE);
     }
 
     /* first check the options that should work before any other stuff is used */
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
             verbose = 2;
         } else if (!strcmp("-h", argv[i]) || !strcmp("--help", argv[i]))  {
             usage();
-            exit (-1);
+            exit (EXIT_FAILURE);
         } else {
             break;
         }
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
 
     if (i == argc) {
         usage();
-        exit (-1);
+        exit (EXIT_FAILURE);
     }
 
     for (; i < argc; i++) {
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
             }
         } else {
             usage();
-            exit (-1);
+            exit (EXIT_FAILURE);
         }
     }
     if (tracks > 0) {
@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
 
         if (chameleon_init() < 0) {
             LOGERR("initialization failed.\n");
-            exit(-1);
+            exit(EXIT_FAILURE);
         }
         progressmsg = "Writing";
 
@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
             addr = RAMBASE_DISK0IMG0;
             if (chameleon_writememory(&gcrbuffer[2][0], 0x2000*84, addr) < 0) {
                 LOGERR("error writing to chameleon memory.\n");
-                exit(cleanup(-1));
+                exit(cleanup(EXIT_FAILURE));
             }
         } else if (mode == 2) {
             addr = RAMBASE_USERCRT1;
@@ -198,10 +198,10 @@ int main(int argc, char *argv[])
 #endif
             if (chameleon_writememory(&romimage[0], tracks, addr) < 0) {
                 LOGERR("error writing to chameleon memory.\n");
-                exit(cleanup(-1));
+                exit(cleanup(EXIT_FAILURE));
             }
         }
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

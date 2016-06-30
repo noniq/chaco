@@ -78,7 +78,7 @@ static void welcome (void)
     );
 
     if (getkey() != 'u') {
-        exit (0);
+        exit (EXIT_SUCCESS);
     }
 }
 
@@ -211,7 +211,7 @@ static unsigned int loadfile(unsigned char *buffer, char *name, unsigned int max
     f = fopen(name, "rb");
     if (f == NULL) {
         fprintf(stderr, "error opening: '%s'\n", name);
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
     len = fread(buffer, 1, maxlen, f);
     fclose(f);
@@ -250,10 +250,10 @@ int main(int argc, char *argv[])
             verbose = 2;
         } else if (!strcmp("-h", argv[i]) || !strcmp("--help", argv[i]))  {
             usage();
-            exit (-1);
+            exit (EXIT_FAILURE);
         } else {
             usage();
-            exit (-1);
+            exit (EXIT_FAILURE);
             break;
         }
     }
@@ -315,7 +315,7 @@ int main(int argc, char *argv[])
 
         if ((len + romlen + 3) > CHAMELEON_SLOT_SIZE) {
             fprintf(stderr, "error: binary size exceeds slot size.\n");
-            exit(-1);
+            exit(EXIT_FAILURE);
         }
 
         memset (buffer2, 0xff, CHAMELEON_SLOT_SIZE);
@@ -330,10 +330,10 @@ int main(int argc, char *argv[])
     }
 
     chameleon_close();
-    
+
     free(buffer);
     free(buffer2);
-    
+
     bye(0);
-    return 0;
+    return EXIT_SUCCESS;
 }

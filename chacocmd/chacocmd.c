@@ -169,7 +169,7 @@ unsigned int loadfile(unsigned char *buffer, char *name, unsigned int maxlen)
     f = fopen(name, "rb");
     if (f == NULL) {
         fprintf(stderr, "error opening: '%s'\n", name);
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
     len = fread(buffer, 1, maxlen, f);
     fclose(f);
@@ -189,7 +189,7 @@ static void checksdcard(int sdinserted)
 {
     if (!sdinserted) {
         LOGERR("please remove the sd card before flashing.\n");
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -211,7 +211,7 @@ int main(int argc, char *argv[])
 
     if (argc < 2) {
         usage();
-        exit (-1);
+        exit (EXIT_FAILURE);
     }
 
     /* first check the options that should work before any other stuff is used */
@@ -224,7 +224,7 @@ int main(int argc, char *argv[])
             progressbar = 0;
         } else if (!strcmp("-h", argv[i]) || !strcmp("--help", argv[i]))  {
             usage();
-            exit (-1);
+            exit(EXIT_FAILURE);
         } else {
             break;
         }
@@ -232,16 +232,16 @@ int main(int argc, char *argv[])
 
     if (i == argc) {
         usage();
-        exit (-1);
+        exit (EXIT_FAILURE);
     }
 
     if (chameleon_init() < 0) {
-        LOGERR("initialization failed.\n");
-        exit(-1);
+        LOGERR("USB initialization failed.\n");
+        exit(EXIT_FAILURE);
     }
     if (chameleon_getversion(&mcversion, &sdinserted) < 0) {
         LOGERR("getversion failed.\n");
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
     LOGVER("Firmware Version: %02x\n", mcversion);
     LOGVER("sd card detected: %s\n", sdinserted ? "no" : "yes");
@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
             f = fopen(argv[i], "rb");
             if (f == NULL) {
                 fprintf(stderr, "error opening: '%s'\n", argv[i]);
-                exit(-1);
+                exit(EXIT_FAILURE);
             }
             if (len == 0) len = CHAMELEON_RAM_SIZE;
             len = fread(buffer, 1, len, f);
@@ -290,7 +290,7 @@ int main(int argc, char *argv[])
             f = fopen(argv[i], "wb");
             if (f == NULL) {
                 fprintf(stderr, "error opening: '%s'\n", argv[i]);
-                exit(-1);
+                exit(EXIT_FAILURE);
             }
             if (len == 0) len = 0x100;
             printf("getting '%s' (%d bytes from %08x.)...\n", argv[i], len, addr);
@@ -316,7 +316,7 @@ int main(int argc, char *argv[])
 
             if (checkname(core_name) != 1) {
                 fprintf(stderr, "error: core name expected\n");
-                exit(-1);
+                exit(EXIT_FAILURE);
             }
             makename(cinfo.core_name, core_name);
 
@@ -337,7 +337,7 @@ int main(int argc, char *argv[])
             cinfo.rom_length = romlen;
             if ((len + romlen + 3) > CHAMELEON_SLOT_SIZE) {
                 fprintf(stderr, "error: binary size exceeds slot size.\n");
-                exit(-1);
+                exit(EXIT_FAILURE);
             }
 
             memset (buffer2, 0xff, CHAMELEON_SLOT_SIZE);
@@ -359,7 +359,7 @@ int main(int argc, char *argv[])
             f = fopen(argv[i], "rb");
             if (f == NULL) {
                 fprintf(stderr, "error opening: '%s'\n", argv[i]);
-                exit(-1);
+                exit(EXIT_FAILURE);
             }
             memset (buffer, 0xff, CHAMELEON_SLOT_SIZE);
             len = fread(buffer, 1, CHAMELEON_SLOT_SIZE, f);
@@ -373,7 +373,7 @@ int main(int argc, char *argv[])
             f = fopen(argv[i], "rb");
             if (f == NULL) {
                 fprintf(stderr, "error opening: '%s'\n", argv[i]);
-                exit(-1);
+                exit(EXIT_FAILURE);
             }
             memset (buffer, 0xff, CHAMELEON_FLASH_SIZE);
             len = fread(buffer, 1, CHAMELEON_FLASH_SIZE, f);
@@ -397,7 +397,7 @@ int main(int argc, char *argv[])
             f = fopen(argv[i], "wb");
             if (f == NULL) {
                 fprintf(stderr, "error opening: '%s'\n", argv[i]);
-                exit(-1);
+                exit(EXIT_FAILURE);
             }
             printf("getting '%s' (%d bytes from %08x.)...\n", argv[i], CHAMELEON_SLOT_SIZE, addr);
             progressmsg = "Reading Flash";
@@ -409,7 +409,7 @@ int main(int argc, char *argv[])
             f = fopen(argv[i], "wb");
             if (f == NULL) {
                 fprintf(stderr, "error opening: '%s'\n", argv[i]);
-                exit(-1);
+                exit(EXIT_FAILURE);
             }
             printf("getting '%s' (%d bytes from %08x.)...\n", argv[i], CHAMELEON_FLASH_SIZE, addr);
             progressmsg = "Reading Flash";
@@ -470,7 +470,7 @@ int main(int argc, char *argv[])
             free(buffer);
             free(buffer2);
 
-            exit (-1);
+            exit (EXIT_FAILURE);
         }
     }
 
@@ -479,5 +479,5 @@ int main(int argc, char *argv[])
     free(buffer);
     free(buffer2);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
