@@ -27,6 +27,8 @@
 
 int verbose = 0;
 int videomode = 0;  // 0 means PAL, 1 means NTSC
+int coremode = 0; // 0 means C64, 1 means vic20
+
 #define RAMBASE_VRAM        0x00600000L
 #define VRAM_SIZE           0x00100000L
 #define FRAME_BUFFER_LEN    0x00050000L
@@ -39,6 +41,9 @@ int videomode = 0;  // 0 means PAL, 1 means NTSC
 #define C64_PAL_PIXPERLINE    512
 #define C64_PAL_BYTESPERLINE  256
 
+#define C64_PAL_FRAME_START     (RAMBASE_VRAM+(C64_PAL_YOFFS*C64_PAL_BYTESPERLINE))
+#define C64_PAL_FRAME_SIZE      (C64_PAL_BYTESPERLINE*C64_PAL_LINES)
+
 #define C64_NTSC_LINELEN       (512 - 92)
 #define C64_NTSC_LINELENBYTES  (C64_NTSC_LINELEN / 2)
 #define C64_NTSC_XOFFS         17                /* xoffset in bytes */
@@ -47,8 +52,19 @@ int videomode = 0;  // 0 means PAL, 1 means NTSC
 #define C64_NTSC_PIXPERLINE    512
 #define C64_NTSC_BYTESPERLINE  256
 
-#define FRAME_START     (RAMBASE_VRAM+(C64_PAL_YOFFS*C64_PAL_BYTESPERLINE))
-#define FRAME_SIZE      (C64_PAL_BYTESPERLINE*C64_PAL_LINES)
+#define C64_NTSC_FRAME_START     (RAMBASE_VRAM+(C64_NTSC_YOFFS*C64_NTSC_BYTESPERLINE))
+#define C64_NTSC_FRAME_SIZE      (C64_NTSC_BYTESPERLINE*C64_NTSC_LINES)
+
+#define VIC20_PAL_LINELEN       (512 - 274)
+#define VIC20_PAL_LINELENBYTES  (VIC20_PAL_LINELEN / 2)
+#define VIC20_PAL_XOFFS         17                /* xoffset in bytes */
+#define VIC20_PAL_LINES         302
+#define VIC20_PAL_YOFFS         10
+#define VIC20_PAL_PIXPERLINE    512
+#define VIC20_PAL_BYTESPERLINE  256
+
+#define VIC20_PAL_FRAME_START     (RAMBASE_VRAM+(VIC20_PAL_YOFFS*VIC20_PAL_BYTESPERLINE))
+#define VIC20_PAL_FRAME_SIZE      (VIC20_PAL_BYTESPERLINE*VIC20_PAL_LINES)
 
 unsigned char *framebuffer = NULL;
 
@@ -87,6 +103,7 @@ void usage (void)
     "--verbose          enable verbose messages\n"
     "--debug            enable debug messages\n"
     "--ntsc             assume NTSC mode\n"
+    "--vic20            assume VIC20 core\n"
     "\n"
     "-o Filename        save screenshot\n"
     , CHCODENET_VERSION
@@ -96,8 +113,18 @@ void usage (void)
 
 int read_frame(int n)
 {
-    unsigned long addr = FRAME_START + (FRAME_BUFFER_LEN * n);
-    unsigned long len = FRAME_SIZE;
+    unsigned long addr = C64_PAL_FRAME_START + (FRAME_BUFFER_LEN * n);
+    unsigned long len = C64_PAL_FRAME_SIZE;
+    if ((coremode == 0) && (videomode == 0)) {
+        addr = C64_PAL_FRAME_START + (FRAME_BUFFER_LEN * n);
+        len = C64_PAL_FRAME_SIZE;
+    } else if ((coremode == 0) && (videomode == 1)) {
+        addr = C64_NTSC_FRAME_START + (FRAME_BUFFER_LEN * n);
+        len = C64_NTSC_FRAME_SIZE;
+    } else if ((coremode == 1) && (videomode == 0)) {
+        addr = VIC20_PAL_FRAME_START + (FRAME_BUFFER_LEN * n);
+        len = VIC20_PAL_FRAME_SIZE;
+    }
     return chameleon_readmemory(framebuffer, len, addr);
 }
 
@@ -158,6 +185,25 @@ unsigned char palette_pepto_ntsc_sony[4 * 16] = {
     0x95, 0x95, 0x95, 0x00
 };
 
+unsigned int palette_mike_pal[16 * 4] = {
+    0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0x00,
+    0x21, 0x1F, 0xB6, 0x00,
+    0xFF, 0xF0, 0x4D, 0x00,
+    0xFF, 0x3F, 0xB4, 0x00,
+    0x37, 0xE2, 0x44, 0x00,
+    0xFF, 0x34, 0x1A, 0x00,
+    0x1B, 0xD7, 0xDC, 0x00,
+    0x00, 0x54, 0xCA, 0x00,
+    0x72, 0xB0, 0xE9, 0x00,
+    0x93, 0x92, 0xE7, 0x00,
+    0xFD, 0xF7, 0x9A, 0x00,
+    0xFF, 0x9F, 0xE0, 0x00,
+    0x93, 0xE4, 0x8F, 0x00,
+    0xFF, 0x90, 0x82, 0x00,
+    0x85, 0xDE, 0xE5, 0x00
+};
+
 int save_frame(FILE *f)
 {
     int x,y,i;
@@ -167,7 +213,7 @@ int save_frame(FILE *f)
     hdr[10]=54;                          /* offset to data */
     hdr[11]=4;
 
-    if (videomode == 0) {
+    if ((coremode == 0) && (videomode == 0)) {
         hdr[22]=C64_PAL_LINES & 0xff;        /* height */
         hdr[23]=C64_PAL_LINES >> 8;
         hdr[18]=C64_PAL_LINELEN & 0xff;      /* width */
@@ -186,7 +232,7 @@ int save_frame(FILE *f)
                 fputc(p[x] >> 4, f);
             }
         }
-    } else if (videomode == 1) {
+    } else if ((coremode == 0) && (videomode == 1)) {
         hdr[22]=C64_NTSC_LINES & 0xff;        /* height */
         hdr[23]=C64_NTSC_LINES >> 8;
         hdr[18]=C64_NTSC_LINELEN & 0xff;      /* width */
@@ -202,6 +248,27 @@ int save_frame(FILE *f)
             p = framebuffer + C64_NTSC_XOFFS + (C64_NTSC_BYTESPERLINE * y);
             for (x = 0; x < C64_NTSC_LINELENBYTES; x++) {
                 fputc(p[x] & 0x0f, f);
+                fputc(p[x] >> 4, f);
+            }
+        }
+    } else if ((coremode == 1) && (videomode == 0)) {
+        hdr[22]=VIC20_PAL_LINES & 0xff;        /* height */
+        hdr[23]=VIC20_PAL_LINES >> 8;
+        hdr[18]=(VIC20_PAL_LINELEN * 2) & 0xff;      /* width */
+        hdr[19]=(VIC20_PAL_LINELEN * 2) >> 8;
+        fwrite(hdr, 1, 54, f);
+        for (i = 0; i < 16*4; i++) {
+            fputc(palette_mike_pal[i],f);
+        }
+        for (i = 0; i < 240; i++) {
+            fputc(i * 4,f);fputc(i* 4,f);fputc(i* 4,f);fputc(0,f);
+        }
+        for (y = (VIC20_PAL_LINES-1); y >= 0; y--) {
+            p = framebuffer + VIC20_PAL_XOFFS + (VIC20_PAL_BYTESPERLINE * y);
+            for (x = 0; x < VIC20_PAL_LINELENBYTES; x++) {
+                fputc(p[x] & 0x0f, f);
+                fputc(p[x] & 0x0f, f);
+                fputc(p[x] >> 4, f);
                 fputc(p[x] >> 4, f);
             }
         }
@@ -237,6 +304,8 @@ int main(int argc, char *argv[])
             verbose = 2;
         } else if (!strcmp("--ntsc", argv[i])) {
             videomode = 1;
+        } else if (!strcmp("--vic20", argv[i])) {
+            coremode = 1;
         } else if (!strcmp("-h", argv[i]) || !strcmp("--help", argv[i]))  {
             usage();
             exit (EXIT_FAILURE);
