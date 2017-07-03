@@ -35,7 +35,7 @@ int verbose = 0;
 #define C64_RAM_SIZE    0x10000
 unsigned char *buffer = NULL;
 
-int target = TARGET_VIC20;
+int target = TARGET_C64;
 
 int logfunc (int lvl, const char * format, ...)
 {
@@ -82,6 +82,9 @@ void usage (void)
     "\n"
     "--vic20            set target to chameleon-vic20 (unexpanded)\n"
     "--vic20-8k         set target to chameleon-vic20 (+8K)\n"
+    "\n"
+    "--reset            trigger target reset\n"
+    "--resetwait        trigger target reset and wait until after reset\n"
     "\n"
     "-n, -p, -T, -R     ignored for compatibility\n"
     , CHCODENET_VERSION
@@ -170,6 +173,36 @@ void execute_run(void)
         LOGERR("error writing to chameleon memory.\n");
         exit(cleanup(EXIT_FAILURE));
     }
+}
+
+void execute_resetwait(void)
+{
+    unsigned char buf[6];
+    unsigned int readyloc = 1024 + (5 * 40);
+    /* overwrite the memory where we expect "ready" after reset */
+    buf[0] = 32;
+    buf[1] = 32;
+    buf[2] = 32;
+    buf[3] = 32;
+    buf[4] = 32;
+    buf[5] = 32;
+    if (chameleon_writememory(buf, 6, readyloc) < 0) {
+        LOGERR("error writing to chameleon memory.\n");
+        exit(cleanup(EXIT_FAILURE));
+    }
+    if (chameleon_writememory(buf, 1, 0x80000000) < 0) {
+        LOGERR("error writing to chameleon memory.\n");
+        exit(cleanup(EXIT_FAILURE));
+    }
+    printf("waiting for reset to finish..."); fflush(stdout);
+    while ((buf[0] != 18) && (buf[1] != 5) && (buf[2] != 1) &&
+           (buf[3] != 4) && (buf[4] != 25) && (buf[5] != 46)){
+        if (chameleon_readmemory(buf, 6, readyloc) < 0) {
+            LOGERR("error reading chameleon memory.\n");
+            exit(cleanup(EXIT_FAILURE));
+        }
+    }
+    printf("done.\n");
 }
 
 int cleanup(int n) {
@@ -345,6 +378,12 @@ int main(int argc, char *argv[])
                 LOGERR("error writing to chameleon memory.\n");
                 exit(cleanup(EXIT_FAILURE));
             }
+        } else if (!strcmp("--resetwait", argv[i])) {
+            if (target != TARGET_C64) {
+                LOGERR("--resetwait not implemented for vic20 yet\n");
+                exit(cleanup(EXIT_FAILURE));
+            }
+            execute_resetwait();
         } else {
             usage();
             exit(cleanup(EXIT_FAILURE));
