@@ -24,6 +24,9 @@
 #define CHAMELEON_PID 0x201D
 
 /*
+    Caution: for the (SPI)flash-related commands to work, the FPGA must be reset
+             first, since the FPGA also wants to be SPI-Master
+
     Dest  Ctrl  Data           Reply
 
     0x00  -     -              [0-2] Status           get status
@@ -50,14 +53,15 @@
     0x93  size  [0-31] Data    [0-31] Dummy           ram write data
 *   0x9f  -     -              [0-31] Dummy ?         ram write stop
 
+    0x13  -     -              [0-4] flash id         get flash id
+
 obsolete (remove from firmware):
 
 *   0x9e  -     -              [0-31] Data            ?
 *   0xa1                                              uart transmission ?
 
-    0x05 ?
-    0x13 ?
-    0x23 ?
+    0x05  -     -              -                      send flash write enable command
+    0x23  -     -                                     read flash status register
 
 */
 
@@ -70,6 +74,8 @@ obsolete (remove from firmware):
 #define SET_WRITEPOINTER    0xB1
 #define GETSTATUS           0x00
 #define GETVERSION          0xF0
+
+#define CMD_GET_FLASH_ID    0x13
 
 #define CMD_RESET_FPGA          0x07
 #define CMD_SET_JTAGSLOT        0x08
@@ -238,6 +244,23 @@ static int cmd_get_version(unsigned char *buffer)
     memset(&usbData, 0, sizeof(USBHIDDataFrame));
 
     CMDSET(GETVERSION, 0);
+    chameleon_writedata(&usbData);
+    Sleep (10);
+    rc = chameleon_readdata(&usbData,2000);
+    if (rc < 0) {
+        return -1;
+    }
+    memcpy(buffer, &usbData.Data[0], NUM_DATA_BYTES);
+    return CHACO_OK;
+}
+
+static int cmd_get_flash_id(unsigned char *buffer)
+{
+    int rc;
+    USBHIDDataFrame usbData;
+    memset(&usbData, 0, sizeof(USBHIDDataFrame));
+
+    CMDSET(CMD_GET_FLASH_ID, 0);
     chameleon_writedata(&usbData);
     Sleep (10);
     rc = chameleon_readdata(&usbData,2000);
@@ -1078,6 +1101,27 @@ int chameleon_getversion(int * version, int * mmcCardPresent)
         if(mmcCardPresent)*mmcCardPresent = buffer[0];
     }
 
+    return CHACO_OK;
+}
+
+int chameleon_getflashid(unsigned char *manufacturer, unsigned char *flash)
+{
+    unsigned char buffer[NUM_DATA_BYTES];
+    int rc;
+
+    rc = cmd_fpga_reset();
+    rc = cmd_get_flash_id(buffer);
+    if(rc != CHACO_OK)
+    {
+        LOGERR("chameleon_getflashid timeout\n");
+        return -1;
+    }
+#if 0
+    printf("chameleon_getflashid got: %02x %02x %02x %02x %02x %02x %02x %02x\n",
+           buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6], buffer[7]);
+#endif
+    if(manufacturer)*manufacturer = buffer[0];
+    if(flash)*flash = buffer[1];
     return CHACO_OK;
 }
 

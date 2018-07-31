@@ -34,6 +34,7 @@ extern void chameleon_setlogfunc(chamlog_t func);
 extern int chameleon_checkconfig(void);
 extern int chameleon_getversion(int * version, int * mmcCardPresent);
 extern int chameleon_getstatus(int *spiactive, int *usbcap, int *bricked, int *cfgdone, int *nstatus);
+extern int chameleon_getflashid(unsigned char *manufacturer, unsigned char *flash);
 
 extern int chameleon_setjtagslot(int slot);
 
