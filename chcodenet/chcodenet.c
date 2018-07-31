@@ -123,7 +123,7 @@ void execute_sys(int addr)
 {
     unsigned char buf[10];
     int n;
-    /* put RUN into keyboard buffer */
+    /* put SYS into keyboard buffer */
     buf[0] = 0;
     if (chameleon_writememory(buf, 1, 198) < 0) {
         LOGERR("error writing to chameleon memory.\n");
