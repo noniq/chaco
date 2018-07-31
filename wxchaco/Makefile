@@ -1,6 +1,10 @@
 
 include ../Makefile.config
 
+#CFLAGS+=`wx-config --cflags` -D__GXX_ABI_VERSION=1010
+#CLIBS+=`wx-config --libs`
+#CFLAGS+=`wx-config --cflags --toolkit=gtk2`
+#CLIBS+=`wx-config --libs --toolkit=gtk2`
 CFLAGS+=`wx-config --cflags`
 CLIBS+=`wx-config --libs`
 

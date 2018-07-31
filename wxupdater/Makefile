@@ -29,10 +29,10 @@ HEADER=\
 
 all: $(BUILDDIR)/wxupdater$(EXE)
 
-$(BUILDDIR)/wxupdater$(EXE): $(SOURCES) $(HEADER) Makefile data.c coreversion.h
+$(BUILDDIR)/wxupdater$(EXE): $(SOURCES) $(HEADER) Makefile data.c coreversion.h $(BUILDDIR)/chacolib.a
 #	$(CXX) $(CFLAGS) -o $(BUILDDIR)/wxupdater$(EXE) $(SOURCES) $(BUILDDIR)/chacolib.a $(CLIBS)
 	$(CXX) $(CFLAGS) -o $(BUILDDIR)/wxupdater$(EXE) $(SOURCES) ../chacolib/chacolib.c $(CLIBS)
-	-$(UPX) $(BUILDDIR)/wxupdater$(EXE)
+#	-$(UPX) $(BUILDDIR)/wxupdater$(EXE)
 
 coreversion.h: update/*.rbf update/*.bin
 	echo "#define __COREVERSION__" '"'`ls update/*.rbf | sed 's:.*chameleon_\(.*\).rbf:\1:'`'"' > coreversion.h
