@@ -10,7 +10,7 @@ ifneq ($(TARGET),osx)
 ALLTOOLS+=$(WXTOOLS)
 endif
 
-.PHONY: all zip $(ALLTOOLS)
+.PHONY: all zip chacolib $(ALLTOOLS)
 
 all: $(ALLTOOLS) zip
 
