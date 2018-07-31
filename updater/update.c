@@ -89,21 +89,35 @@ static void bye (int n)
     exit (n);
 }
 
-static int match (char *str)
+static int match (char *str, int version)
 {
     int n;
     n = strlen(str);
-    if (n > 5) {
-        n-=4;
-//        printf(">%s<\n",&str[n]);
-        if (!strcmp(&str[n], ".rbf")) {
-            return 1;
+    
+    if (version == 0) {
+        if (n > 5) {
+            n-=4;
+    //        printf(">%s<\n",&str[n]);
+            if (!strcmp(&str[n], ".rbf")) {
+                return 1;
+            }
         }
     }
+
+    if (version == 1) {
+        if (n > 7) {
+            n-=6;
+    //        printf(">%s<\n",&str[n]);
+            if (!strcmp(&str[n], "v2.rbf")) {
+                return 1;
+            }
+        }
+    }
+
     return 0;
 }
 
-static char *findcore(void)
+static char *findcore(int version)
 {
     DIR             *dip;
     struct dirent   *dit;
@@ -118,7 +132,7 @@ static char *findcore(void)
     while ((dit = readdir(dip)) != NULL)
     {
 //                printf("\n%s", dit->d_name);
-            if (match (dit->d_name)) {
+            if (match (dit->d_name, version)) {
                 strcpy (fullname, "./UPDATE/");
                 strcat (fullname, dit->d_name);
                 return fullname;
@@ -240,7 +254,8 @@ int main(int argc, char *argv[])
     unsigned char *buffer2 = malloc(CHAMELEON_RAM_SIZE);
     int addr, len, i, romlen;
     COREINFO cinfo;
-    int mcversion,sdinserted;
+    int mcversion,sdinserted,chversion;
+    unsigned char flashvendor, flashid;
 
     /* first check the options that should work before any other stuff is used */
     for (i = 1; i < argc; i++) {
@@ -258,15 +273,6 @@ int main(int argc, char *argv[])
         }
     }
 
-    rom_name = "./UPDATE/rom-menu.bin";
-    core_name = findcore();
-    if (core_name == NULL) {
-        LOGERR("FPGA core not found.\n");
-        bye(-1);
-    }
-    LOGVER("using core:    '%s'\n", core_name);
-    LOGVER("using romfile: '%s'\n", rom_name);
-
     if (chameleon_init() < 0) {
         LOGERR("initialization failed.\n");
         bye(-1);
@@ -278,6 +284,21 @@ int main(int argc, char *argv[])
     LOGVER("Firmware Version: %02x\n", mcversion);
     LOGVER("sd card detected: %s\n", sdinserted ? "no" : "yes");
 
+    if (chameleon_getflashid(&flashvendor, &flashid) < 0) {
+        LOGERR("getflashid failed.\n");
+        bye(-1);
+    }
+    /* chameleon v1: 01 20 18 03 01 */
+    LOGVER("Flash Vendor: %02x\n", flashvendor);
+    LOGVER("Flash ID: %02x\n", flashid);
+    
+    if (flashvendor == 0x01) {
+        chversion = 0;
+        printf("detected Chameleon v1 Hardware\n");
+    } else {
+        chversion = 1;
+        printf("detected Chameleon v2 Hardware\n");
+    }
 #ifdef LINUX
     /* make sure that if the binary is setuid root, the created files will be
        owned by the user running the binary (and not root) */
@@ -292,6 +313,15 @@ int main(int argc, char *argv[])
     chameleon_setlogfunc(logfunc);
 
     welcome();
+
+    rom_name = "./UPDATE/rom-menu.bin";
+    core_name = findcore(chversion);
+    if (core_name == NULL) {
+        LOGERR("FPGA core not found.\n");
+        bye(-1);
+    }
+    LOGVER("using core:    '%s'\n", core_name);
+    LOGVER("using romfile: '%s'\n", rom_name);
 
     /* update slot 0 */
     {

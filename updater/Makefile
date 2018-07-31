@@ -7,7 +7,7 @@ CFLAGS+=-I../chacolib
 
 all: $(BUILDDIR)/update$(EXE)
 
-$(BUILDDIR)/update$(EXE): update.c Makefile
+$(BUILDDIR)/update$(EXE): update.c Makefile $(BUILDDIR)/chacolib.a
 	$(CC) $(CFLAGS) -o $(BUILDDIR)/update$(EXE) update.c $(BUILDDIR)/chacolib.a $(CLIBS)
 
 clean:
