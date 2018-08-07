@@ -269,4 +269,6 @@ clean:
 	rm -rf $(objdir)/d64writer/
 	rm -rf $(objdir)/usbtest/
 	rm -rf $(objdir)
+	rm -f $(BUILDDIR)/$(app_name)
+	rm -f $(BUILDDIR)/$(ef3xfer_name)
 
