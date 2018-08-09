@@ -78,6 +78,7 @@ static void welcome (void)
     );
 
     if (getkey() != 'u') {
+        chameleon_startcore(0);
         exit (EXIT_SUCCESS);
     }
 }
