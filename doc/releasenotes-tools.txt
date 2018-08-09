@@ -2,7 +2,18 @@ This file contains the user visible (and important) changes from one release to
 another. For the gory details see svn log
 --------------------------------------------------------------------------------
 
+Beta9h:
+-------
+
+ updater:
+  - detect chameleon v2, and selects the v2 core via filename pattern
+  - restart core 0 after abort
+
+ Chaco:
+  - disable "start bootloader" button when no chameleon is connected
+
 Beta9e:
+-------
 
   - updated windows .exe files with updated libusb
  Chaco:
@@ -10,12 +21,14 @@ Beta9e:
   - added warning when slot 0 is flashed and no ROM file is used
 
 Beta9:
+------
 
 - BUGFIX: in the windows version, when generating the core name from the file-
           name a leading backslash would not be removed and appear in front of 
           the core name in the chameleon menu.
 
 Beta7a:
+-------
 
 - NEW: added update program that replaces the old .bat file
 - NEW: added a check for sd-card before flashing, and refuse to flash if one is 
