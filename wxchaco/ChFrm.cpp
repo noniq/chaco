@@ -213,6 +213,7 @@ void ChFrm::setButtonStates(bool state)
 
     WxCheckBox1->Enable(state);
 
+    StartBootloader->Enable(state);
 }
 
 void ChFrm::OnClose(wxCloseEvent& event)
