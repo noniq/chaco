@@ -193,6 +193,22 @@ static void checksdcard(int sdinserted)
     }
 }
 
+static void checkaddr(int addr)
+{
+    if (addr == -1) {
+        fprintf(stderr, "error: address not given\n");
+        exit(-1);
+    }
+}
+
+static void checklen(int len)
+{
+    if (len == 0) {
+        fprintf(stderr, "error: length not given\n");
+        exit(-1);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     char *core_name;
@@ -201,13 +217,10 @@ int main(int argc, char *argv[])
     unsigned char *buffer2;
     int spiactive, usbcap, bricked, cfgdone, nstatus;
     int mcversion, sdinserted;
-    int ret, addr, len, i, slotnum = 0, romlen, progressbar = 1;
+    int ret, addr = -1, len = 0, i, slotnum = 0, romlen, progressbar = 1;
     COREINFO cinfo;
 
     FILE *f;
-
-    addr = 0x00000000;
-    len = 0;
 
     if (argc < 2) {
         usage();
@@ -273,6 +286,7 @@ int main(int argc, char *argv[])
             i++;
             len = strtoul(argv[i], NULL, 0);
         } else if (!strcmp("--writemem", argv[i])) {
+            checkaddr(addr);
             i++;
             f = fopen(argv[i], "rb");
             if (f == NULL) {
@@ -286,20 +300,22 @@ int main(int argc, char *argv[])
             progressmsg = "Writing";
             ret = chameleon_writememory(buffer, len, addr);
         } else if (!strcmp("--readmem", argv[i])) {
+            checkaddr(addr);
+            checklen(len);
             i++;
             f = fopen(argv[i], "wb");
             if (f == NULL) {
                 fprintf(stderr, "error opening: '%s'\n", argv[i]);
                 exit(EXIT_FAILURE);
             }
-            if (len == 0) len = 0x100;
             printf("getting '%s' (%d bytes from %08x.)...\n", argv[i], len, addr);
             progressmsg = "Reading";
             ret = chameleon_readmemory(buffer, len, addr);
             len = fwrite(buffer, 1, len, f);
             fclose(f);
         } else if (!strcmp("--dumpmem", argv[i])) {
-            if (len == 0) len = 0x100;
+            checkaddr(addr);
+            checklen(len);
             progressmsg = "Reading";
             ret = chameleon_readmemory(buffer, len, addr);
             print_dump(buffer, len, addr);
@@ -417,7 +433,8 @@ int main(int argc, char *argv[])
             len = fwrite(buffer, 1, CHAMELEON_FLASH_SIZE, f);
             fclose(f);
         } else if (!strcmp("--dumpflash", argv[i])) {
-            if (len == 0) len = 0x100;
+            checkaddr(addr);
+            checklen(len);
             progressmsg = "Reading Flash";
             ret = chameleon_readflash(buffer, len, addr);
             print_dump(buffer, len, addr);
