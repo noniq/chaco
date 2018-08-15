@@ -45,7 +45,7 @@ void usage (void)
 {
     printf(
     "chacocmd (beta %s)\n"
-    "usage: chacocmd <options>\n"
+    "\nusage: chacocmd <options>\n\n"
 
     "-h --help                                  this help\n"
 
@@ -74,6 +74,9 @@ void usage (void)
     "--start <slot>                             start core\n"
     "--jtagslot <slot>                          set jtag slot\n"
     "--bootloader                               start microcontroller bootloader\n"
+    "\nArguments are processed left to right, multiple arguments can be used\n"
+    "on the same commandline. Memory commands require a running FPGA core that\n"
+    "supports such commands. Flash commands will reset the FPGA.\n"
     , __DATE__
     );
 }
