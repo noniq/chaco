@@ -218,6 +218,7 @@ int main(int argc, char *argv[])
     int spiactive, usbcap, bricked, cfgdone, nstatus;
     int mcversion, sdinserted;
     int ret, addr = -1, len = 0, i, slotnum = 0, romlen, progressbar = 1;
+    int templen, tempaddr;
     COREINFO cinfo;
 
     FILE *f;
@@ -294,8 +295,8 @@ int main(int argc, char *argv[])
                 exit(EXIT_FAILURE);
             }
             if (len == 0) len = CHAMELEON_RAM_SIZE;
-            len = fread(buffer, 1, len, f);
-            printf("sending '%s' (%d bytes to %08x.)...\n", argv[i], len, addr);
+            templen = fread(buffer, 1, len, f);
+            printf("sending '%s' (%d bytes to %08x.)...\n", argv[i], templen, addr);
             fclose(f);
             progressmsg = "Writing";
             ret = chameleon_writememory(buffer, len, addr);
@@ -311,7 +312,7 @@ int main(int argc, char *argv[])
             printf("getting '%s' (%d bytes from %08x.)...\n", argv[i], len, addr);
             progressmsg = "Reading";
             ret = chameleon_readmemory(buffer, len, addr);
-            len = fwrite(buffer, 1, len, f);
+            templen = fwrite(buffer, 1, len, f);
             fclose(f);
         } else if (!strcmp("--dumpmem", argv[i])) {
             checkaddr(addr);
@@ -326,7 +327,7 @@ int main(int argc, char *argv[])
 
             i++;
             slotnum = strtoul(argv[i], NULL, 0);
-            addr = slotnum << 20;
+            tempaddr = slotnum << 20;
             i++;
             core_name = argv[i];
 
@@ -337,10 +338,10 @@ int main(int argc, char *argv[])
             makename(cinfo.core_name, core_name);
 
             printf("using core name: '%s'\n", cinfo.core_name);
-            len = loadfile(buffer, core_name, CHAMELEON_SLOT_SIZE);
+            templen = loadfile(buffer, core_name, CHAMELEON_SLOT_SIZE);
 
-            cinfo.core_length = len;
-            printf("flashing core from '%s' (%d bytes to %08x.)...\n", core_name, len, addr);
+            cinfo.core_length = templen;
+            printf("flashing core from '%s' (%d bytes to %08x.)...\n", core_name, templen, tempaddr);
 
             rom_name = argv[i + 1];
             romlen = 0;
@@ -348,29 +349,29 @@ int main(int argc, char *argv[])
                 i++;
                 romlen = loadfile(rom_buffer, rom_name, CHAMELEON_SLOT_SIZE);
 //                print_dump(&rom_buffer[romlen - 0x10000], 0x10000, romlen - 0x10000);
-                printf("flashing roms from '%s' (%d bytes to %08x.)...\n", rom_name, romlen, addr + len);
+                printf("flashing roms from '%s' (%d bytes to %08x.)...\n", rom_name, romlen, tempaddr + templen);
             }
             cinfo.rom_length = romlen;
-            if ((len + romlen + 3) > CHAMELEON_SLOT_SIZE) {
+            if ((templen + romlen + 3) > CHAMELEON_SLOT_SIZE) {
                 fprintf(stderr, "error: binary size exceeds slot size.\n");
                 exit(EXIT_FAILURE);
             }
 
             memset (buffer2, 0xff, CHAMELEON_SLOT_SIZE);
-            len = chameleon_prepareslot(buffer2, buffer, &cinfo);
+            templen = chameleon_prepareslot(buffer2, buffer, &cinfo);
 
             if (romlen) {
-                memcpy(&buffer2[len], rom_buffer, romlen);
-                len += romlen;
+                memcpy(&buffer2[templen], rom_buffer, romlen);
+                templen += romlen;
             }
             progressmsg = "Flashing";
-            ret = chameleon_writeflash(buffer2, (len + 0xffff) & ~0xffff, addr);
+            ret = chameleon_writeflash(buffer2, (templen + 0xffff) & ~0xffff, tempaddr);
             free(rom_buffer);
         } else if (!strcmp("--flashslot", argv[i])) {
             checksdcard(sdinserted);
             i++;
             slotnum = strtoul(argv[i], NULL, 0);
-            addr = slotnum << 20;
+            tempaddr = slotnum << 20;
             i++;
             f = fopen(argv[i], "rb");
             if (f == NULL) {
@@ -378,11 +379,11 @@ int main(int argc, char *argv[])
                 exit(EXIT_FAILURE);
             }
             memset (buffer, 0xff, CHAMELEON_SLOT_SIZE);
-            len = fread(buffer, 1, CHAMELEON_SLOT_SIZE, f);
-            printf("flashing '%s' (%d bytes to %08x.)...\n", argv[i], len, addr);
+            templen = fread(buffer, 1, CHAMELEON_SLOT_SIZE, f);
+            printf("flashing '%s' (%d bytes to %08x.)...\n", argv[i], templen, tempaddr);
             fclose(f);
             progressmsg = "Flashing";
-            ret = chameleon_writeflash(buffer, (len + 0xffff) & ~0xffff, addr);
+            ret = chameleon_writeflash(buffer, (templen + 0xffff) & ~0xffff, tempaddr);
         } else if (!strcmp("--flashimage", argv[i])) {
             checksdcard(sdinserted);
             i++;
@@ -392,33 +393,34 @@ int main(int argc, char *argv[])
                 exit(EXIT_FAILURE);
             }
             memset (buffer, 0xff, CHAMELEON_FLASH_SIZE);
-            len = fread(buffer, 1, CHAMELEON_FLASH_SIZE, f);
-            printf("flashing '%s' (%d bytes to %08x.)...\n", argv[i], len, addr);
+            templen = fread(buffer, 1, CHAMELEON_FLASH_SIZE, f);
+            tempaddr = 0;
+            printf("flashing '%s' (%d bytes to %08x.)...\n", argv[i], templen, tempaddr);
             fclose(f);
             progressmsg = "Flashing";
-            ret = chameleon_writeflash(buffer, (len + 0xffff) & ~0xffff, 0);
+            ret = chameleon_writeflash(buffer, (templen + 0xffff) & ~0xffff, tempaddr);
         } else if (!strcmp("--eraseslot", argv[i])) {
             checksdcard(sdinserted);
             i++;
             slotnum = strtoul(argv[i], NULL, 0);
-            addr = slotnum << 20;
-            len = CHAMELEON_SLOT_SIZE;
+            tempaddr = slotnum << 20;
+            templen = CHAMELEON_SLOT_SIZE;
             progressmsg = "Erasing";
-            ret = chameleon_eraseflash((len + 0xffff) & ~0xffff, addr);
+            ret = chameleon_eraseflash((templen + 0xffff) & ~0xffff, tempaddr);
         } else if (!strcmp("--readslot", argv[i])) {
             i++;
             slotnum = strtoul(argv[i], NULL, 0);
-            addr = slotnum << 20;
+            tempaddr = slotnum << 20;
             i++;
             f = fopen(argv[i], "wb");
             if (f == NULL) {
                 fprintf(stderr, "error opening: '%s'\n", argv[i]);
                 exit(EXIT_FAILURE);
             }
-            printf("getting '%s' (%d bytes from %08x.)...\n", argv[i], CHAMELEON_SLOT_SIZE, addr);
+            printf("getting '%s' (%d bytes from %08x.)...\n", argv[i], CHAMELEON_SLOT_SIZE, tempaddr);
             progressmsg = "Reading Flash";
-            ret = chameleon_readflash(buffer, CHAMELEON_SLOT_SIZE, addr);
-            len = fwrite(buffer, 1, CHAMELEON_SLOT_SIZE, f);
+            ret = chameleon_readflash(buffer, CHAMELEON_SLOT_SIZE, tempaddr);
+            templen = fwrite(buffer, 1, CHAMELEON_SLOT_SIZE, f);
             fclose(f);
         } else if (!strcmp("--readimage", argv[i])) {
             i++;
@@ -427,10 +429,11 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "error opening: '%s'\n", argv[i]);
                 exit(EXIT_FAILURE);
             }
-            printf("getting '%s' (%d bytes from %08x.)...\n", argv[i], CHAMELEON_FLASH_SIZE, addr);
+            tempaddr = 0;
+            printf("getting '%s' (%d bytes from %08x.)...\n", argv[i], CHAMELEON_FLASH_SIZE, tempaddr);
             progressmsg = "Reading Flash";
-            ret = chameleon_readflash(buffer, CHAMELEON_FLASH_SIZE, addr);
-            len = fwrite(buffer, 1, CHAMELEON_FLASH_SIZE, f);
+            ret = chameleon_readflash(buffer, CHAMELEON_FLASH_SIZE, tempaddr);
+            templen = fwrite(buffer, 1, CHAMELEON_FLASH_SIZE, f);
             fclose(f);
         } else if (!strcmp("--dumpflash", argv[i])) {
             checkaddr(addr);
