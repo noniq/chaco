@@ -71,15 +71,15 @@ bool isPresent()
 
 /******************************************************************************/
 
-static string ChLastError;
-static bool bError;
+static char *ChLastError = (char*)"unknown";
+static bool bError = false;
 
 bool GetErrorActive()
 {
     return bError;
 }
 
-string getError()
+char *getError()
 {
     return ChLastError;
 }
@@ -119,7 +119,7 @@ int ChameleonInit()
     bError = false;
     rc = chameleon_init();
     if (rc < 0) {
-        ChLastError = "Initializing failed.\n";
+        ChLastError = (char*)"Initializing failed.";
         bError = true;
         UnlockAccess();
         return -1;
@@ -129,10 +129,15 @@ int ChameleonInit()
 
     int version = 0;
     int mmcStat = 0;
+
+    rc = CheckVersion(&version, &mmcStat);
+    if (rc < 0) {
+        ChLastError = (char*)"CheckVersion failed.";
+        bError = true;
+        return -1;
+    }
+
     LOGMSG("Chameleon up and running...\n");
-
-    CheckVersion(&version,&mmcStat);
-
     LOGMSG("Firmware Version: %02x\n" , version);
     LOGVER("sd card detected: %s\n", mmcStat ? "no" : "yes");
 
@@ -182,7 +187,9 @@ int CheckChameleon()
 int CheckVersion(int * version, int * mmcCardPresent)
 {
     int rc;
-    if(LockAccess() == -1)return -1;
+    if(LockAccess() == -1) {
+        return -1;
+    }
     rc = chameleon_getversion(version, mmcCardPresent);
     UnlockAccess();
     return rc;
@@ -191,7 +198,9 @@ int CheckVersion(int * version, int * mmcCardPresent)
 int updateFlashStatus(void)
 {
     int rc;
-    if(LockAccess() == -1)return -1;
+    if(LockAccess() == -1) {
+        return -1;
+    }
     rc = chameleon_getstatus(&bSPIACTIVE,&bUSBCAP, &bBricked, &bCfgdone, &bNstatus);
     UnlockAccess();
     return rc;

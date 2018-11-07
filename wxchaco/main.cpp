@@ -131,6 +131,9 @@ bool MyApp::OnInit()
     }
     else
     {
+        if (GetErrorActive()) {
+            LOGERR("%s\n", getError());
+        }
         // If no Chameleon is attached -> disable all buttons
         ChacoWin->setButtonStates(false);
     }

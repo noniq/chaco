@@ -45,7 +45,7 @@ using namespace std;
         int ChameleonClose();
 
         //Error Handling
-        string getError();
+        char *getError();
         bool GetErrorActive();
 
         int setJTAGSlot(int slot);
