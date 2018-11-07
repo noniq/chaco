@@ -98,6 +98,7 @@ int logfunc (int lvl, const char * format, ...)
 
     switch (lvl) {
         case LOGLVL_ERR:
+            fprintf (stderr, "error: ");
             printed = vfprintf (stderr, format, ap);
             break;
         case LOGLVL_VER:
@@ -256,10 +257,12 @@ int main(int argc, char *argv[])
         LOGERR("USB initialization failed.\n");
         exit(EXIT_FAILURE);
     }
+
     if (chameleon_getversion(&mcversion, &sdinserted) < 0) {
         LOGERR("getversion failed.\n");
         exit(EXIT_FAILURE);
     }
+
     LOGVER("Firmware Version: %02x\n", mcversion);
     LOGVER("sd card detected: %s\n", sdinserted ? "no" : "yes");
 
@@ -448,7 +451,9 @@ int main(int argc, char *argv[])
             i++;
             slotnum = strtoul(argv[i], NULL, 0);
             ret = chameleon_startcore(slotnum);
-            chameleon_getstatus(&spiactive,&usbcap,&bricked, &cfgdone, &nstatus);
+            if (chameleon_getstatus(&spiactive,&usbcap,&bricked, &cfgdone, &nstatus) != CHACO_OK) {
+                goto exitfailure;
+            }
             printstatus(spiactive,usbcap,bricked,cfgdone,nstatus);
         } else if (!strcmp("--jtagslot", argv[i])) {
             i++;
@@ -457,7 +462,9 @@ int main(int argc, char *argv[])
         } else if (!strcmp("--bootloader", argv[i])) {
             ret = chameleon_startbootloader();
         } else if (!strcmp("--status", argv[i])) {
-            chameleon_getstatus(&spiactive,&usbcap,&bricked, &cfgdone, &nstatus);
+            if (chameleon_getstatus(&spiactive,&usbcap,&bricked, &cfgdone, &nstatus) != CHACO_OK) {
+                goto exitfailure;
+            }
             printstatus(spiactive,usbcap,bricked,cfgdone,nstatus);
         } else if (!strcmp("--info", argv[i])) {
             int ii;
@@ -487,7 +494,7 @@ int main(int argc, char *argv[])
             }
         } else {
             usage();
-
+exitfailure:
             chameleon_close();
 
             free(buffer);
