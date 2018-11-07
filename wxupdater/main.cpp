@@ -21,6 +21,17 @@
 #define LOGMSG(...)       logfunc (LOGLVL_MSG, __VA_ARGS__ )
 #define DBG(...)          logfunc (LOGLVL_DBG, __VA_ARGS__ )
 
+static int chversion = 0;
+
+int GetChVersion()
+{
+    return chversion;
+}
+void SetChVersion(int n)
+{
+    chversion = n;
+}
+
 int logfunc (int lvl, const char * format, ...)
 {
     int printed = 0;
@@ -83,6 +94,7 @@ IMPLEMENT_APP(MyApp)
 bool MyApp::OnInit()
 {
     int verbose = 0;
+    int rc = 0;
 
     if ( argc == 2 && !wxStricmp(argv[1],  _T("--quiet")) )
     {
@@ -124,15 +136,23 @@ bool MyApp::OnInit()
     }
 #endif
 
-    int rc = ChameleonInit();
+    rc = ChameleonInit();
     if(rc == 0)
     {
         LOGMSG("Chameleon Ready\n");
     }
     else
     {
+        if (GetErrorActive()) {
+            LOGERR("%s\n", getError());
+        }
         // If no Chameleon is attached -> disable all buttons
         ChacoWin->setButtonStates(false);
+    }
+    
+    SetChVersion(GetFlashID());
+    if(GetChVersion() == -1) {
+        LOGERR("GetFlashID failed\n");
     }
 
     DBG("adding tasks\n");

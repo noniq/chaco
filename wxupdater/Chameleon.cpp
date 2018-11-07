@@ -71,15 +71,15 @@ bool isPresent()
 
 /******************************************************************************/
 
-static string ChLastError;
-static bool bError;
+static char *ChLastError = (char*)"unknown";
+static bool bError = false;
 
 bool GetErrorActive()
 {
     return bError;
 }
 
-string getError()
+char *getError()
 {
     return ChLastError;
 }
@@ -119,7 +119,7 @@ int ChameleonInit()
     bError = false;
     rc = chameleon_init();
     if (rc < 0) {
-        ChLastError = "Initializing failed.\n";
+        ChLastError = (char*)"Initializing failed.";
         bError = true;
         UnlockAccess();
         return -1;
@@ -129,10 +129,15 @@ int ChameleonInit()
 
     int version = 0;
     int mmcStat = 0;
+
+    rc = CheckVersion(&version, &mmcStat);
+    if (rc < 0) {
+        ChLastError = (char*)"CheckVersion failed.";
+        bError = true;
+        return -1;
+    }
+
     LOGMSG("Chameleon up and running...\n");
-
-    CheckVersion(&version,&mmcStat);
-
     LOGMSG("Firmware Version: %02x\n" , version);
     LOGVER("sd card detected: %s\n", mmcStat ? "no" : "yes");
 
@@ -186,6 +191,30 @@ int CheckVersion(int * version, int * mmcCardPresent)
     rc = chameleon_getversion(version, mmcCardPresent);
     UnlockAccess();
     return rc;
+}
+
+int GetFlashID() 
+{
+    int chversion = 0;
+    unsigned char flashvendor;
+    unsigned char flashid;
+
+    if (chameleon_getflashid(&flashvendor, &flashid) < 0) {
+        LOGERR("getflashid failed.\n");
+        return -1;
+    }
+    /* chameleon v1: 01 20 18 03 01 */
+    LOGVER("Flash Vendor: %02x\n", flashvendor);
+    LOGVER("Flash ID: %02x\n", flashid);
+    
+    if (flashvendor == 0x01) {
+        chversion = 1;
+        LOGMSG("detected Chameleon v1 Hardware\n");
+    } else {
+        chversion = 2;
+        LOGMSG("detected Chameleon v2 Hardware\n");
+    }
+    return chversion;
 }
 
 int updateFlashStatus(void)
@@ -247,10 +276,10 @@ int startBootloader()
 /******************************************************************************/
 
 /* task */
-int StartCH(int * flags)
+int StartCH(int *flags)
 {
     int rc;
-    int coreNum = *flags;
+    int coreNum = 0;
 
     LOGMSG("starting core (%d)\n", coreNum);
 
@@ -380,8 +409,13 @@ int FlashCore(core_flash_info_t * cfi)
 //        return -1;
 //    }
 
-    coreFile = coredata;
-    coreLength = sizeof(coredata);
+    if (GetChVersion() < 2) {
+        coreFile = coredata;
+        coreLength = sizeof(coredata);
+    } else {
+        coreFile = coredatav2;
+        coreLength = sizeof(coredatav2);
+    }
 
     /* prepare proper flash image for slot */
     coreData = new unsigned char[CHAMELEON_SLOT_SIZE];

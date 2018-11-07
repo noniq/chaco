@@ -45,11 +45,14 @@ using namespace std;
         int ChameleonClose();
 
         //Error Handling
-        string getError();
+        char *getError();
         bool GetErrorActive();
 
         int setJTAGSlot(int slot);
         int CheckVersion(int * version, int * mmcCardPresent);
+        int GetFlashID();
+        int GetChVersion();
+        void SetChVersion(int n);
         int CheckChameleon();
         int updateFlashStatus(void);
 
