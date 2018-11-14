@@ -292,14 +292,15 @@ static int cmd_fpga_start(int core)
 {
     USBHIDDataFrame usbData;
 
-    fpgarunning = 1;
+    fpgarunning = 0;
 
     memset(&usbData, 0, sizeof(USBHIDDataFrame));
 
     CMDSET(START_CH, (unsigned char)core);
     usbData.Data[0] = 0;
     chameleon_writedata(&usbData);
-    
+    fpgarunning = 1;
+    Sleep(400);
     if(chameleon_readdata(&usbData,8000)==-1) {
         return -1;
     }
