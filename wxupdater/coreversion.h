@@ -1,1 +1,1 @@
-#define __COREVERSION__ "beta9e"
+#define __COREVERSION__ "beta9g"
