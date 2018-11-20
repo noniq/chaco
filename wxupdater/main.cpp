@@ -140,6 +140,10 @@ bool MyApp::OnInit()
     if(rc == 0)
     {
         LOGMSG("Chameleon Ready\n");
+        SetChVersion(GetFlashID());
+        if(GetChVersion() == -1) {
+            LOGERR("GetFlashID failed\n");
+        }
     }
     else
     {
@@ -150,11 +154,6 @@ bool MyApp::OnInit()
         ChacoWin->setButtonStates(false);
     }
     
-    SetChVersion(GetFlashID());
-    if(GetChVersion() == -1) {
-        LOGERR("GetFlashID failed\n");
-    }
-
     DBG("adding tasks\n");
 
     //Register Tasks

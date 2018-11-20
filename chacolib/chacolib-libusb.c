@@ -114,6 +114,8 @@ static int chameleon_writedata(USBHIDDataFrame * Data)
 {
     int length = 0;
  
+    if(Data == NULL) return -1;
+
     /*parameter 2: Endpoint address. Should be read out of descriptor table*/
     int rc = libusb_interrupt_transfer(ch_hnd,2, (unsigned char*)Data,34 ,&length,1000);
 
