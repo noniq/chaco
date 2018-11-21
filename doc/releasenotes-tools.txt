@@ -5,7 +5,9 @@ another. For the gory details see svn log
 Beta9h:
 -------
 
- updater:
+ flasher:
+  - renamed the binary from "update.exe" to "flasher.exe". the former would
+    trigger pointless UAC warnings in win7 and up.
   - detect chameleon v2, and selects the v2 core via filename pattern
   - restart core 0 after abort
 

@@ -1,7 +1,11 @@
 This repository contains the Chameleon Control Program (Chaco) and related
 offspring:
 
-updater         update program from the release packages
+flasher         original update program from the release packages (originally
+                named "update", but renamed since that triggers a silly UAC
+                warning in win7 and above)
+wxflasher       alternative self contained update program
+
 chacocmd        original commandline USB client
 Chaco           original GUI USB client
 
