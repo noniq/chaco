@@ -27,13 +27,13 @@ HEADER=\
 	TaskMgr.h \
 	Threading.h
 
-all: $(BUILDDIR)/wxupdater$(EXE)
+all: $(BUILDDIR)/wxflasher$(EXE)
 
-$(BUILDDIR)/wxupdater$(EXE): $(SOURCES) $(HEADER) Makefile data.c coreversion.h $(BUILDDIR)/chacolib.a
+$(BUILDDIR)/wxflasher$(EXE): mkdata$(EXE) $(SOURCES) $(HEADER) Makefile coreversion.h $(BUILDDIR)/chacolib.a
 	./mkdata$(EXE) update/*beta??.rbf update/*beta??_v2.rbf update/*.bin data.c
-#	$(CXX) $(CFLAGS) -o $(BUILDDIR)/wxupdater$(EXE) $(SOURCES) $(BUILDDIR)/chacolib.a $(CLIBS)
-	$(CXX) $(CFLAGS) -o $(BUILDDIR)/wxupdater$(EXE) $(SOURCES) ../chacolib/chacolib.c $(CLIBS)
-#	-$(UPX) $(BUILDDIR)/wxupdater$(EXE)
+#	$(CXX) $(CFLAGS) -o $(BUILDDIR)/wxflasher$(EXE) $(SOURCES) $(BUILDDIR)/chacolib.a $(CLIBS)
+	$(CXX) $(CFLAGS) -o $(BUILDDIR)/wxflasher$(EXE) $(SOURCES) ../chacolib/chacolib.c $(CLIBS)
+#	-$(UPX) $(BUILDDIR)/wxflasher$(EXE)
 
 coreversion.h: update/*.rbf update/*.bin Makefile
 	echo "#define __COREVERSION__" '"'`ls update/*beta??.rbf | sed 's:.*chameleon_\(.*\).rbf:\1:'`'"' > coreversion.h
@@ -42,6 +42,6 @@ mkdata$(EXE): mkdata.c
 	$(CC) -o mkdata$(EXE) mkdata.c
 
 clean:
-	$(RM) $(BUILDDIR)/wxupdater$(EXE)
+	$(RM) $(BUILDDIR)/wxflasher$(EXE)
 	$(RM) ./mkdata$(EXE)
 

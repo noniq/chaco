@@ -106,7 +106,7 @@ endif
 		readme.txt
 	cd ./build-$(TARGET); zip -q ../chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip \
 		chacocmd$(EXE) \
-		updater$(EXE) \
+		flasher$(EXE) \
 		chcodenet$(EXE) \
 		chshot$(EXE) \
 		chusb$(EXE) \
@@ -129,7 +129,7 @@ endif
 ifneq ($(TARGET),osx)
 	cd ./build-$(TARGET); zip -q ../chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip \
 		ChTransfer$(EXE) \
-		wxupdater$(EXE) \
+		wxflasher$(EXE) \
 		Chaco$(EXE)
 	cd ./build-$(TARGET); zip -mq ../chameleon-tools-$(TARGET)-`date +"%Y%m%d"`.zip \
 		doc/readme-chtransfer.txt

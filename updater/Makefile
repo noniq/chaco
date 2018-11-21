@@ -5,10 +5,10 @@ BUILDDIR=../build-$(TARGET)
 
 CFLAGS+=-I../chacolib
 
-all: $(BUILDDIR)/update$(EXE)
+all: $(BUILDDIR)/flasher$(EXE)
 
-$(BUILDDIR)/update$(EXE): update.c Makefile $(BUILDDIR)/chacolib.a
-	$(CC) $(CFLAGS) -o $(BUILDDIR)/update$(EXE) update.c $(BUILDDIR)/chacolib.a $(CLIBS)
+$(BUILDDIR)/flasher$(EXE): update.c Makefile $(BUILDDIR)/chacolib.a
+	$(CC) $(CFLAGS) -o $(BUILDDIR)/flasher$(EXE) update.c $(BUILDDIR)/chacolib.a $(CLIBS)
 
 clean:
-	$(RM) $(BUILDDIR)/update$(EXE)
+	$(RM) $(BUILDDIR)/flasher$(EXE)
