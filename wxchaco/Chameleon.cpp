@@ -303,6 +303,15 @@ int readMemory(slot_memory_info_t *info)
     if(!info)return -1;
     if(!info->filename)return -1;
 
+    if ((info->filename == NULL) || 
+        (info->filename->c_str() == NULL) ||
+        (info->filename->c_str()[0] == 0)) {
+        LOGERR("Cannot read file: invalid filename or path (non ASCII?)\n");
+        UnlockAccess();
+        return -1;
+    }
+    
+    
     LOGMSG("Reading memory to file: %s\n", info->filename->c_str());
     LOGMSG("Address: %08x Size: %d\n", info->address, info->length);
 
@@ -344,6 +353,14 @@ int writeMemory(slot_memory_info_t *info)
     if(!info)return -1;
     if(!info->filename)return -1;
 
+    if ((info->filename == NULL) || 
+        (info->filename->c_str() == NULL) ||
+        (info->filename->c_str()[0] == 0)) {
+        LOGERR("Cannot write file: invalid filename or path (non ASCII?)\n");
+        UnlockAccess();
+        return -1;
+    }
+    
     LOGMSG("Writing file to memory: %s\n", info->filename->c_str());
     LOGMSG("Address: %08x Size: %d\n", info->address, info->length);
 
@@ -450,13 +467,37 @@ int FlashCore(core_flash_info_t * cfi)
 
     /* load additional ROM file */
     if(cfi->romName) {
+        
+        if ((cfi->romName == NULL) || 
+            (cfi->romName->c_str() == NULL) ||
+            (cfi->romName->c_str()[0] == 0)) {
+            LOGERR("Cannot load ROM file: invalid filename or path (non ASCII?)\n");
+            UnlockAccess();
+            delete cfi;
+            return -1;
+        }
+
         bFlashRom = true;
-        /* FIXME: error checking */
-        loadFile(&romData, &romLength, (char*)cfi->romName->c_str());
+
+        if(loadFile(&romData, &romLength, cfi->romName) < 0) {
+            LOGERR("Cannot load ROM file '%s'\n",cfi->romName->c_str());
+            UnlockAccess();
+            delete cfi;
+            return -1;
+        }
     }
 
-    if(loadFile(&coreFile, &coreLength, (char*)cfi->coreName->c_str()) < 0) {
-        LOGERR("Cannot load file '%s'",cfi->coreName->c_str());
+    if ((cfi->coreName == NULL) || 
+        (cfi->coreName->c_str() == NULL) ||
+        (cfi->coreName->c_str()[0] == 0)) {
+        LOGERR("Cannot load Core file: invalid filename or path (non ASCII?)\n");
+        UnlockAccess();
+        delete cfi;
+        return -1;
+    }
+
+    if(loadFile(&coreFile, &coreLength, cfi->coreName) < 0) {
+        LOGERR("Cannot load Core file '%s'\n",cfi->coreName->c_str());
         UnlockAccess();
         delete cfi;
         return -1;
@@ -472,9 +513,9 @@ int FlashCore(core_flash_info_t * cfi)
 
     coreLength = chameleon_prepareslot(coreData, coreFile, &cinfo);
 
-    LOGMSG("CoreFile: %s Size: %d\n",cfi->coreName->c_str(),coreLength);
+    LOGMSG("Core file: %s Size: %d\n",cfi->coreName->c_str(),coreLength);
     if(bFlashRom) {
-        LOGMSG("RomFile: %s Size: %d\n",cfi->romName->c_str(),romLength);
+        LOGMSG("ROM file: %s Size: %d\n",cfi->romName->c_str(),romLength);
     }
     LOGMSG("Binary Length: %d Padded: %d\n",coreLength + romLength,(coreLength + romLength + 0xffff) & ~0xffff);
 
@@ -486,7 +527,6 @@ int FlashCore(core_flash_info_t * cfi)
             memcpy(&coreData[coreLength], romData, romLength);
         }
 
-        //stringstream outStream;
         LOGMSG("Flashing Slot: %d\n",cfi->corenum);
 
         rc = chameleon_writeflash(coreData, (coreLength + romLength + 0xffff) & ~0xffff, (1<<20)*cfi->corenum);
@@ -519,11 +559,23 @@ int WriteSlot(slot_info_t * si)
 
     if(LockAccess() == -1)return -1;
 
+    if ((si->filename == NULL) || 
+        (si->filename->c_str() == NULL) ||
+        (si->filename->c_str()[0] == 0)) {
+        LOGERR("Cannot write Slot-image: invalid filename or path (non ASCII?)\n");
+        UnlockAccess();
+        return -1;
+    }
+    
     std::string * filename = si->filename;   
     LOGMSG("Flashing slot %d from %s\n", slotnum, filename->c_str());
 
-    /* FIXME: error checking */
-    loadFile(&buffer, &size, (char*)filename->c_str());
+    if(loadFile(&buffer, &size, filename) < 0) {
+        LOGERR("Cannot load Slot-image file '%s'",filename->c_str());
+        delete[] (buffer);
+        UnlockAccess();
+        return -1;
+    }
 
     LOGMSG("Size: %d\n" , size);
 
@@ -547,6 +599,14 @@ int ReadSlot(slot_info_t * si)
 
     if(LockAccess() == -1)return -1;
 
+    if ((si->filename == NULL) || 
+        (si->filename->c_str() == NULL) ||
+        (si->filename->c_str()[0] == 0)) {
+        LOGERR("Cannot save Slot-image: invalid filename or path (non ASCII?)\n");
+        UnlockAccess();
+        return -1;
+    }
+    
     std::string * filename = si->filename;   
     LOGMSG("Reading slot %d to %s\n", slotnum, filename->c_str());
 
@@ -556,8 +616,12 @@ int ReadSlot(slot_info_t * si)
     if (rc < 0) {
         LOGERR("reading from flash failed.\n");
     } else {
-        /* FIXME: error checking */
-        saveFile(buffer,CHAMELEON_SLOT_SIZE,(char*)filename->c_str());
+        if(saveFile(buffer,CHAMELEON_SLOT_SIZE,filename) < 0) {
+            LOGERR("Cannot save Slot-image file '%s'",filename->c_str());
+            delete[] (buffer);
+            UnlockAccess();
+            return -1;
+        }
         LOGMSG("done.\n");
     }
 
@@ -572,6 +636,15 @@ int readImage(std::string * filename)
     int rc;
 
     if(LockAccess() == -1)return -1;
+    
+    if ((filename == NULL) || 
+        (filename->c_str() == NULL) ||
+        (filename->c_str()[0] == 0)) {
+        LOGERR("Cannot read Flash-image: invalid filename or path (non ASCII?)\n");
+        UnlockAccess();
+        return -1;
+    }
+    
     LOGMSG("Reading image. Outputfile: %s\n",filename->c_str());
 
     std::fstream readBackFile;
@@ -611,12 +684,22 @@ int writeImage(std::string * filename)
         return -1;
     }
 
-    if(LockAccess() == -1)return -1;
+    if(LockAccess() == -1) {
+        return -1;
+    }
+    
+    if ((filename == NULL) || 
+        (filename->c_str() == NULL) ||
+        (filename->c_str()[0] == 0)) {
+        LOGERR("Cannot write Flash-image: invalid filename or path (non ASCII?)\n");
+        UnlockAccess();
+        return -1;
+    }
+    
     LOGMSG("Writing image. Inputfile: %s\n",filename->c_str());
-
     std::ifstream writeFile;
 
-    writeFile.open(filename->c_str(), fstream::in | fstream::binary );
+    writeFile.open(filename->c_str(), fstream::in | fstream::binary);
     if(!writeFile.is_open())
     {
         UnlockAccess();

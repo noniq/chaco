@@ -1,15 +1,18 @@
-#include "BasicFile.h"
+
 #include <iostream>
 #include <fstream>
+#include <string>
+
+#include "BasicFile.h"
 
 using namespace std;
 
-int FileLength(char * filename)
+int FileLength(std::string * filename)
 {
     int TotalBytes;
     ifstream infile;
 
-    infile.open(filename,ifstream::binary);
+    infile.open(filename->c_str(),ifstream::binary);
     if(!infile.is_open()) {
         return -1;
     }
@@ -20,12 +23,12 @@ int FileLength(char * filename)
     return TotalBytes;
 }
 
-int loadFile(unsigned char ** data, int * size, char * filename)
+int loadFile(unsigned char ** data, int * size, std::string * filename)
 {
     int TotalBytes;
-    ifstream infile;
+    std::ifstream infile;
 
-    infile.open(filename,ifstream::binary);
+    infile.open(filename->c_str(), fstream::in | fstream::binary);
     if(!infile.is_open()) {
         return -1;
     }
@@ -41,10 +44,10 @@ int loadFile(unsigned char ** data, int * size, char * filename)
     return TotalBytes;
 }
 
-int saveFile(unsigned char * data, int size, char * filename)
+int saveFile(unsigned char * data, int size, std::string * filename)
 {
     ofstream ofile;
-    ofile.open(filename, ofstream::binary);
+    ofile.open(filename->c_str(), ofstream::binary);
     if(!ofile.is_open())return -1;
     ofile.write((char*)data,size);
     ofile.close();

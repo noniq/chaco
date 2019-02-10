@@ -12,8 +12,8 @@ using namespace std;
 
         typedef struct
         {
-            string * romName;
-            string * coreName;
+            std::string * romName;
+            std::string * coreName;
             bool bFlashRom;
             int corenum;
         } core_flash_info_t;

@@ -513,6 +513,9 @@ void ChFrm::WxButton2Click(wxCommandEvent& event)
     }
 
     cfi->coreName = new std::string(); // FIXME: memory leak!
+    // BUGBUG; OpenCoreFileDialog->GetPath()) gives us some unicode string, but
+    //         toStdString will kill it, ie result in an empty string if any
+    //         non ascii chars are included.
     (*cfi->coreName) =  toStdString(OpenCoreFileDialog->GetPath());
 
     if(flashRom)
@@ -524,6 +527,9 @@ void ChFrm::WxButton2Click(wxCommandEvent& event)
             return;
         }
         cfi->romName = new std::string(); // FIXME: memory leak!
+        // BUGBUG; OpenCoreFileDialog->GetPath()) gives us some unicode string, but
+        //         toStdString will kill it, ie result in an empty string if any
+        //         non ascii chars are included.
         (*cfi->romName) =  toStdString(OpenRomFileDialog->GetPath());
 
     }
@@ -550,6 +556,9 @@ void ChFrm::memreaderClick(wxCommandEvent& event)
 
     if(rc == wxID_OK)
     {
+        // BUGBUG; OpenCoreFileDialog->GetPath()) gives us some unicode string, but
+        //         toStdString will kill it, ie result in an empty string if any
+        //         non ascii chars are included.
         targetFileName = new wxString(OpenFileDialog->GetPath()); /* FIXME: memory leak! */
     } else {
         delete OpenFileDialog;
@@ -588,6 +597,9 @@ void ChFrm::WxButton7Click(wxCommandEvent& event)
 
     if(rc == wxID_OK)
     {
+        // BUGBUG; OpenCoreFileDialog->GetPath()) gives us some unicode string, but
+        //         toStdString will kill it, ie result in an empty string if any
+        //         non ascii chars are included.
         targetFileName = new wxString(OpenFileDialog->GetPath()); /* FIXME: memory leak! */
     } else {
         delete OpenFileDialog;
@@ -600,7 +612,7 @@ void ChFrm::WxButton7Click(wxCommandEvent& event)
     wxString adrStr = WxEdit1->GetValue();
     adrStr.ToLong(&address,0);
 
-    size = FileLength((char*)targetFileName->char_str());
+    size = FileLength(target);
 
     slot_memory_info_t *meminfo = new slot_memory_info_t; /* FIXME: memory leak! */
     meminfo->address = address;
@@ -621,6 +633,9 @@ void ChFrm::writeImgButtonClick(wxCommandEvent& event)
     int rc = OpenFileDialog->ShowModal();
     if(rc == wxID_OK)
     {
+        // BUGBUG; OpenCoreFileDialog->GetPath()) gives us some unicode string, but
+        //         toStdString will kill it, ie result in an empty string if any
+        //         non ascii chars are included.
         std::string * fn = new std::string(toStdString(OpenFileDialog->GetPath()));  /* FIXME: memory leak! */
         TaskMgr::runTask("WriteImage",(void*)fn);
     }
@@ -636,6 +651,9 @@ void ChFrm::readImgButtonClick(wxCommandEvent& event)
     int rc = OpenFileDialog->ShowModal();
     if(rc == wxID_OK)
     {
+        // BUGBUG; OpenCoreFileDialog->GetPath()) gives us some unicode string, but
+        //         toStdString will kill it, ie result in an empty string if any
+        //         non ascii chars are included.
         std::string * fn = new std::string(toStdString(OpenFileDialog->GetPath())); /* FIXME: memory leak! */
         TaskMgr::runTask("ReadImage",(void*)fn);
     }
@@ -651,6 +669,9 @@ void ChFrm::writeSlotClick(wxCommandEvent& event)
     int rc = OpenFileDialog->ShowModal();
     if(rc == wxID_OK)
     {
+        // BUGBUG; OpenCoreFileDialog->GetPath()) gives us some unicode string, but
+        //         toStdString will kill it, ie result in an empty string if any
+        //         non ascii chars are included.
         std::string * fn = new std::string(toStdString(OpenFileDialog->GetPath()));   /* FIXME: memory leak! */
         slot_info_t * sli = new slot_info_t();  /* FIXME: memory leak! */
         sli->filename = fn;
@@ -669,6 +690,9 @@ void ChFrm::readSlotClick(wxCommandEvent& event)
     int rc = OpenFileDialog->ShowModal();
     if(rc == wxID_OK)
     {
+        // BUGBUG; OpenCoreFileDialog->GetPath()) gives us some unicode string, but
+        //         toStdString will kill it, ie result in an empty string if any
+        //         non ascii chars are included.
         std::string * fn = new std::string(toStdString(OpenFileDialog->GetPath())); /* FIXME: memory leak! */
         slot_info_t * sli = new slot_info_t(); /* FIXME: memory leak! */
         sli->filename = fn;

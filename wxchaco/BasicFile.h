@@ -3,8 +3,10 @@
 #ifndef _BASIC_FILE_H_
 #define _BASIC_FILE_H_
 
-int loadFile(unsigned char ** data, int * size, char * filename);
-int saveFile(unsigned char * data, int size, char * filename);
-int FileLength(char * filename);
+using namespace std;
+
+int loadFile(unsigned char ** data, int * size, std::string * filename);
+int saveFile(unsigned char * data, int size, std::string * filename);
+int FileLength(std::string * filename);
 
 #endif
