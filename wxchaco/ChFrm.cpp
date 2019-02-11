@@ -54,31 +54,31 @@ int flash_additional_roms = 0;
 //Code added in other places will be removed by wxDev-C++
 ////Event Table Start
 BEGIN_EVENT_TABLE(ChFrm,wxFrame)
-	////Manual Code Start
+    ////Manual Code Start
         EVT_SPINCTRL(ID_WXSPINCTRL1,ChFrm::WxSpinCtrl1Click)
         EVT_SPIN_UP(ID_WXSPINCTRL1,ChFrm::WxSpinCtrl1Click)
         EVT_SPIN_DOWN(ID_WXSPINCTRL1,ChFrm::WxSpinCtrl1Click)
-	////Manual Code End
-	
-	EVT_CLOSE(ChFrm::OnClose)
-	EVT_ACTIVATE(ChFrm::ChFrmActivate)
+    ////Manual Code End
+    
+    EVT_CLOSE(ChFrm::OnClose)
+    EVT_ACTIVATE(ChFrm::ChFrmActivate)
         EVT_BUTTON(ID_STARTBOOTLOADER,ChFrm::StartBootloaderClick)
-	EVT_TIMER(ID_WXTIMER1,ChFrm::GUIUpdate)
-	EVT_BUTTON(ID_READSLOT,ChFrm::readSlotClick)
-	EVT_BUTTON(ID_WRITESLOT,ChFrm::writeSlotClick)
-	EVT_BUTTON(ID_WRITEIMGBUTTON,ChFrm::writeImgButtonClick)
-	EVT_BUTTON(ID_READIMGBUTTON,ChFrm::readImgButtonClick)
-	
+    EVT_TIMER(ID_WXTIMER1,ChFrm::GUIUpdate)
+    EVT_BUTTON(ID_READSLOT,ChFrm::readSlotClick)
+    EVT_BUTTON(ID_WRITESLOT,ChFrm::writeSlotClick)
+    EVT_BUTTON(ID_WRITEIMGBUTTON,ChFrm::writeImgButtonClick)
+    EVT_BUTTON(ID_READIMGBUTTON,ChFrm::readImgButtonClick)
+    
         EVT_SPINCTRL(ID_WXSPINCTRL2,ChFrm::setjtagslotClick)
         EVT_SPIN_UP(ID_WXSPINCTRL2,ChFrm::setjtagslotClick)
-	EVT_SPIN_DOWN(ID_WXSPINCTRL2,ChFrm::setjtagslotClick)
-	EVT_BUTTON(ID_WXBUTTON7,ChFrm::WxButton7Click)
-	EVT_BUTTON(ID_MEMREADER,ChFrm::memreaderClick)
-	
-	EVT_TEXT(ID_WXEDIT1,ChFrm::WxEdit1Updated)
-//	EVT_BUTTON(ID_WXBUTTON5,ChFrm::WxButton5Click)
-	EVT_BUTTON(ID_WXBUTTON2,ChFrm::WxButton2Click)
-	EVT_BUTTON(ID_WXBUTTON1,ChFrm::WxButton1Click)
+    EVT_SPIN_DOWN(ID_WXSPINCTRL2,ChFrm::setjtagslotClick)
+    EVT_BUTTON(ID_WXBUTTON7,ChFrm::WxButton7Click)
+    EVT_BUTTON(ID_MEMREADER,ChFrm::memreaderClick)
+    
+    EVT_TEXT(ID_WXEDIT1,ChFrm::WxEdit1Updated)
+//    EVT_BUTTON(ID_WXBUTTON5,ChFrm::WxButton5Click)
+    EVT_BUTTON(ID_WXBUTTON2,ChFrm::WxButton2Click)
+    EVT_BUTTON(ID_WXBUTTON1,ChFrm::WxButton1Click)
 
         EVT_CHECKBOX(ID_WXCHECKBOX1,ChFrm::WxCheckBox1Click)
 END_EVENT_TABLE()
@@ -249,11 +249,11 @@ void ChFrm::setText(wxDateTime now, std::string text)
     LogWindow->AppendText(text);
     len = strlen(text.c_str());
     if (len > 0) {
-		if(text.c_str()[len - 1] == '\n') {
-			pos = 0;
-			LogWindow->ScrollLines(1);
-		}
-	}
+        if(text.c_str()[len - 1] == '\n') {
+            pos = 0;
+            LogWindow->ScrollLines(1);
+        }
+    }
     LogWindow->ShowPosition( LogWindow->GetLastPosition() );
     LogWindow->Refresh(true, NULL);
     LogWindow->Thaw();
@@ -521,7 +521,7 @@ void ChFrm::WxButton2Click(wxCommandEvent& event)
     // BUGBUG; OpenCoreFileDialog->GetPath()) gives us some unicode string, but
     //         toStdString will kill it, ie result in an empty string if any
     //         non ascii chars are included.
-	(*cfi->coreName) =  toStdString(OpenCoreFileDialog->GetPath());
+    (*cfi->coreName) =  toStdString(OpenCoreFileDialog->GetPath());
 
     if(flashRom)
     {

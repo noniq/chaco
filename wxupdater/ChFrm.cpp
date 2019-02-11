@@ -124,6 +124,7 @@ void ChFrm::OnClose(wxCloseEvent& event)
 void ChFrm::setText(wxDateTime now, std::string text)
 {
     static int pos = 0;
+    int len = 0;
 
     LogWindow->Freeze();
     if (pos == 0) {
@@ -132,10 +133,14 @@ void ChFrm::setText(wxDateTime now, std::string text)
         LogWindow->AppendText(wxT(" "));
         pos++;
     }
-    LogWindow->AppendText(wxString::FromAscii(text.c_str()));
-    if(text.c_str()[strlen(text.c_str()) - 1] == '\n') {
-        pos = 0;
-        LogWindow->ScrollLines(1);
+//    LogWindow->AppendText(wxString::FromAscii(text.c_str()));
+    LogWindow->AppendText(text);
+    len = strlen(text.c_str());
+    if (len > 0) {
+        if(text.c_str()[len - 1] == '\n') {
+            pos = 0;
+            LogWindow->ScrollLines(1);
+        }
     }
     LogWindow->ShowPosition( LogWindow->GetLastPosition() );
     LogWindow->Refresh(true, NULL);
