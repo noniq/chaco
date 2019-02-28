@@ -180,7 +180,11 @@ static const unsigned char gap2[5] =
 
 static const unsigned int gcrtrklen[5] =
 {
-    7692+4, 7142, 6666, 6250, 6250
+    7692+4, /* 1-17 */
+    7142,   /* 18-24 */
+    6666,   /* 25-30 */
+    6250,   /* 31-35 */
+    6250    /* 36-42 */
 };
 
 static unsigned char *gcrout;
