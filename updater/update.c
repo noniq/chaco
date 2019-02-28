@@ -17,6 +17,7 @@
 #endif
 
 #include "chacolib.h"
+#include "chameleon.h"
 
 #ifndef DEBUG
 /* #define DEBUG */
@@ -233,6 +234,23 @@ static unsigned int loadfile(unsigned char *buffer, char *name, unsigned int max
     return len;
 }
 
+static unsigned int loadfile2(unsigned char *buffer, char *name, unsigned int maxlen)
+{
+    unsigned int len;
+    FILE *f;
+
+    f = fopen(name, "rb");
+    if (f == NULL) {
+        printf("not found: '%s'\n", name);
+        return 0;
+    } else {
+        len = fread(buffer, 1, maxlen, f);
+        printf("found: '%s' ($%04x bytes)\n", name, len);
+    }
+    fclose(f);
+    return len;
+}
+
 static void checksdcard(int sdinserted)
 {
     while (!sdinserted) {
@@ -348,6 +366,15 @@ int main(int argc, char *argv[])
             fprintf(stderr, "error: binary size exceeds slot size.\n");
             exit(EXIT_FAILURE);
         }
+
+        /* load extra ROMs */
+        loadfile2(&rom_buffer[(RAMBASE_BASIC    - RAMBASE_CFGROM)], "./UPDATE/basic.rom"  , 1024 *  8);
+        loadfile2(&rom_buffer[(RAMBASE_CHARGEN  - RAMBASE_CFGROM)], "./UPDATE/chargen.rom", 1024 *  4);
+        loadfile2(&rom_buffer[(RAMBASE_KERNAL   - RAMBASE_CFGROM)], "./UPDATE/kernal.rom" , 1024 *  8);
+        loadfile2(&rom_buffer[(RAMBASE_MMC64    - RAMBASE_CFGROM)], "./UPDATE/mmc64.rom"  , 1024 *  8);
+        loadfile2(&rom_buffer[(RAMBASE_DEFCRT0  - RAMBASE_CFGROM)], "./UPDATE/slot1.rom"  , 1024 * 64);
+        loadfile2(&rom_buffer[(RAMBASE_DEFCRT1  - RAMBASE_CFGROM)], "./UPDATE/slot2.rom"  , 1024 * 64);
+        loadfile2(&rom_buffer[(RAMBASE_DRIVEROM - RAMBASE_CFGROM)], "./UPDATE/drive.rom"  , 1024 * 16);
 
         memset (buffer2, 0xff, CHAMELEON_SLOT_SIZE);
         len = chameleon_prepareslot(buffer2, buffer, &cinfo);

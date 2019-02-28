@@ -3,7 +3,7 @@ include ../Makefile.config
 
 BUILDDIR=../build-$(TARGET)
 
-CFLAGS+=-I../chacolib
+CFLAGS+=-I../chacolib -I../include
 
 all: $(BUILDDIR)/flasher$(EXE)
 
