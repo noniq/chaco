@@ -305,7 +305,7 @@ int main(int argc, char *argv[])
             printf("sending '%s' (%d bytes to %08x.)...\n", argv[i], templen, addr);
             fclose(f);
             progressmsg = "Writing";
-            ret = chameleon_writememory(buffer, len, addr);
+            ret = chameleon_writememory(buffer, templen, addr);
         } else if (!strcmp("--readmem", argv[i])) {
             checkaddr(addr);
             checklen(len);

@@ -5,7 +5,7 @@ another. For the gory details see svn log
  Chaco:
   - fixed crash when "invalid" filename or path is encountered - unfortunately
     wxwindows screws things up with unicode :(
-    
+
  flasher:
   - user defined ROM files can be put into the UPDATE directory in the same way
     as with the C64 native update.prg
