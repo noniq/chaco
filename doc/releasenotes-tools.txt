@@ -2,6 +2,9 @@ This file contains the user visible (and important) changes from one release to
 another. For the gory details see svn log
 --------------------------------------------------------------------------------
 
+Beta9i:
+-------
+
  Chaco:
   - fixed crash when "invalid" filename or path is encountered - unfortunately
     wxwindows screws things up with unicode :(
@@ -9,7 +12,6 @@ another. For the gory details see svn log
  flasher:
   - user defined ROM files can be put into the UPDATE directory in the same way
     as with the C64 native update.prg
-
 
 Beta9h:
 -------

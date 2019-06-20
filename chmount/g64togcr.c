@@ -16,6 +16,10 @@ int loadg64(char *name)
     unsigned int offset, tracklen;
 
     out = fopen(name, "rb");
+    if (out == NULL) {
+        fprintf(stderr, "error: could not open '%s'\n", name);
+        exit(-1);
+    }
 
     if (fread(g64hdr, 1, 0x0c, out) != 0x0c) {
             goto end;

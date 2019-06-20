@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -296,6 +297,9 @@ int loadcrt(char *name)
                     fclose (f);
             }
         }
+    } else {
+        fprintf(stderr, "error: could not open '%s'\n", name);
+        exit(-1);
     }
 
     return res;

@@ -365,6 +365,10 @@ int loadd64(char *name)
     int t, s, ts;
     unsigned char *buf = &d64buffer[0];
     out = fopen(name, "rb");
+    if (out == NULL) {
+        fprintf(stderr, "error: could not open '%s'\n", name);
+        exit(-1);
+    }
 
     for (t = 1; t <= 42; t++) {
         ts = sectors[trkzone[t]];
