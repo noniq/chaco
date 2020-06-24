@@ -20,7 +20,7 @@
 /* #define DEBUG */
 #endif
 
-#define CHMOUNT_VERSION "0.1"
+#define CHMOUNT_VERSION "0.2"
 
 #define LOGERR(...)       logfunc (LOGLVL_ERR, __VA_ARGS__ )
 #define LOGVER(...)       logfunc (LOGLVL_VER, __VA_ARGS__ )

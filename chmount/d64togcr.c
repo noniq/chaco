@@ -335,6 +335,8 @@ unsigned int rest;
     gcrbuffer[trk * 2][0x1ffe] = (gcrtrklen[zone] >> 8) & 0xff;
     gcrbuffer[trk * 2][0x1fff] = gcrtrklen[zone] & 0xff;
 
+    /* copy data to next half track */
+    memcpy(gcrbuffer[(trk * 2) + 1], gcrbuffer[(trk * 2) + 0], 0x2000);
 }
 
 static void encoded64image(int tracks, int diskid0, int diskid1)
