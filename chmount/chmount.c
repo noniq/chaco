@@ -30,6 +30,8 @@
 int cleanup(int n);
 
 int verbose = 0;
+int silent = 0;
+int embeddedprogress = 0;
 #define BUFFER_SIZE    (1*1024*1024)
 unsigned char *buffer = NULL;
 
@@ -37,8 +39,13 @@ char *progressmsg = NULL;
 
 void progress(unsigned int percent, unsigned int value)
 {
-    printf("\r%s: %d.%d%% (%d bytes).", progressmsg, percent / 10, percent % 10, value);
-    if(percent==1000)printf("\n");
+    if (embeddedprogress) {
+        printf("[%3d%%]\x08\x08\x08\x08\x08\x08", percent / 10);
+        if(percent==1000)printf("      \x08\x08\x08\x08\x08\x08");
+    } else {
+        printf("\r%s: %d.%d%% (%d bytes).", progressmsg, percent / 10, percent % 10, value);
+        if(percent==1000)printf("\n");
+    }
     fflush(stdout);
 }
 
@@ -83,6 +90,7 @@ void usage (void)
     "usage: chmount <options>\n"
     "\n"
     "-h --help          this help\n"
+    "--silent           no messages\n"
     "--verbose          enable verbose messages\n"
     "--debug            enable debug messages\n"
     "\n"
@@ -129,6 +137,10 @@ int main(int argc, char *argv[])
             verbose = 1;
         } else if (!strcmp("--debug", argv[i])) {
             verbose = 2;
+        } else if (!strcmp("--silent", argv[i])) {
+            silent = 1;
+        } else if (!strcmp("--embedded-progress", argv[i])) {
+            embeddedprogress = 1;
         } else if (!strcmp("-h", argv[i]) || !strcmp("--help", argv[i]))  {
             usage();
             exit (EXIT_FAILURE);
@@ -147,21 +159,21 @@ int main(int argc, char *argv[])
             i++;
             inname = argv[i];
             tracks = loadd64(inname);
-            printf("%d tracks loaded from %s, using disk id %02x %02x\n", tracks, inname, d64buffer[0x165a2], d64buffer[0x165a3]);
+            if (!silent) printf("%d tracks loaded from %s, using disk id %02x %02x\n", tracks, inname, d64buffer[0x165a2], d64buffer[0x165a3]);
             encoded64image(tracks, d64buffer[0x165a2], d64buffer[0x165a3]);
             mode = 1;
         } else if (!strcmp(argv[i], "-g64")) {
             i++;
             inname = argv[i];
             tracks = loadg64(inname);
-            printf("%d tracks loadeded from %s\n", tracks, inname);
+            if (!silent) printf("%d tracks loadeded from %s\n", tracks, inname);
             mode = 1;
         } else if (!strcmp(argv[i], "-crt")) {
             i++;
             inname = argv[i];
             tracks = loadcrt(inname);
             if (tracks > 0) {
-                printf("%d bytes loadeded from %s\n", tracks, inname);
+                if (!silent) printf("%d bytes loadeded from %s\n", tracks, inname);
                 mode = 2;
             }
         } else {

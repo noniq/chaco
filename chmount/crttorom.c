@@ -73,9 +73,7 @@ static CRTINFO crtinfo[] =
     { 6,  4, CFGCRT_EXPERT        , MAP_8K     },
     { 7, 21, CFGCRT_FUNPLAY       , MAP_FUNPLAY | MAP_BIGSLOT },       // (>64k) romh[0]..=roml[16]... ???
     { 8,  5, CFGCRT_SUPERGAMES    , MAP_LINEAR_16K },
-#ifdef TESTING
-    { 9,  6, CFGCRT_RR            , MAP_LINEAR_8K },     // (Nordic Power) use RR?
-#endif
+    { 9,  6, CFGCRT_RR            , MAP_LINEAR_8K },     // (Nordic Power) use RR
     {10,  6, CFGCRT_EPYX_FASTLOAD , MAP_LINEAR_8K },     // EPYX_FASTLOAD
     {11,  7, CFGCRT_WESTERMANN    , MAP_ROMLH },         // WESTERMANN
 //    {12 },                                         // REX                  pointless (eprom card)
