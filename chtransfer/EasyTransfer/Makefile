@@ -32,7 +32,7 @@ here := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 top_dir := $(here)
 
 # don't delete intermediate files
-#.SECONDARY:
+.SECONDARY:
 
 .SILENT:
 
@@ -207,7 +207,7 @@ $(objdir)/%.o: $(objdir)/%.c $(headers) | pre_deps
 
 $(objdir)/%.c: $(srcdir)/%.prg | $(objdir) pre_deps
 	mkdir -p $(dir $@)
-	python make/bin2c.py $< $@ $(notdir $(basename $@))
+	python ./make/bin2c.py $< $@ $(notdir $(basename $@))
 
 $(objdir)/%.res.o: $(srcdir)/%.rc | $(objdir) pre_deps
 	$(windres) -I $(objdir) $< $@
