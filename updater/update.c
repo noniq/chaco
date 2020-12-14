@@ -28,6 +28,33 @@
 #define LOGMSG(...)       logfunc (LOGLVL_MSG, __VA_ARGS__ )
 #define DBG(...)          logfunc (LOGLVL_DBG, __VA_ARGS__ )
 
+int verbose = 0;
+
+int logfunc (int lvl, const char * format, ...)
+{
+    int printed = 0;
+    va_list ap;
+    va_start (ap, format);
+
+    switch (lvl) {
+        case LOGLVL_ERR:
+            printed = vfprintf (stderr, format, ap);
+            break;
+        case LOGLVL_VER:
+            if (verbose >= 1) printed = vfprintf (stdout, format, ap);
+            break;
+        case LOGLVL_MSG:
+            printed = vfprintf (stdout, format, ap);
+            break;
+        case LOGLVL_DBG:
+            if (verbose >= 2) printed = vfprintf (stdout, format, ap);
+            break;
+    }
+
+    va_end (ap);
+    return printed;
+}
+
 #ifdef POSIX
 static int getkey(void)
 {
@@ -53,8 +80,6 @@ int ch;
     return ch; /*return received char */
 }
 #endif
-
-int verbose = 0;
 
 static void usage (void)
 {
@@ -93,27 +118,23 @@ static void bye (int n)
 
 static int match (char *str, int version)
 {
-    int n;
+    int n, corever = -1;
     n = strlen(str);
-    
-    if (version == 0) {
-        if (n > 5) {
-            n-=4;
-    //        printf(">%s<\n",&str[n]);
-            if (!strcmp(&str[n], ".rbf")) {
-                return 1;
-            }
-        }
+    if (n < 9) {
+        /* string should start with "chameleon" */
+        return 0;
     }
 
-    if (version == 1) {
-        if (n > 7) {
-            n-=6;
-    //        printf(">%s<\n",&str[n]);
-            if (!strcmp(&str[n], "v2.rbf")) {
-                return 1;
-            }
-        }
+//    printf("match(v%d:%s)\n",version, str);
+
+    if (!strcmp(&str[n-6], "v2.rbf")) {
+        corever = 1;
+    } else if (!strcmp(&str[n-4], ".rbf")) {
+        corever = 0;
+    }
+
+    if (version == corever) {
+        return 1;
     }
 
     return 0;
@@ -131,9 +152,10 @@ static char *findcore(int version)
         bye(-1);
     }
 
+    LOGVER("looking for a core for hardware v%d\n", version);
     while ((dit = readdir(dip)) != NULL)
     {
-//                printf("\n%s", dit->d_name);
+                printf("\n%s", dit->d_name);
             if (match (dit->d_name, version)) {
                 strcpy (fullname, "./UPDATE/");
                 strcat (fullname, dit->d_name);
@@ -154,31 +176,6 @@ static void progress(unsigned int percent, unsigned int value)
     printf("\r%s: %d.%d%% (%d bytes).", "Flashing", percent / 10, percent % 10, value);
     if(percent==1000)printf("\n");
     fflush(stdout);
-}
-
-int logfunc (int lvl, const char * format, ...)
-{
-    int printed = 0;
-    va_list ap;
-    va_start (ap, format);
-
-    switch (lvl) {
-        case LOGLVL_ERR:
-            printed = vfprintf (stderr, format, ap);
-            break;
-        case LOGLVL_VER:
-            if (verbose >= 1) printed = vfprintf (stdout, format, ap);
-            break;
-        case LOGLVL_MSG:
-            printed = vfprintf (stdout, format, ap);
-            break;
-        case LOGLVL_DBG:
-            if (verbose >= 2) printed = vfprintf (stdout, format, ap);
-            break;
-    }
-
-    va_end (ap);
-    return printed;
 }
 
 static void makename(char *d, char *s)

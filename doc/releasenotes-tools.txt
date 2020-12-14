@@ -2,6 +2,13 @@ This file contains the user visible (and important) changes from one release to
 another. For the gory details see svn log
 --------------------------------------------------------------------------------
 
+Beta9l:
+-------
+
+ flasher:
+  - fixed a bug that would result in the wrong core flashed to v1 hardware
+
+
 Beta9i:
 -------
 
