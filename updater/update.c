@@ -155,7 +155,7 @@ static char *findcore(int version)
     LOGVER("looking for a core for hardware v%d\n", version);
     while ((dit = readdir(dip)) != NULL)
     {
-                printf("\n%s", dit->d_name);
+//            printf("\n%s", dit->d_name);
             if (match (dit->d_name, version)) {
                 strcpy (fullname, "./UPDATE/");
                 strcat (fullname, dit->d_name);
