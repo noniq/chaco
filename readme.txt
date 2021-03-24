@@ -16,6 +16,8 @@ chxfer          port of "ef3xfer" by Skoe
 chmon           port of "netmon" by Hannenz
 chusb           port of "ef3usb" by Tom-Cat
 
+chamhelp        convert chamhelp.hlp from/to text for editing
+
 doc             some more documentation for developers
 libs            source packages of some libraries that are required for building
 
