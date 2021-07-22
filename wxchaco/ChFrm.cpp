@@ -39,50 +39,41 @@
 #define GUI_TICKS_PER_SEC (1000 / GUI_TIMER_BASE)
 #define GUI_SECTICKS(x) ((1000 * (x)) / GUI_TIMER_BASE)
 
-//Do not add custom headers between
-//Header Include Start and Header Include End
-//wxDev-C++ designer will remove them
-////Header Include Start
-////Header Include End
-
 int flash_additional_roms = 0;
 
 //----------------------------------------------------------------------------
 // ChFrm
 //----------------------------------------------------------------------------
-//Add Custom Events only in the appropriate block.
-//Code added in other places will be removed by wxDev-C++
-////Event Table Start
-BEGIN_EVENT_TABLE(ChFrm,wxFrame)
-    ////Manual Code Start
-        EVT_SPINCTRL(ID_WXSPINCTRL1,ChFrm::WxSpinCtrl1Click)
-        EVT_SPIN_UP(ID_WXSPINCTRL1,ChFrm::WxSpinCtrl1Click)
-        EVT_SPIN_DOWN(ID_WXSPINCTRL1,ChFrm::WxSpinCtrl1Click)
-    ////Manual Code End
-    
-    EVT_CLOSE(ChFrm::OnClose)
-    EVT_ACTIVATE(ChFrm::ChFrmActivate)
-        EVT_BUTTON(ID_STARTBOOTLOADER,ChFrm::StartBootloaderClick)
-    EVT_TIMER(ID_WXTIMER1,ChFrm::GUIUpdate)
-    EVT_BUTTON(ID_READSLOT,ChFrm::readSlotClick)
-    EVT_BUTTON(ID_WRITESLOT,ChFrm::writeSlotClick)
-    EVT_BUTTON(ID_WRITEIMGBUTTON,ChFrm::writeImgButtonClick)
-    EVT_BUTTON(ID_READIMGBUTTON,ChFrm::readImgButtonClick)
-    
-        EVT_SPINCTRL(ID_WXSPINCTRL2,ChFrm::setjtagslotClick)
-        EVT_SPIN_UP(ID_WXSPINCTRL2,ChFrm::setjtagslotClick)
-    EVT_SPIN_DOWN(ID_WXSPINCTRL2,ChFrm::setjtagslotClick)
-    EVT_BUTTON(ID_WXBUTTON7,ChFrm::WxButton7Click)
-    EVT_BUTTON(ID_MEMREADER,ChFrm::memreaderClick)
-    
-    EVT_TEXT(ID_WXEDIT1,ChFrm::WxEdit1Updated)
-//    EVT_BUTTON(ID_WXBUTTON5,ChFrm::WxButton5Click)
-    EVT_BUTTON(ID_WXBUTTON2,ChFrm::WxButton2Click)
-    EVT_BUTTON(ID_WXBUTTON1,ChFrm::WxButton1Click)
 
-        EVT_CHECKBOX(ID_WXCHECKBOX1,ChFrm::WxCheckBox1Click)
+BEGIN_EVENT_TABLE(ChFrm,wxFrame)
+
+EVT_SPINCTRL(ID_WXSPINCTRL1,ChFrm::WxSpinCtrl1Click)
+EVT_SPIN_UP(ID_WXSPINCTRL1,ChFrm::WxSpinCtrl1Click)
+EVT_SPIN_DOWN(ID_WXSPINCTRL1,ChFrm::WxSpinCtrl1Click)
+
+EVT_CLOSE(ChFrm::OnClose)
+EVT_ACTIVATE(ChFrm::ChFrmActivate)
+EVT_BUTTON(ID_STARTBOOTLOADER,ChFrm::StartBootloaderClick)
+EVT_TIMER(ID_WXTIMER1,ChFrm::GUIUpdate)
+EVT_BUTTON(ID_READSLOT,ChFrm::readSlotClick)
+EVT_BUTTON(ID_WRITESLOT,ChFrm::writeSlotClick)
+EVT_BUTTON(ID_WRITEIMGBUTTON,ChFrm::writeImgButtonClick)
+EVT_BUTTON(ID_READIMGBUTTON,ChFrm::readImgButtonClick)
+
+EVT_SPINCTRL(ID_WXSPINCTRL2,ChFrm::setjtagslotClick)
+EVT_SPIN_UP(ID_WXSPINCTRL2,ChFrm::setjtagslotClick)
+EVT_SPIN_DOWN(ID_WXSPINCTRL2,ChFrm::setjtagslotClick)
+EVT_BUTTON(ID_WXBUTTON7,ChFrm::WxButton7Click)
+EVT_BUTTON(ID_MEMREADER,ChFrm::memreaderClick)
+
+EVT_TEXT(ID_WXEDIT1,ChFrm::WxEdit1Updated)
+
+EVT_BUTTON(ID_WXBUTTON2,ChFrm::WxButton2Click)
+EVT_BUTTON(ID_WXBUTTON1,ChFrm::WxButton1Click)
+
+EVT_CHECKBOX(ID_WXCHECKBOX1,ChFrm::WxCheckBox1Click)
+
 END_EVENT_TABLE()
-////Event Table End
 
 ChFrm::ChFrm(wxWindow *parent, wxWindowID id, const wxString &title, const wxPoint &position, const wxSize& size, long style)
 : wxFrame(parent, id, title, position, size, style)
@@ -96,6 +87,7 @@ ChFrm::~ChFrm()
 }
 
 #define WINDOW_W     691
+#define WINDOW_H     501
 
 #define COL_MEMORY   310
 #define COL_DEBUG    510
@@ -103,69 +95,104 @@ ChFrm::~ChFrm()
 void ChFrm::CreateGUIControls()
 {
     char name[0x40];
+    int width, height;
+    int ypos;
     sprintf(name, "Chaco (built %s)", __DATE__);
     SetTitle(wxString::FromAscii(name));
     SetIcon(wxNullIcon);
 #ifdef LINUX
-    SetSize(8,8,WINDOW_W,501);
+    SetSize(8,8,WINDOW_W, WINDOW_H);
 #else
-    SetSize(8,8,WINDOW_W + 5,501 + 25);
+    SetSize(8,8,WINDOW_W + 5,WINDOW_H + 25);
 #endif
     Center();
+    
+    ypos = 8;
 
-    //Do not add custom code between
-    //GUI Items Creation Start and GUI Items Creation End
-    //wxDev-C++ designer will remove them.
-    //Add the custom code before or after the blocks
-    ////GUI Items Creation Start
-    WxStaticText4 = new wxStaticText(this, ID_WXSTATICTEXT4, wxT("Slot Management"), wxPoint(16, 8), wxDefaultSize, 0, wxT("WxStaticText4"));
+    WxStaticText4 = new wxStaticText(this, ID_WXSTATICTEXT4, wxT("Slot Management"), wxPoint(16, ypos), wxSize(500,35), wxALIGN_LEFT, wxT("WxStaticText4"));
     WxStaticText4->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxNORMAL, false));
 
-    WxSpinCtrl1   = new wxSpinCtrl(this, ID_WXSPINCTRL1,     wxT("0"),      wxPoint(15, 55), wxSize(45, 25),wxSP_ARROW_KEYS | wxSP_WRAP, 0, 15, 0);
-    WxStaticText2 = new wxStaticText(this, ID_WXSTATICTEXT2, wxT("Selected slot (A)"), wxPoint(70, 55+2), wxDefaultSize, 0, wxT("WxStaticText2"));
+    ypos += 40;
+    
+//    WxSpinCtrl1   = new wxSpinCtrl(this, ID_WXSPINCTRL1,     wxT("0"),      wxPoint(15, ypos), wxDefaultSize, wxSP_ARROW_KEYS | wxSP_WRAP, 0, 15, 0);
+    WxSpinCtrl1   = new wxSpinCtrl(this,   ID_WXSPINCTRL1,   wxT("0"),                 wxPoint(15, ypos), wxSize(105 + 10, 35), wxSP_ARROW_KEYS | wxSP_WRAP, 0, 15, 0);
+    WxStaticText2 = new wxStaticText(this, ID_WXSTATICTEXT2, wxT("Selected slot (A)"), wxPoint(135, ypos+2), wxDefaultSize, 0, wxT("WxStaticText2"));
 
-    WxButton2 = new wxButton(this, ID_WXBUTTON2, wxT("Flash .rbf/ROM"), wxPoint(15, 85),  wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton2"));
-    writeSlot = new wxButton(this, ID_WRITESLOT, wxT("Write Slot"),     wxPoint(15, 125), wxSize(105, 35), 0, wxDefaultValidator, wxT("writeSlot"));
-    readSlot  = new wxButton(this, ID_READSLOT,  wxT("Read Slot"),      wxPoint(15, 165), wxSize(105, 35), 0, wxDefaultValidator, wxT("readSlot"));
+    ypos += 40;
 
-    WxCheckBox1    = new wxCheckBox(this, ID_WXCHECKBOX1,  wxT("Flash additional ROM"), wxPoint(135 - 5, 85), wxSize(165, 35), wxCHK_2STATE, wxDefaultValidator, wxT("WxCheckBox1"));
-    writeImgButton = new wxButton(this, ID_WRITEIMGBUTTON, wxT("Write image"),          wxPoint(135, 125),    wxSize(105, 35), 0, wxDefaultValidator, wxT("writeImgButton"));
-    readImgButton  = new wxButton(this, ID_READIMGBUTTON,  wxT("Read image"),           wxPoint(135, 165),    wxSize(105, 35), 0, wxDefaultValidator, wxT("readImgButton"));
+    WxButton2     = new wxButton(this,   ID_WXBUTTON2,   wxT("Flash .rbf/ROM"), wxPoint(15, ypos),  wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton2"));
+    WxCheckBox1   = new wxCheckBox(this, ID_WXCHECKBOX1, wxT("Flash additional ROM"), wxPoint(135 - 5, ypos), wxSize(165, 35), wxCHK_2STATE, wxDefaultValidator, wxT("WxCheckBox1"));
 
-    WxButton1 = new wxButton(this, ID_WXBUTTON1, wxT("Start core"),     wxPoint(15, 205), wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton1"));
+    ypos += 40;
 
+    writeSlot     = new wxButton(this, ID_WRITESLOT,      wxT("Write Slot"),     wxPoint(15, ypos), wxSize(105, 35), 0, wxDefaultValidator, wxT("writeSlot"));
+    writeImgButton= new wxButton(this, ID_WRITEIMGBUTTON, wxT("Write image"),          wxPoint(135, ypos),    wxSize(105, 35), 0, wxDefaultValidator, wxT("writeImgButton"));
 
-    WxStaticText5 = new wxStaticText(this, ID_WXSTATICTEXT5, wxT("Memory Access"), wxPoint(COL_MEMORY+1, 8), wxDefaultSize, 0, wxT("WxStaticText5"));
+    ypos += 40;
+
+    readSlot      = new wxButton(this, ID_READSLOT,      wxT("Read Slot"),      wxPoint(15, ypos), wxSize(105, 35), 0, wxDefaultValidator, wxT("readSlot"));
+    readImgButton = new wxButton(this, ID_READIMGBUTTON, wxT("Read image"),           wxPoint(135, ypos),    wxSize(105, 35), 0, wxDefaultValidator, wxT("readImgButton"));
+
+    ypos += 40;
+
+    WxButton1     = new wxButton(this, ID_WXBUTTON1, wxT("Start core"),     wxPoint(15, ypos), wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton1"));
+
+    ypos = 8;
+
+//    WxStaticText5 = new wxStaticText(this, ID_WXSTATICTEXT5, wxT("Memory Access"), wxPoint(COL_MEMORY+1, 8), wxDefaultSize, 0, wxT("WxStaticText5"));
+    WxStaticText5 = new wxStaticText(this, ID_WXSTATICTEXT5, wxT("Memory Access"), wxPoint(COL_MEMORY+1, ypos),  wxSize(500,35), 0, wxT("WxStaticText5"));
     WxStaticText5->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxNORMAL, false));
 
-    WxStaticText1 = new wxStaticText(this, ID_WXSTATICTEXT1, wxT("Address:"),   wxPoint(COL_MEMORY+5, 55), wxDefaultSize, 0, wxT("WxStaticText1"));
-    WxEdit1       = new wxTextCtrl(this, ID_WXEDIT1,         wxT("0x00000000"), wxPoint(COL_MEMORY+65, 55), wxSize(105, 25), 0, wxDefaultValidator, wxT("WxEdit1"));
+    ypos += 40;
 
-    WxStaticText7 = new wxStaticText(this, ID_WXSTATICTEXT7, wxT("Size:"),      wxPoint(COL_MEMORY+5, 85), wxDefaultSize, 0, wxT("WxStaticText1"));
-    WxEdit2       = new wxTextCtrl(this, ID_WXEDIT2,         wxT("0x00000000"), wxPoint(COL_MEMORY+65, 85), wxSize(105, 25), 0, wxDefaultValidator, wxT("WxEdit2"));
+    WxStaticText1 = new wxStaticText(this, ID_WXSTATICTEXT1, wxT("Address:"),   wxPoint(COL_MEMORY+5, ypos), wxDefaultSize, 0, wxT("WxStaticText1"));
+    WxEdit1       = new wxTextCtrl(this, ID_WXEDIT1,         wxT("0x00000000"), wxPoint(COL_MEMORY+65, ypos), wxSize(105, 25), 0, wxDefaultValidator, wxT("WxEdit1"));
+
+    ypos += 40;
+
+    WxStaticText7 = new wxStaticText(this, ID_WXSTATICTEXT7, wxT("Size:"),      wxPoint(COL_MEMORY+5, ypos), wxDefaultSize, 0, wxT("WxStaticText1"));
+    WxEdit2       = new wxTextCtrl(this, ID_WXEDIT2,         wxT("0x00000000"), wxPoint(COL_MEMORY+65, ypos), wxSize(105, 25), 0, wxDefaultValidator, wxT("WxEdit2"));
+
+    ypos += 40;
 
     memreader = new wxButton(this, ID_MEMREADER, wxT("Read memory"), wxPoint(COL_MEMORY+5, 125), wxSize(105, 35), 0, wxDefaultValidator, wxT("memreader"));
+
+    ypos += 40;
 
     WxButton7 = new wxButton(this, ID_WXBUTTON7, wxT("Write memory"),wxPoint(COL_MEMORY+5, 165), wxSize(105, 35), 0, wxDefaultValidator, wxT("WxButton7"));
 
 
-    WxStaticText6 = new wxStaticText(this, ID_WXSTATICTEXT6, wxT("Debugging"), wxPoint(COL_DEBUG+1, 9), wxDefaultSize, 0, wxT("WxStaticText6"));
+    ypos = 8;
+
+//    WxStaticText6 = new wxStaticText(this, ID_WXSTATICTEXT6, wxT("Debugging"), wxPoint(COL_DEBUG+1, ypos), wxDefaultSize, 0, wxT("WxStaticText6"));
+    WxStaticText6 = new wxStaticText(this, ID_WXSTATICTEXT6, wxT("Debugging"), wxPoint(COL_DEBUG+1, ypos), wxSize(500,35), 0, wxT("WxStaticText6"));
     WxStaticText6->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxNORMAL, false));
 
-    StartBootloader = new wxButton(this, ID_STARTBOOTLOADER, wxT("Start Bootloader"), wxPoint(COL_DEBUG+5, 55), wxSize(125, 35), 0, wxDefaultValidator, wxT("StartBootloader"));
+    ypos += 40;
 
-//    WxButton5 = new wxButton(this, ID_WXBUTTON5, wxT("Search Chameleon"), wxPoint(620, 55), wxSize(120, 40), 0, wxDefaultValidator, wxT("WxButton5"));
+    StartBootloader = new wxButton(this, ID_STARTBOOTLOADER, wxT("Start Bootloader"), wxPoint(COL_DEBUG+5, ypos), wxSize(125, 35), 0, wxDefaultValidator, wxT("StartBootloader"));
 
-    WxEdit3 = new wxTextCtrl(this, ID_WXEDIT3, wxT(""), wxPoint(COL_DEBUG+5, 102), wxSize(121, 19), wxTE_READONLY, wxDefaultValidator, wxT("WxEdit3"));
-    WxEdit4 = new wxTextCtrl(this, ID_WXEDIT4, wxT(""), wxPoint(COL_DEBUG+5, 128), wxSize(121, 19), wxTE_READONLY, wxDefaultValidator, wxT("WxEdit4"));
-    WxEdit5 = new wxTextCtrl(this, ID_WXEDIT5, wxT(""), wxPoint(COL_DEBUG+5, 154), wxSize(121, 19), wxTE_READONLY, wxDefaultValidator, wxT("WxEdit5"));
+    ypos += 40;
 
-    WxSpinCtrl2 = new wxSpinCtrl(this, ID_WXSPINCTRL2, wxT("0"), wxPoint(COL_DEBUG+5, 185), wxSize(45, 25), wxSP_ARROW_KEYS, 0, 15, 0);
-    WxStaticText3 = new wxStaticText(this, ID_WXSTATICTEXT3, wxT("Select JTAG slot (A)"), wxPoint(COL_DEBUG+55, 185+2), wxDefaultSize, 0, wxT("WxStaticText3"));
+    WxEdit3 = new wxTextCtrl(this, ID_WXEDIT3, wxT(""), wxPoint(COL_DEBUG+5, ypos), wxSize(121, 19), wxTE_READONLY, wxDefaultValidator, wxT("WxEdit3"));
 
-    ////GUI Items Creation End
+    ypos += 25;
 
-    LogWindow = new wxTextCtrl(this,wxID_ANY,wxT(""), wxPoint(5, 245),wxSize(WINDOW_W - 11,230),wxTE_RICH2 | wxTE_MULTILINE | wxTE_READONLY );
+    WxEdit4 = new wxTextCtrl(this, ID_WXEDIT4, wxT(""), wxPoint(COL_DEBUG+5, ypos), wxSize(121, 19), wxTE_READONLY, wxDefaultValidator, wxT("WxEdit4"));
+
+    ypos += 25;
+
+    WxEdit5 = new wxTextCtrl(this, ID_WXEDIT5, wxT(""), wxPoint(COL_DEBUG+5, ypos), wxSize(121, 19), wxTE_READONLY, wxDefaultValidator, wxT("WxEdit5"));
+
+    ypos += 25;
+
+    WxStaticText3 = new wxStaticText(this, ID_WXSTATICTEXT3, wxT("Select JTAG slot (A)"), wxPoint(COL_DEBUG+5, ypos+2), wxDefaultSize, 0, wxT("WxStaticText3"));
+    ypos += 25;
+    WxSpinCtrl2 = new wxSpinCtrl(this, ID_WXSPINCTRL2, wxT("0"), wxPoint(COL_DEBUG+5, ypos), wxSize(121, 35), wxSP_ARROW_KEYS | wxSP_WRAP, 0, 15, 0);
+
+    ypos += 60;
+
+    LogWindow = new wxTextCtrl(this,wxID_ANY,wxT(""), wxPoint(5, ypos),wxSize(WINDOW_W - 11,WINDOW_H - ypos - 10),wxTE_RICH2 | wxTE_MULTILINE | wxTE_READONLY );
     wxFont *font = new wxFont(wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
     font->SetPointSize(11);
 #ifdef LINUX
@@ -174,7 +201,7 @@ void ChFrm::CreateGUIControls()
 #endif
     LogWindow->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE, *font));
 
-    WxGauge1 = new wxGauge(this, ID_WXGAUGE1, 100, wxPoint(5, 480), wxSize(WINDOW_W - 11, 18), wxGA_HORIZONTAL | wxGA_SMOOTH, wxDefaultValidator, wxT("WxGauge1"));
+    WxGauge1 = new wxGauge(this, ID_WXGAUGE1, 100, wxPoint(5, WINDOW_H - 20), wxSize(WINDOW_W - 11, 18), wxGA_HORIZONTAL | wxGA_SMOOTH, wxDefaultValidator, wxT("WxGauge1"));
     WxGauge1->SetRange(1000);
     WxGauge1->SetValue(0);
 
