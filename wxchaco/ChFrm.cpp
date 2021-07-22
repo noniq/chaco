@@ -86,8 +86,13 @@ ChFrm::~ChFrm()
 {
 }
 
+#ifdef LINUX
 #define WINDOW_W     691
 #define WINDOW_H     501
+#else
+#define WINDOW_W     (691+5)
+#define WINDOW_H     (501+25)
+#endif    
 
 #define COL_MEMORY   310
 #define COL_DEBUG    510
@@ -100,11 +105,9 @@ void ChFrm::CreateGUIControls()
     sprintf(name, "Chaco (built %s)", __DATE__);
     SetTitle(wxString::FromAscii(name));
     SetIcon(wxNullIcon);
-#ifdef LINUX
+
     SetSize(8,8,WINDOW_W, WINDOW_H);
-#else
-    SetSize(8,8,WINDOW_W + 5,WINDOW_H + 25);
-#endif
+
     Center();
     
     ypos = 8;
@@ -113,10 +116,13 @@ void ChFrm::CreateGUIControls()
     WxStaticText4->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxNORMAL, false));
 
     ypos += 40;
-    
-//    WxSpinCtrl1   = new wxSpinCtrl(this, ID_WXSPINCTRL1,     wxT("0"),      wxPoint(15, ypos), wxDefaultSize, wxSP_ARROW_KEYS | wxSP_WRAP, 0, 15, 0);
-    WxSpinCtrl1   = new wxSpinCtrl(this,   ID_WXSPINCTRL1,   wxT("0"),                 wxPoint(15, ypos), wxSize(105 + 10, 35), wxSP_ARROW_KEYS | wxSP_WRAP, 0, 15, 0);
+#ifdef LINUX    
+    WxSpinCtrl1   = new wxSpinCtrl(this,   ID_WXSPINCTRL1,   wxT("0"), wxPoint(15, ypos), wxSize(105 + 10, 35), wxSP_HORIZONTAL | wxSP_ARROW_KEYS | wxSP_WRAP, 0, 15, 0);
     WxStaticText2 = new wxStaticText(this, ID_WXSTATICTEXT2, wxT("Selected slot (A)"), wxPoint(135, ypos+2), wxDefaultSize, 0, wxT("WxStaticText2"));
+#else
+    WxSpinCtrl1   = new wxSpinCtrl(this,   ID_WXSPINCTRL1,   wxT("0"), wxPoint(15, ypos), wxSize(55, 30), wxSP_VERTICAL | wxSP_ARROW_KEYS | wxSP_WRAP, 0, 15, 0);
+    WxStaticText2 = new wxStaticText(this, ID_WXSTATICTEXT2, wxT("Selected slot (A)"), wxPoint(85, ypos+2), wxDefaultSize, 0, wxT("WxStaticText2"));
+#endif
 
     ypos += 40;
 
@@ -188,11 +194,19 @@ void ChFrm::CreateGUIControls()
 
     WxStaticText3 = new wxStaticText(this, ID_WXSTATICTEXT3, wxT("Select JTAG slot (A)"), wxPoint(COL_DEBUG+5, ypos+2), wxDefaultSize, 0, wxT("WxStaticText3"));
     ypos += 25;
+#ifdef LINUX
     WxSpinCtrl2 = new wxSpinCtrl(this, ID_WXSPINCTRL2, wxT("0"), wxPoint(COL_DEBUG+5, ypos), wxSize(121, 35), wxSP_ARROW_KEYS | wxSP_WRAP, 0, 15, 0);
+#else
+    WxSpinCtrl2 = new wxSpinCtrl(this, ID_WXSPINCTRL2, wxT("0"), wxPoint(COL_DEBUG+5, ypos), wxSize(55, 30), wxSP_VERTICAL | wxSP_ARROW_KEYS | wxSP_WRAP, 0, 15, 0);
+#endif
 
     ypos += 60;
 
+#ifdef LINUX
     LogWindow = new wxTextCtrl(this,wxID_ANY,wxT(""), wxPoint(5, ypos),wxSize(WINDOW_W - 11,WINDOW_H - ypos - 10),wxTE_RICH2 | wxTE_MULTILINE | wxTE_READONLY );
+#else
+    LogWindow = new wxTextCtrl(this,wxID_ANY,wxT(""), wxPoint(5, ypos),wxSize(WINDOW_W - 16,WINDOW_H - (ypos + 55)),wxTE_RICH2 | wxTE_MULTILINE | wxTE_READONLY );
+#endif
     wxFont *font = new wxFont(wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
     font->SetPointSize(11);
 #ifdef LINUX
@@ -201,7 +215,11 @@ void ChFrm::CreateGUIControls()
 #endif
     LogWindow->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE, *font));
 
+#ifdef LINUX
     WxGauge1 = new wxGauge(this, ID_WXGAUGE1, 100, wxPoint(5, WINDOW_H - 20), wxSize(WINDOW_W - 11, 18), wxGA_HORIZONTAL | wxGA_SMOOTH, wxDefaultValidator, wxT("WxGauge1"));
+#else
+    WxGauge1 = new wxGauge(this, ID_WXGAUGE1, 100, wxPoint(5, WINDOW_H - 50), wxSize(WINDOW_W - 16, 18), wxGA_HORIZONTAL | wxGA_SMOOTH, wxDefaultValidator, wxT("WxGauge1"));
+#endif
     WxGauge1->SetRange(1000);
     WxGauge1->SetValue(0);
 

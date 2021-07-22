@@ -29,6 +29,8 @@ Quick Instructions:
 - tools that want to send an external helper .prg may look for it in the current
   working directory
 
+look in the docs directory for build instructions.
+
 --------------------------------------------------------------------------------
 
 Home of this repository is: https://svn.icomp.de/svn/chaco/

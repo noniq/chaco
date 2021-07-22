@@ -1,5 +1,5 @@
 
-on windows i use a ming32 environment.
+on windows i use a Msys2 environment.
 
 --------------------------------------------------------------------------------
 
@@ -17,9 +17,11 @@ needed libraries:
     libhid (instead of libusb, untested)
     wxwidgets (for building gui tools, "Chaco" and "ChTransfer")
 
+libusb and wxWidgets can be installed using pacboy in Msys2
+
 --------------------------------------------------------------------------------
 
-wxwidgets:
+building wxwidgets:
 
 $ ./configure --disable-shared --enable-monolithic --enable-compat26 && make
 

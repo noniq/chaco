@@ -49,7 +49,7 @@ cxxlibs        = $(CXXLIBS)
 ldflags        = $(LDFLAGS)
 
 ifeq ($(TARGET), win)
-    ldflags       += -static-libstdc++ -static-libgcc
+    ldflags       += -static-libstdc++ -static-libgcc -static
 endif
 
 #    host          := i686-w64-mingw32
@@ -68,8 +68,8 @@ cxx           := c++
 cc            := gcc
 #outbase       := $(BUILDDIR)
 outbase       := obj
-cxxflags      += $(shell wx-config --cxxflags)
-cxxlibs       += $(shell wx-config --libs) -lpthread
+cxxflags      += $(shell $(WXCONFIG) --cxxflags)
+cxxlibs       += $(shell $(WXCONFIG) --libs) -lpthread
 clibs         += $(BUILDDIR)/chacolib.a $(CLIBS)
 cxxlibs         += $(BUILDDIR)/chacolib.a $(CLIBS)
 icon_resize   :=

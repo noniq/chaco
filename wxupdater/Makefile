@@ -1,8 +1,10 @@
 
 include ../Makefile.config
 
-CFLAGS+=`wx-config --cflags`
-CLIBS+=`wx-config --libs`
+#CFLAGS+=`$$WXCONFIG --cflags`
+#CLIBS+=`$$WXCONFIG --libs`
+CFLAGS+=$(shell $(WXCONFIG) --cflags)
+CLIBS+=$(shell $(WXCONFIG) --libs)
 
 BUILDDIR=../build-$(TARGET)
 
