@@ -2,6 +2,13 @@ This file contains the user visible (and important) changes from one release to
 another. For the gory details see svn log
 --------------------------------------------------------------------------------
 
+Beta9p:
+-------
+
+  - fixed GTK3 layout problems in Linux
+  - everything can be build in a recent Msys2 with stock packages now
+
+
 Beta9l:
 -------
 
