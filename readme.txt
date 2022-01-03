@@ -33,7 +33,7 @@ look in the docs directory for build instructions.
 
 --------------------------------------------------------------------------------
 
-Home of this repository is: https://svn.icomp.de/svn/chaco/
+Home of this repository is: https://gitlab.icomp.de/chameleon-dev/chaco
 
 For more information have a look at our WIKI: http://wiki.icomp.de/wiki/Chameleon
 
