@@ -1,3 +1,30 @@
+This is a fork of https://gitlab.icomp.de/chameleon-dev/chaco with
+modifications to ensure compatibility with recent macOS (OS X) versions.
+
+Requirements:
+- "libusb" must be installed via Homebrew ("brew install libusb")
+
+The following tools have been tested and confirmed working on macOS Sonoma:
+- chacocmd
+- flasher / updater
+- chcodenet
+- chshot
+- chmount
+
+The tools need to be run with "sudo" to access the USB device. You may want
+to use the setuid bit to avoid typing sudo each time, for example:
+
+sudo chown root:wheel build-osx/chcodenet
+sudo chmod u+s build-osx/chcodenet
+
+(Note that running progams as root has security implications - use at your own
+risk.)
+
+
+Original readme below:
+================================================================================
+
+
 This repository contains the Chameleon Control Program (Chaco) and related
 offspring:
 

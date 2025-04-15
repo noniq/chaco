@@ -8,7 +8,7 @@ CFLAGS+=-I../chacolib -I../include
 all: $(BUILDDIR)/flasher$(EXE)
 
 $(BUILDDIR)/flasher$(EXE): update.c Makefile $(BUILDDIR)/chacolib.a
-	$(CC) $(CFLAGS) -o $(BUILDDIR)/flasher$(EXE) update.c $(BUILDDIR)/chacolib.a $(CLIBS)
+	$(CC) $(CFLAGS) -o $(BUILDDIR)/flasher$(EXE) update.c $(BUILDDIR)/chacolib.a $(CLIBS) $(LDFLAGS)
 
 clean:
 	$(RM) $(BUILDDIR)/flasher$(EXE)

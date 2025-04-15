@@ -17,16 +17,16 @@ all: $(ALLTOOLS) zip
 chacolib:
 	$(MAKE) -C chacolib all
 
-chacocmd:
+chacocmd: chacolib
 	$(MAKE) -C chacocmd all
 
-updater:
+updater: chacolib
 	$(MAKE) -C updater all
 
-chcodenet:
+chcodenet: chacolib
 	$(MAKE) -C chcodenet all
 
-chshot:
+chshot: chacolib
 	$(MAKE) -C chshot all
 
 chusb:
@@ -35,7 +35,7 @@ chusb:
 chmon:
 	$(MAKE) -C chmon all
 
-chmount:
+chmount: chacolib
 	$(MAKE) -C chmount all
 
 chxfer:
@@ -149,4 +149,3 @@ clean:
 	$(MAKE) -C chtransfer clean
 	$(MAKE) -C wxchaco clean
 	$(MAKE) -C wxupdater clean
-

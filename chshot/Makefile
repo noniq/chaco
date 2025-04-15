@@ -10,7 +10,7 @@ CFLAGS+=-I../chacolib
 all: $(BUILDDIR)/chshot$(EXE)
 
 $(BUILDDIR)/chshot$(EXE): chshot.c Makefile
-	$(CC) $(CFLAGS) -o $(BUILDDIR)/chshot$(EXE) chshot.c $(BUILDDIR)/chacolib.a $(CLIBS)
+	$(CC) $(CFLAGS) -o $(BUILDDIR)/chshot$(EXE) chshot.c $(BUILDDIR)/chacolib.a $(CLIBS) $(LDFLAGS)
 
 clean:
 	$(RM) $(BUILDDIR)/chshot$(EXE)

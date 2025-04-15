@@ -10,7 +10,7 @@ CFLAGS+=-I../chacolib
 all: $(BUILDDIR)/chcodenet$(EXE)
 
 $(BUILDDIR)/chcodenet$(EXE): chcodenet.c Makefile
-	$(CC) $(CFLAGS) -o $(BUILDDIR)/chcodenet$(EXE) chcodenet.c $(BUILDDIR)/chacolib.a $(CLIBS)
+	$(CC) $(CFLAGS) -o $(BUILDDIR)/chcodenet$(EXE) chcodenet.c $(BUILDDIR)/chacolib.a $(CLIBS) $(LDFLAGS)
 
 clean:
 	$(RM) $(BUILDDIR)/chcodenet$(EXE)
